@@ -9,6 +9,18 @@
 
         <div class="mb-4">
             <p class="text-sm text-gray-600">
+                🔥 Streak: {{ auth()->user()->streak }} days 
+            </p>
+        </div>
+
+        @if(auth()->user()->streak > 0)
+            <p class="text-xs text-gray-500 mb-2">
+                Keep going. Don't break the chain.
+            </p>
+        @endif
+
+        <div class="mb-4">
+            <p class="text-sm text-gray-600">
                 Progress: {{ $completed }} / {{ $total }} ({{ $progress }}%)
            </p>
 
