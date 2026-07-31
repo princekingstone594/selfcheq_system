@@ -7,6 +7,23 @@
             {{ $today->format('1, d M Y') }}
         </p>
 
+        <div class="mb-4">
+            <p class="text-sm text-gray-600">
+                Progress: {{ $completed }} / {{ $total }} ({{ $progress }}%)
+           </p>
+
+           <div class="w-full bg-gray-200 rounded-full h-3 mt-1">
+               <div class="bg-green-500 h-3 rounded-full"
+                    style="width: {{ $progress }}%">
+                </div>
+           </div>
+        
+        @if($total > 0 && $completed === $total)
+           <div class="bg-green-100 text-green-700 p-3 rounded mb-4">
+              🎉 You completed all your tasks today. Stay disciplined. You can do this.
+           </div>
+        @endif
+
         <!-- Add Task -->
         <form method="POST" action="{{ route('tasks.store') }}" class="flex gap-2 mb-4">
             @csrf
@@ -18,7 +35,7 @@
         </form>
 
         <!-- Task List -->
-        @foreach ($tasks as $task)
+        @foreach ($tasks->sortBy('is_completed') as $task)
             <div class="flex items-center justify-between border-b py-2">
                 
                 <form method="POST" action="{{ route('tasks.toggle', $task) }}">

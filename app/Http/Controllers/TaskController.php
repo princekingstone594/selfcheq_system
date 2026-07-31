@@ -11,7 +11,7 @@ class TaskController extends Controller
 {
     public function index()
     {
-        $today = Carbon::today();
+        $today = now()->toDateString();
 
         $tasks = Auth::user()
           ->tasks()
@@ -19,7 +19,18 @@ class TaskController extends Controller
           ->latest()
           ->get();
 
-        return view('tasks.index', compact('tasks', 'today'));
+        $total = $tasks->count();
+        $completed = $tasks->where('is_completed', true)->count();
+
+        $progress = $total > 0 ? round(($completed / $total) * 100) : 0;
+
+        return view('tasks.index', compact(
+            'tasks', 
+            'today',
+            'total',
+            'completed',
+            'progress'
+        ));
     }
 
     public function store(Request $request)
