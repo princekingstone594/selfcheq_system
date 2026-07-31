@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\RoutineController;
+use App\Http\Controllers\AppointmentController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,6 +27,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/routines', [RoutineController::class, 'index'])->name('routines.index');
     Route::post('/routines', [RoutineController::class, 'store'])->name('routines.store');
     Route::patch('/routines/{routine}/toggle', [RoutineController::class, 'toggle'])->name('routines.toggle');
+
+    Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
+    Rouote::post('/appointments', [AppointmentController::class, 'store'])->name('appointments.store');
+    Route::patch('/appointments/{appointment}/toggle', [AppointmentController::class, 'toggle'])->name('appointments.toggle');
+    Route::delete('/appointments/{appointment}', [AppointmentController::class, 'destroy'])->name('appointments.destroy');
 });
 
 require __DIR__.'/auth.php';
