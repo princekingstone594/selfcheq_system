@@ -66,4 +66,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Journal::class);
     }
+
+    public function focusSessions()
+    {
+        return $this->hasMany(FocusSession::class);
+    }
 }

@@ -35,6 +35,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/journal', [JournalController::class, 'index'])->name('journal.index');
     Route::post('/journal', [JournalController::class, 'store'])->name('journal.store');
+
+    Route::get('/focus', [FocusController::class, 'index'])->name('focus.index');
+    Route::post('/focus/start', [FocusController::class, 'start'])->name('focus.start');
+    Route::patch('/focus/{session}/stop', [FocusController::class, 'stop'])->name('focus.stop');
 });
 
 require __DIR__.'/auth.php';
