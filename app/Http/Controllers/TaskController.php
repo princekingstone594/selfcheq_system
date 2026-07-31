@@ -5,13 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class TaskController extends Controller
 {
     public function index()
     {
-        $tasks = Auth::user()->tasks()->latest()->get();
-        return view('tasks.index', compact('tasks'));
+        $today = Carbon::today();
+
+        $tasks = Auth::user()
+          ->tasks()
+          ->whereDate('due_date', $today)
+          ->latest()
+          ->get();
+
+        return view('tasks.index', compact('tasks', 'today'));
     }
 
     public function store(Request $request)
@@ -22,6 +30,7 @@ class TaskController extends Controller
 
         Auth::user()->tasks()->create([
             'title' => $request->title,
+            'due_date' => $request->due_date ?? now()->toDateString(),
         ]);
 
         return back();

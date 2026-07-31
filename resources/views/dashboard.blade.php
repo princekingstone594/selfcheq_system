@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <a href="{{ route('taska.index') }}" class="text-blue-500 underline">
+    <a href="{{ route('task.index') }}" class="text-blue-500 underline">
         Go to Tasks
     </a>
 

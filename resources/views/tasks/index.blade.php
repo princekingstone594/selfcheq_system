@@ -2,12 +2,18 @@
     <div class="max-w-2xl mx-auto p-4">
 
         <h1 class="text-2xl font-bold mb-4">Today's Tasks</h1>
+        
+        <p class="text-gray-500 mb-4">
+            {{ $today->format('1, d M Y') }}
+        </p>
 
         <!-- Add Task -->
         <form method="POST" action="{{ route('tasks.store') }}" class="flex gap-2 mb-4">
             @csrf
             <input type="text" name="title" placeholder="New task..."
                 class="flex-1 border rounded px-3 py-2">
+            <input type="date" name="due_date"
+                class="border rounded px-2 py-2">
             <button class="bg-blue-500 text-white px-4 py-2 rounded">Add</button>
         </form>
 
