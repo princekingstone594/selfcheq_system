@@ -29,9 +29,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/routines/{routine}/toggle', [RoutineController::class, 'toggle'])->name('routines.toggle');
 
     Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
-    Rouote::post('/appointments', [AppointmentController::class, 'store'])->name('appointments.store');
+    Route::post('/appointments', [AppointmentController::class, 'store'])->name('appointments.store');
     Route::patch('/appointments/{appointment}/toggle', [AppointmentController::class, 'toggle'])->name('appointments.toggle');
     Route::delete('/appointments/{appointment}', [AppointmentController::class, 'destroy'])->name('appointments.destroy');
+
+    Route::get('/journal', [JournalController::class, 'index'])->name('journal.index');
+    Route::post('/journal', [JournalController::class, 'store'])->name('journal.store');
 });
 
 require __DIR__.'/auth.php';
