@@ -18,6 +18,23 @@
         <!-- Alpine JS -->
         <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     </head>
+    <script>
+    if ("Notification" in window) {
+        Notification.requestPermission();
+    }
+    </script>
+    <script>
+    setInterval(async 90 => {
+        const response = await fetch('/api/reminders');
+        const tasks = await response.json();
+
+        tasks.forEach(task => {
+            new Notification("⏰ Reminder", {
+                body: task.title
+            });
+        })
+    }, 60000);
+    </script>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
             @include('layouts.navigation')
