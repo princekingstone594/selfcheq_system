@@ -55,12 +55,14 @@ class TaskController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'due_date' => 'nullable|date',
+            'due_date' => 'nullable|date', 
+            'reminder_time' => 'nullable|date_format:H:i',
         ]);
 
         Auth::user()->tasks()->create([
             'title' => $request->title,
             'due_date' => $request->due_date ?? now()->toDateString(),
+            'reminder_time' => $request->reminder_time,
         ]);
 
         return back();

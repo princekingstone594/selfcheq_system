@@ -43,6 +43,8 @@
                 class="flex-1 border rounded px-3 py-2">
             <input type="date" name="due_date"
                 class="border rounded px-2 py-2">
+            <input type="time" name="reminder_time"
+                class="border rounded px-2 py-2">
             <button class="bg-blue-500 text-white px-4 py-2 rounded">Add</button>
         </form>
 

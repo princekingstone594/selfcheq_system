@@ -10,5 +10,6 @@ class Task extends Model
         'title',
         'is_completed',
         'due_date',
+        'reminder_time',
     ];
 }
