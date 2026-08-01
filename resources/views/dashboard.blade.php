@@ -18,6 +18,14 @@
             </div>
         </div>
 
+        {{-- 📖 Devotional --}}
+        <div class="bg-white p-4 rounded shadow">
+            <p class="text-sm text-gray-600">Daily Devotional</p>
+            <a href="{{ route('devotional.today') }}" class="text-blue-500">
+                View Today's Devotional
+            </a>
+        </div>
+
         {{-- 🔁 Routines --}}
         <div class="bg-white p-4 rounded shadow">
             <p class="text-sm text-gray-600">Routine</p>

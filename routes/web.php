@@ -8,6 +8,7 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\FocusController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DevotionalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,6 +62,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/focus', [FocusController::class, 'index'])->name('focus.index');
     Route::post('/focus/start', [FocusController::class, 'start'])->name('focus.start');
     Route::patch('/focus/{session}/stop', [FocusController::class, 'stop'])->name('focus.stop');
+
+    //Devotional
+    Route::get('/devotional', [DevotionalController::class, 'today'])->name('devotional.today');
+
 
 });
 
