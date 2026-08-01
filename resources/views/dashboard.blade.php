@@ -18,6 +18,20 @@
             </div>
         </div>
 
+        {{-- 😊 Mood --}}
+        <div class="bg-white p-4 rounded shadow">
+            <p class="text-sm text-gray-600">Avg Mood (7 days)</p>
+            <p class="text-lg font-bold">
+                {{ $moodAvg ?? '—' }}
+            </p>
+        </div>
+
+        {{-- 📊 Weekly Tasks --}}
+        <div class="bg-white p-4 rounded shadow">
+            <p class="text-sm text-gray-600">Tasks Completed (7 days)</p>
+            <p class="text-lg font-bold">{{ $weeklyTasks }}</p>
+        </div>
+
         {{-- 📖 Devotional --}}
         <div class="bg-white p-4 rounded shadow">
             <p class="text-sm text-gray-600">Daily Devotional</p>

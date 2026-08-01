@@ -3,40 +3,56 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         $user = Auth::user();
-        $today = now()->toDateString();
+        $today = Carbon::now()->toDateString();
 
-        // Tasks
+        // ✅ Tasks (Today)
         $tasks = $user->tasks()->whereDate('due_date', $today)->get();
         $taskTotal = $tasks->count();
         $taskCompleted = $tasks->where('is_completed', true)->count();
-        $taskProgress = $taskTotal > 0 ? round(($taskCompleted / $taskTotal) * 100) : 0;
+        $taskProgress = $taskTotal > 0 
+            ? round(($taskCompleted / $taskTotal) * 100) 
+            : 0;
 
-        // Routines
+        // 🔁 Routines
         $routines = $user->routines()->whereDate('date', $today)->get();
         $routineCompleted = $routines->where('is_completed', true)->count();
         $routineTotal = $routines->count();
 
-        // Appointments
+        // ⏰ Appointments
         $appointments = $user->appointments()
             ->whereDate('date', $today)
             ->orderBy('time')
             ->get();
 
-        // Focus (today total minutes)
+        // 🧠 Focus (today total minutes)
         $focusMinutes = $user->focusSessions()
             ->whereDate('started_at', $today)
             ->sum('duration');
 
-        // Journal
+        // 📓 Journal (today)
         $journalExists = $user->journals()
             ->whereDate('date', $today)
             ->exists();
+
+        // 😊 Mood average (last 7 days)
+        $moodAvg = $user->journals()
+            ->where('date', '>=', Carbon::now()->subDays(7))
+            ->avg('mood');
+
+        $moodAvg = $moodAvg ? round($moodAvg, 1) : null;
+
+        // 📊 Weekly completed tasks
+        $weeklyTasks = $user->tasks()
+            ->where('due_date', '>=', Carbon::now()->subDays(7))
+            ->where('is_completed', true)
+            ->count();
 
         return view('dashboard', compact(
             'taskTotal',
@@ -46,7 +62,9 @@ class DashboardController extends Controller
             'routineTotal',
             'appointments',
             'focusMinutes',
-            'journalExists'
+            'journalExists',
+            'moodAvg',
+            'weeklyTasks'
         ));
     }
 }
