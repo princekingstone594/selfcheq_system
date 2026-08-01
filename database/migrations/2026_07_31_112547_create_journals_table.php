@@ -15,7 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->text('content')->nullable();
+            $table->integer('mood')->nullable(); // 1-5
+            $table->text('gratitude')->nullable();
+            $table->text('reflection')->nullable();
             $table->date('date')->unique(); 
+            $table->date('date');            
             $table->timestamps();
         });
     }

@@ -12,18 +12,32 @@ class JournalController extends Controller
     {
         $today = now()->toDateString();
 
-        $journal = Auth::user()->journals()
+        $journal = Auth::user()
+            ->journals()
             ->whereDate('date', $today)
             ->first();
 
-        return view('journals.index', compact('journal'));
+        return view('journals.index', compact('journal', 'today'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'content' => 'nullable|string',
+            'entry' => 'nullable|string',
+            'mood' => 'nullable|integer|min:1|max:5',
+            'gratitude' => 'nullable|string',
+            'reflection' => 'nullable|string',
         ]);
+
+        Auth::user()->journals()->updateOrCreate(
+            ['date' => now()->toDateString()],
+            [
+                'content' => $request->content,
+                'mood' => $request->mood,
+                'gratitude' => $request->gratitude,
+                'reflection' => $request->reflection,
+            ]
+        );
 
         $today = now()->toDateString();
 

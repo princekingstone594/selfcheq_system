@@ -67,6 +67,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/devotional', [DevotionalController::class, 'today'])->name('devotional.today');
 
 
+
 });
 
 require __DIR__.'/auth.php';
