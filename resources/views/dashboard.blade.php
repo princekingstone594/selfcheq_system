@@ -34,6 +34,16 @@
             @endforelse
         </div>
 
+        <div class="bg-white p-4 rounded shadow">
+            <p class="text-sm text-gray-600 mb-2">🎂 Today's Birthdays</p>
+
+            @forelse($birthdays as $b)
+                <p>🎉 {{ $b->name }} ({{ $b->relationship }})</p>
+            @empty
+                <p class="text-sm text-gray-400">No birthdays today</p>
+            @endforelse
+        </div>
+
         {{-- 🔥 Streak --}}
         <div class="bg-white p-4 rounded shadow">
             <p class="text-sm text-gray-600">🔥 Streak</p>

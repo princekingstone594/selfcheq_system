@@ -76,4 +76,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Badge::class);
     }
+
+    public function contacts()
+    {
+        return $this->hasMany(Contact::class);
+    }
 }

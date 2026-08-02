@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Badge;
 
 class TaskController extends Controller
 {
@@ -56,7 +57,7 @@ class TaskController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'due_date' => 'nullable|date', 
+            'due_date' => 'nullable|date',
             'reminder_time' => 'nullable|date_format:H:i',
         ]);
 
@@ -112,13 +113,13 @@ class TaskController extends Controller
     private function updateLevel($user)
     {
         $user->level = floor($user->xp / 100) + 1;
-    }
 
-    if ($user->xp >= 100 && !$user->badges()->where('name', 'First 100 XP')->exists()) {
-        $badge = Badge::firstOrCreate([
-            'name' => 'First 100 XP',
-            'description' => 'Awarded for reaching 100 XP.',
-        ]);
-        $user->badges()->attach($badge);
+        if ($user->xp >= 100 && !$user->badges()->where('name', 'First 100 XP')->exists()) {
+            $badge = Badge::firstOrCreate([
+                'name' => 'First 100 XP',
+                'description' => 'Awarded for reaching 100 XP.',
+            ]);
+            $user->badges()->attach($badge);
+        }
     }
 }

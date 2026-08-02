@@ -119,6 +119,14 @@ class DashboardController extends Controller
             $nudges[] = "Great job today! Keep up the good work! 🌟";
         }
 
+        $today = Carbon::today();
+
+        $birthdays = auth()->user()->contacts
+            ->filter(function ($contact) use ($today) {
+                return $contact->birthday && 
+                    Carbon::parse($contact->birthday)->isSameDay($today);
+            });
+
         return view('dashboard', compact(
             'taskTotal',
             'taskCompleted',
