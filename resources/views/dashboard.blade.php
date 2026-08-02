@@ -16,6 +16,24 @@
             @endforeach
         </div>
 
+        <div class="bg-white p-4 rounded shadow">
+            <p class="text-sm text-gray-600">🏆 Level</p>
+            <p class="text-3xl font-bold">Level {{ auth()->user()->level }}</p>
+
+            <p class="text-sm text-gray-600">XP</p>
+            <p class="text-lg font-bold">{{ auth()->user()->xp }} XP</p>
+        </div>
+
+        <div class="bg-white p-4 rounded shadow">
+            <p class="text-sm text-gray-600 mb-2">🎖️ Badges</p>
+
+            @forelse(auth()->user()->badges as $badge)
+                <p class="text-sm">🎖️ {{$badhe->name }}</p>
+            @empty
+                <p class="text-sm text-gray-400">No badges earned yet</p>
+            @endforelse
+        </div>
+
         {{-- 🔥 Streak --}}
         <div class="bg-white p-4 rounded shadow">
             <p class="text-sm text-gray-600">🔥 Streak</p>

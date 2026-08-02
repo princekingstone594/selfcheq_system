@@ -71,4 +71,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(FocusSession::class);
     }
+
+    public function badges()
+    {
+        return $this->belongsToMany(Badge::class);
+    }
 }

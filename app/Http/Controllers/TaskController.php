@@ -6,6 +6,7 @@ use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Models\User;
 
 class TaskController extends Controller
 {
@@ -79,6 +80,20 @@ class TaskController extends Controller
             'is_completed' => !$task->is_completed
         ]);
 
+        $user = Auth::user();
+
+        if (!$task->is_completed) {
+            // gaining xp when completing
+            $user->xp += 10;
+        } else {
+            // optional: remove xp if unchecking
+            $user->xp -= 10;
+        }
+
+        $this->updateLevel($user);
+
+        $user->save();
+
         return back();
     }
 
@@ -92,5 +107,18 @@ class TaskController extends Controller
         $task->delete();
 
         return back();
+    }
+
+    private function updateLevel($user)
+    {
+        $user->level = floor($user->xp / 100) + 1;
+    }
+
+    if ($user->xp >= 100 && !$user->badges()->where('name', 'First 100 XP')->exists()) {
+        $badge = Badge::firstOrCreate([
+            'name' => 'First 100 XP',
+            'description' => 'Awarded for reaching 100 XP.',
+        ]);
+        $user->badges()->attach($badge);
     }
 }
