@@ -48,6 +48,20 @@
             <button class="bg-blue-500 text-white px-4 py-2 rounded">Add</button>
         </form>
 
+        <input type="date" name="deadline" class="border p-2 rounded w-full">
+
+        <div class="flex gap-4 mt-2">
+            <label>
+                <input type="checkbox" name="is_important">
+                Important
+            </label>
+
+            <label>
+                <input type="checkbox" name="is_urgent">
+                Urgent
+            </label>
+        </div>
+
         <!-- Task List -->
         @foreach ($tasks->sortBy('is_completed') as $task)
             <div class="flex items-center justify-between border-b py-2">

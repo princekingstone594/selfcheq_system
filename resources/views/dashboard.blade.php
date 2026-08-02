@@ -59,6 +59,38 @@
             </div>
         </div>
 
+        <div class="grid grid-cols-2 gap-4">
+
+            <div class="bg-red-100 p-3 rounded">
+                <p class="font-bold">⏱️ Do Now</p>
+                @foreach($doNow as $task)
+                    <p>{{ $task->title }}</p>
+                @endforeach
+            </div>
+
+            <div class="bg-yellow-100 p-3 rounded">
+                <p class="font-bold">📅 Schedule</p>
+                @foreach($schedule as $task)
+                    <p>{{ $task->title }}</p>
+                @endforeach
+            </div>
+
+            <div class="bg-blue-100 p-3 rounded">
+                <p class="font-bold">🤝 Delegate</p>
+                @foreach($delegate as $task)
+                    <p>{{ $task->title }}</p>
+                @endforeach
+            </div>
+
+            <div class="bg-gray-100 p-3 rounded">
+                <p class="font-bold">🗑️ Eliminate</p>
+                @foreach($eliminate as $task)
+                    <p>{{ $task->title }}</p>
+                @endforeach
+            </div>
+
+        </div>
+
         {{-- 😊 Mood --}}
         <div class="bg-white p-4 rounded shadow">
             <p class="text-sm text-gray-600">Avg Mood (7 days)</p>

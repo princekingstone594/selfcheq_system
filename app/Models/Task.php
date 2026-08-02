@@ -11,5 +11,8 @@ class Task extends Model
         'is_completed',
         'due_date',
         'reminder_time',
+        'deadline',
+        'is_important',
+        'is_urgent',
     ];
 }

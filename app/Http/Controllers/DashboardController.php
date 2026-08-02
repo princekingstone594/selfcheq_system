@@ -127,6 +127,13 @@ class DashboardController extends Controller
                     Carbon::parse($contact->birthday)->isSameDay($today);
             });
 
+        $tasks = auth()->user()->tasks()->whereDate('created_at', today())->get();
+
+        $doNow = $tasks->where('is_important', true)->where('is_urgent', true);
+        $schedule = $tasks->where('is_important', true)->where('is_urgent', false);
+        $delegate = $tasks->where('is_important', false)->where('is_urgent', true);
+        $eliminate = $tasks->where('is_important', false)->where('is_urgent', false);    
+
         return view('dashboard', compact(
             'taskTotal',
             'taskCompleted',

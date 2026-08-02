@@ -61,6 +61,14 @@ class TaskController extends Controller
             'reminder_time' => 'nullable|date_format:H:i',
         ]);
 
+        Task::create([
+            'title' => $request->title,
+            'deadline' => $request->deadline,
+            'is_important' => $request->has('is_important'),
+            'is_urgent' => $request->has('is_urgent'),
+            'user_id' => $auth()->id(),
+        ]);
+
         Auth::user()->tasks()->create([
             'title' => $request->title,
             'due_date' => $request->due_date ?? now()->toDateString(),
