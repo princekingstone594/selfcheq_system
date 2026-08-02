@@ -73,4 +73,46 @@
         </div>
 
     </div>
+
+    <div class="bg-white p-4 rounded shadow">
+        <h2 class="text-sm text-gray-600 mb-2">Tasks (Last 7 Days)</h2>
+        <canvas id="taskChart" width="400" height="200"></canvas>
+    </div>
+
+    <div class="bg-white p-4 rounded shadow">
+        <h2 class="text-sm text-gray-600 mb-2">Mood (Last 7 Days)</h2>
+        <canvas id="moodChart" width="400" height="200"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+    const taskCtx = document.getElementById('taskChart');
+
+    new Chart(taskCtx, {
+        type: 'bar',
+        data: {
+            labels: @json($taskLabels),
+            datasets: [{
+                label: 'Tasks Completed',
+                data: @json($taskChart),
+                borderWidth: 1
+            }]
+        }
+    });
+
+    const moodCtx = document.getElementById('moodChart');
+
+    new Chart(moodCtx, {
+        type: 'line',
+        data: {
+            labels: @json($taskLabels),
+            datasets: [{
+               label: 'Mood',
+               data: @json($moodChart),
+               borderWidth: 2
+            }]
+        }
+    });
+    </script>
 </x-app-layout>

@@ -54,6 +54,34 @@ class DashboardController extends Controller
             ->where('is_completed', true)
             ->count();
 
+        // 📊 Tasks per day (last 7 days)
+        $taskChart = [];
+        $taskLabels = [];
+
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i);
+
+            $taskLabels[] = $date->format('D');
+
+            $taskChart[] = $user->tasks()
+                ->whereDate('due_date', $date)
+                ->where('is_completed', true)
+                ->count();
+        }
+
+        // 😊 Mood trend (last 7 days)
+        $moodChart = [];
+
+        for ($i = 6; $i >=0; $i--) {
+            $date = Carbon::now()->subDays($i);
+
+            $mood = $user->journals()
+                ->whereDate('date', $date)
+                ->avg('mood');
+
+            $moodChart[] = $mood;       
+        }
+
         return view('dashboard', compact(
             'taskTotal',
             'taskCompleted',
@@ -64,7 +92,10 @@ class DashboardController extends Controller
             'focusMinutes',
             'journalExists',
             'moodAvg',
-            'weeklyTasks'
+            'weeklyTasks',
+            'taskChart',
+            'taskLabels',
+            'moodChart'
         ));
     }
 }
