@@ -3,6 +3,19 @@
 
         <h1 class="text-2xl font-bold">SelfCheq Dashboard</h1>
 
+        <div class="bg-white p-4 rounded shadow">
+            <p class="text-sm text-gray-600">🎯 Discipline Score</p>
+            <p class="text-3xl font-bold">{{ $disciplineScore }}/100</p>
+        </div>
+
+        <div class="bg-white p-4 rounded shadow">
+            <p class="text-sm text-gray-600 mb-2">💭 Smart Guidance</p>
+
+            @foreach($nudges as $nudge)
+                <p class="text-sm mb-1">• {{ $nudge }}</p>
+            @endforeach
+        </div>
+
         {{-- 🔥 Streak --}}
         <div class="bg-white p-4 rounded shadow">
             <p class="text-sm text-gray-600">🔥 Streak</p>

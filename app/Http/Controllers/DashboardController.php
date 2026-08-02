@@ -82,6 +82,43 @@ class DashboardController extends Controller
             $moodChart[] = $mood;       
         }
 
+        // 🎯 Discipline Score
+
+        $taskScore = $taskTotal > 0 ? ($taskCompleted / $taskTotal) * 40 : 0;
+
+        $routineScore = $routineTotal > 0
+            ? ($routineCompleted / $routineTotal) * 20 
+            : 0;
+
+        $journalScore = $journalExists ? 20 : 0;
+
+        $focusScore = min($focusMinutes / 60, 1) * 20; // Max 60 mins = full score
+
+        $disciplineScore = round(
+            $taskScore + $routineScore + $journalScore + $focusScore);
+
+        $nudges = [];
+
+        // Tasks nudge
+        if ($taskTotal > 0 && $taskCompleted < $taskTotal) {
+            $nudges[] = "You're close to completing your tasks. Finish strong! 💪";
+        }
+
+        // Journal nudge
+        if (!$journalExists) {
+            $nudges[] = "Take 2 minutes to reflect and journal your day 🧠";
+        }
+
+        // Focus nudge
+        if ($focusMinutes < 30) {
+            $nudges[] = "Try a 30-minute focus session to boost your productivity! ⌛";
+        }
+
+        // Empty fallback
+        if (empty($nudges)) {
+            $nudges[] = "Great job today! Keep up the good work! 🌟";
+        }
+
         return view('dashboard', compact(
             'taskTotal',
             'taskCompleted',
@@ -95,7 +132,9 @@ class DashboardController extends Controller
             'weeklyTasks',
             'taskChart',
             'taskLabels',
-            'moodChart'
+            'moodChart',
+            'disciplineScore',
+            'nudges',
         ));
     }
 }
