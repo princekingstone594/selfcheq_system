@@ -66,7 +66,10 @@ Route::middleware('auth')->group(function () {
     //Devotional
     Route::get('/devotional', [DevotionalController::class, 'today'])->name('devotional.today');
 
-
+    Route::post('/notifications/read', function () {
+        auth()->user()->unreadNotifications->markAsRead();
+        return back();
+    })->name('notifications.read');
 
 });
 
