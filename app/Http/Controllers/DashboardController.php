@@ -177,7 +177,7 @@ class DashboardController extends Controller
             }
         }
 
-        $ai = new \App\Services\AI\CoachService();
+        $ai = new \App\Services\AiCoachService();
 
         $data = [
             'score' => $disciplineScore,

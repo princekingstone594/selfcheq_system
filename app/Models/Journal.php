@@ -12,5 +12,6 @@ class Journal extends Model
     'gratitude',
     'reflection',
     'date',
+    'content',
     ];
 }
