@@ -132,7 +132,47 @@ class DashboardController extends Controller
         $doNow = $tasks->where('is_important', true)->where('is_urgent', true);
         $schedule = $tasks->where('is_important', true)->where('is_urgent', false);
         $delegate = $tasks->where('is_important', false)->where('is_urgent', true);
-        $eliminate = $tasks->where('is_important', false)->where('is_urgent', false);    
+        $eliminate = $tasks->where('is_important', false)->where('is_urgent', false); 
+        
+        $yesterday = Carbon::yesterday();
+
+        $yesterdayTasks = auth()->user()->tasks()
+            ->whereDate('created_at', $yesterday)
+            ->get();
+
+        $yesterdayCompleted = $yesterdayTasks->where('is_completed', true)->count();
+        $yesterdayTotal = $yesterdayTasks->count();
+
+        $coachMessage = "";
+
+        //📉 Low Perfomance
+        if ($disciplineScore < 40) {
+            $coachMessage = "You had a slow day. Reset tomorrow. start small and build momentum. Remember, consistency is key! 💪";
+        }
+
+        //⚖️ Average Performance
+        elseif ($disciplineScore < 70) {
+            $coachMessage = "You're doing okay, but there's room for improvement. Focus on your priorities and stay consistent. You got this! 🌟";
+        }
+
+        //🚀 High Performance
+        else {
+            $coachMessage = "Fantastic work! You're on a roll. Keep up the great habits and continue to challenge yourself. The sky's the limit! 🚀";
+        }
+
+        // Compare with yesterday's performance
+        if ($yesterdayTotal > 0) {
+            $todayRate = $taskTotal > 0 ? $taskCompleted / $taskTotal : 0;
+            $yesterdayRate = $yesterdayCompleted / $yesterdayTotal;
+
+            if ($todayRate > $yesterdayRate) {
+                $coachMessage .= " You're improving compared to yesterday! Keep the momentum going! 📈";
+            } elseif ($todayRate < $yesterdayRate) {
+                $coachMessage .= " You had a slower day compared to yesterday. Don't be discouraged, tomorrow is a new opportunity! 🔄";
+            } else {
+                $coachMessage .= " Your performance is consistent with yesterday. Keep pushing forward! 💪";
+            }
+        }
 
         return view('dashboard', compact(
             'taskTotal',
@@ -150,6 +190,12 @@ class DashboardController extends Controller
             'moodChart',
             'disciplineScore',
             'nudges',
+            'birthdays',
+            'doNow',
+            'schedule',
+            'delegate',
+            'eliminate',
+            'coachMessage'
         ));
     }
 }

@@ -8,6 +8,11 @@
             <p class="text-3xl font-bold">{{ $disciplineScore }}/100</p>
         </div>
 
+        <div class="bg-indigo-100 p-4 rounded shadow">
+            <p class="text-sm text-gray-600 mb-2">🤖 AI Coach</p>
+            <p class="text-sm">{{ $coachMessage }}</p>
+        </div>
+
         <div class="bg-white p-4 rounded shadow">
             <p class="text-sm text-gray-600 mb-2">💭 Smart Guidance</p>
 
