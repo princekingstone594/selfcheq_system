@@ -15,4 +15,13 @@ class AiCoachController extends Controller
             'reply' => $reply
         ]);
     }
+
+    public function setMode(Request $request)
+    {
+        $user = auth()->user();
+        $user->coach_mode = $request->mode;
+        $user->save();
+
+        return back();
+    }
 }

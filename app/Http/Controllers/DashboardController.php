@@ -219,6 +219,9 @@ class DashboardController extends Controller
             ->take(7)
             ->get();
 
+        $mode = auth()->user()->coach_mode;
+        $data['mode'] = $mode;
+
        
         return view('dashboard', compact(
             'taskTotal',

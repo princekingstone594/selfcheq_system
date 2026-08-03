@@ -73,6 +73,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/ai-coach-chat', [AiCoachController::class, 'chat']);
 
+    Route::post('/coach-mode', [AiCoachController::class, 'setMode'])->name('coach.mode');
+
 });
 
 require __DIR__.'/auth.php';

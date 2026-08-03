@@ -8,6 +8,27 @@
             <p class="text-3xl font-bold">{{ $disciplineScore }}/100</p>
         </div>
 
+        <form method="POST" action="{{ route('coach.mode') }}" class="mb-4">
+            @csrf 
+
+            <select name="mode" onchange="this.form.submit()"
+               class="border rounded px-3 py-2">
+
+               <option value="strict" {{ auth()->user()->coach_mode == 'strict' ? 'selected : ' '' }}>
+                  😐 Strict Coach 
+               </option>
+
+               <option value="calm" {{ auth()->user()->coach_mode == 'calm' ? 'selected' : '' }}>
+                 😊 Calm Mentor
+               </option>
+
+               <option value="aggressive" {{ auth()->user()->coach_mode == 'aggresive' ? 'selected' : '' }}>
+                 😎 Aggressive Motivator
+               </option>
+
+            </select>
+        </form>
+
         <div class="bg-indigo-100 p-4 rounded shadow">
             <p class="text-sm text-gray-600 mb-2">🤖 AI Coach</p>
             <p class="text-sm">{{ $coachMessage }}</p>
