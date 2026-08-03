@@ -13,10 +13,16 @@ return new class extends Migration
     {
         Schema::create('daily_stats', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+
+
             $table->integer('score');
             $table->integer('tasks_completed');
             $table->integer('tasks_total');
+            $table->integer('focus_minutes');
+            $table->integer('mood');
+            $table->boolean('jounaled');
+
             $table->date('date');
             $table->timestamps();
         });

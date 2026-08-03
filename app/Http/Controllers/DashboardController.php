@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Services\AI\CoachService;
 use Illuminate\Support\Facades\Cache;
+use App\Models\DailyStat;
 
 class DashboardController extends Controller
 {
@@ -197,6 +198,26 @@ class DashboardController extends Controller
                 }
             }
         );
+
+        DailyStat::updateOrCreate(
+            [
+                'user_id' => auth()->id(),
+                'date' => now()->toDateString(),
+            ],
+            [
+                'score' => $disciplineScore,
+                'tasks_completed' => $taskCompleted,
+                'tasks_total' => $taskTotal,
+                'focus_minutes' => $focusMinutes,
+                'journaled' => $journalExists,
+                'history' => $history->toArray(),
+            ]
+        );
+
+        $history = DailyStat::where('user_id', auth()->id())
+            ->orderBy('date', 'desc')
+            ->take(7)
+            ->get();
 
        
         return view('dashboard', compact(
