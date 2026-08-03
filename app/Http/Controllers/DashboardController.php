@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Services\AI\CoachService;
+use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
@@ -174,6 +176,29 @@ class DashboardController extends Controller
             }
         }
 
+        $ai = new \App\Services\AI\CoachService();
+
+        $data = [
+            'score' => $disciplineScore,
+            'tasks_completed' => $taskCompleted,
+            'tasks_total' => $taskTotal,
+            'focus' => $focusMinutes,
+            'journal' => $journalExists,
+        ];
+
+        $coachMessage = Cache::remember(
+            'ai_coach_' . auth()->id() . '_' . now()->toDateString(),
+            3600, // 1 hour
+            function () use ($ai, $data) {
+                try {
+                    return $ai->generate($data);
+                } catch (\Exception $e) {
+                    return "Stay consistent. Small daily wins build discipline and compound to success. Keep going! 💪";
+                }
+            }
+        );
+
+       
         return view('dashboard', compact(
             'taskTotal',
             'taskCompleted',
