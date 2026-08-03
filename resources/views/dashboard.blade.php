@@ -13,6 +13,19 @@
             <p class="text-sm">{{ $coachMessage }}</p>
         </div>
 
+        <div class="mt-6 p-4 bg-gray-100 rounded">
+
+            <p id="coachMessage" class="mb-3">
+                {{ $coachMessage }}
+            </p>
+
+            <button onclick="startListening()"
+               class="bg-black text-white px-4 py-2 rounded">
+               🎙️Talk to Coach
+            </button>
+
+        </div>
+
         <div class="bg-white p-4 rounded shadow">
             <p class="text-sm text-gray-600 mb-2">💭 Smart Guidance</p>
 
@@ -192,5 +205,47 @@
             }]
         }
     });
+    </script>
+
+    <script>
+    function startListening() {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+
+        recognition.lang = 'en-US';
+        recognition.start();
+
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            sendToCoach(transcript);
+        };
+    }
+    </script>
+
+    <script>
+    function sendToCoach(message) {
+        fetch('/ai-coach-chat', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ message })
+        })
+        .then(res => res.json())
+        .then(data => {
+           speak(data.reply);
+           document.getElementById('coachMessage').innerText = data.reply;
+        });
+    }
+    </script>
+
+    <script>
+    function speak(text) {
+        const speech = new SpeechSynthesisUtterance(text);
+        speech.lang = 'en-US';
+        speech.rate = 1;
+
+        window.speechSynthesis.speak(speech);
+    }
     </script>
 </x-app-layout>

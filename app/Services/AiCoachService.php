@@ -79,4 +79,23 @@ class AiCoachService
         - Gives a clear improvement action
      ";
     }
+
+    public function chat($message)
+    {
+        $response = \OpenAI::chat()->create([
+            'model' => 'gpt-40-mini',
+            'messages' => [
+                [
+                    'role' => 'system',
+                    'content' => 'You are a strict but motivating discipline coach.'
+                ],
+                [
+                    'role' => 'user',
+                    'content' => $message
+                ]
+            ],
+        ]);
+
+        return $response->choices[0]->message->content;
+    }
 }

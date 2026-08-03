@@ -71,6 +71,8 @@ Route::middleware('auth')->group(function () {
         return back();
     })->name('notifications.read');
 
+    Route::post('/ai-coach-chat', [AiCoachController::class, 'chat']);
+
 });
 
 require __DIR__.'/auth.php';
