@@ -14,11 +14,12 @@ class TaskController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $today = now()->toDateString();
+        $today = Carbon::today();
+        $todayDate = $today->toDateString();
 
         // Get today's tasks
         $tasks = $user->tasks()
-            ->whereDate('due_date', $today)
+            ->whereDate('due_date', $todayDate)
             ->latest()
             ->get();
 
@@ -36,11 +37,11 @@ class TaskController extends Controller
             } elseif ($user->last_completed_date === now()->subDay()->toDateString()) {
                 $user->streak += 1;
 
-            } elseif ($user->last_completed_date !== $today) {
+            } elseif ($user->last_completed_date !== $todayDate) {
                 $user->streak = 1;
             }
 
-            $user->last_completed_date = $today;
+            $user->last_completed_date = $todayDate;
             $user->save();
         }
 
@@ -61,18 +62,12 @@ class TaskController extends Controller
             'reminder_time' => 'nullable|date_format:H:i',
         ]);
 
-        Task::create([
-            'title' => $request->title,
-            'deadline' => $request->deadline,
-            'is_important' => $request->has('is_important'),
-            'is_urgent' => $request->has('is_urgent'),
-            'user_id' => $auth()->id(),
-        ]);
-
         Auth::user()->tasks()->create([
             'title' => $request->title,
             'due_date' => $request->due_date ?? now()->toDateString(),
             'reminder_time' => $request->reminder_time,
+            'is_important' => $request->has('is_important'),
+            'is_urgent' => $request->has('is_urgent'),
         ]);
 
         return back();
