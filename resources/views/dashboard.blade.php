@@ -1,16 +1,28 @@
 <x-app-layout>
     <div class="space-y-6">
-        <section class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-2xl shadow-indigo-950/30 backdrop-blur">
-            <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-                <div class="space-y-3">
-                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Discipline OS</p>
-                    <h1 class="text-3xl font-semibold text-white">Your day, organized with intention.</h1>
-                    <p class="max-w-2xl text-sm text-slate-400">Stay focused on the promises that matter, keep your calendar aligned, and let your routine carry you through the day.</p>
-                </div>
+        <!-- Hero -->
+        <section class="relative overflow-hidden rounded-3xl border border-white/10 shadow-2xl shadow-indigo-950/30">
+            <!-- Background image (focus/discipline) -->
+            <div class="absolute inset-0">
+                <img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=1600&q=80"
+                     alt="Focused work at dawn"
+                     class="h-full w-full object-cover opacity-40" />
+                <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-slate-900/40"></div>
+            </div>
 
-                <div class="rounded-2xl border border-indigo-400/20 bg-indigo-500/10 p-4 text-sm text-indigo-100">
-                    <p class="font-medium">Today’s focus</p>
-                    <p class="mt-1 text-xl font-semibold">{{ $taskCompleted }}/{{ $taskTotal }} tasks completed</p>
+            <!-- Content -->
+            <div class="relative p-6 sm:p-8 lg:p-10">
+                <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+                    <div class="space-y-3">
+                        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">SelfCheq</p>
+                        <h1 class="text-3xl font-semibold text-white sm:text-4xl">Own your day, stay ahead.</h1>
+                        <p class="max-w-2xl text-sm text-slate-300">Stay focused on the promises that matter, keep your calendar aligned, and let your routine carry you through the day.</p>
+                    </div>
+
+                    <div class="rounded-2xl border border-indigo-400/20 bg-indigo-500/10 p-4 text-sm text-indigo-100 backdrop-blur">
+                        <p class="font-medium">Today's focus</p>
+                        <p class="mt-1 text-xl font-semibold">{{ $taskCompleted }}/{{ $taskTotal }} tasks completed</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -53,7 +65,7 @@
                     </div>
 
                     <div class="mt-5 rounded-2xl border border-indigo-400/20 bg-indigo-500/10 p-4 text-sm text-indigo-100">
-                        <p class="font-medium">Today’s guidance</p>
+                        <p class="font-medium">Today's guidance</p>
                         <p class="mt-2">{{ $coachMessage }}</p>
                     </div>
 
@@ -68,7 +80,7 @@
                 <div class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Today’s momentum</p>
+                            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Today's momentum</p>
                             <p class="mt-1 text-lg font-medium text-white">The next moves that matter most</p>
                         </div>
                     </div>
@@ -107,7 +119,7 @@
                     <div class="mt-4 space-y-3 text-sm text-slate-300">
                         <div class="rounded-2xl border border-white/10 bg-slate-800/70 p-3">
                             <p class="font-medium text-white">📖 Devotional</p>
-                            <a href="{{ route('devotional.today') }}" class="mt-2 inline-block text-indigo-300">Open today’s guide</a>
+                            <a href="{{ route('devotional.today') }}" class="mt-2 inline-block text-indigo-300">Open today's guide</a>
                         </div>
                         <div class="rounded-2xl border border-white/10 bg-slate-800/70 p-3">
                             <p class="font-medium text-white">📝 Journal</p>
@@ -246,12 +258,6 @@
         speech.lang = 'en-US';
         speech.rate = 1;
         window.speechSynthesis.speak(speech);
-    }
-    </script>
-
-    <script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js');
     }
     </script>
 </x-app-layout>
