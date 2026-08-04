@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasColumn('journals', 'mood')) {
-            Schema::table('journals', function (Blueprint $table) {
-                $table->integer('mood')->nullable(); // 1-10 for example
-            });
-        }
+        Schema::table('daily_stats', function (Blueprint $table) {
+            $table->boolean('journaled')->default(false);
+        });
     }
 
     /**
@@ -23,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('journals', function (Blueprint $table) {
-            $table->dropColumn('mood');
+        Schema::table('daily_stats', function (Blueprint $table) {
+            $table->dropColumn('journaled');
         });
     }
 };

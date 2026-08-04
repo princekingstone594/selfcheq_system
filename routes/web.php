@@ -9,6 +9,7 @@ use App\Http\Controllers\JournalController;
 use App\Http\Controllers\FocusController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DevotionalController;
+use App\Http\Controllers\AiCoachController;
 
 /*
 |--------------------------------------------------------------------------

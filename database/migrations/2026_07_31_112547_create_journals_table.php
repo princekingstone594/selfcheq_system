@@ -18,8 +18,7 @@ return new class extends Migration
             $table->integer('mood')->nullable(); // 1-5
             $table->text('gratitude')->nullable();
             $table->text('reflection')->nullable();
-            $table->date('date')->unique(); 
-            $table->date('date');            
+            $table->date('date')->unique();
             $table->timestamps();
         });
     }

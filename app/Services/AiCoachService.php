@@ -10,7 +10,15 @@ class AiCoachService
 
     public function __construct()
     {
-        $this->client = OpenAI::client(config('services.openai.key'));
+        $apiKey = config('services.openai.key');
+
+        // ✅ Prevent crash if no API key
+        if (!$apiKey) {
+            $this->client = null;
+            return;
+        }
+
+        $this->client = OpenAI::client($apiKey);
     }
 
     /**
@@ -18,52 +26,71 @@ class AiCoachService
      */
     public function generate($data)
     {
-        $prompt = $this->buildPrompt($data);
+        // ✅ fallback if no AI configured
+        if (!$this->client) {
+            return "Stay consistent. Small daily wins build discipline 💪";
+        }
 
-        $response = $this->client->chat()->create([
-            'model' => 'gpt-4o-mini',
-            'messages' => [
-                [
-                    'role' => 'system',
-                    'content' => $this->getPersonality($data['mode'] ?? 'strict') . 
-                                 ' Keep responses short (1–2 sentences) and powerful.'
+        try {
+            $prompt = $this->buildPrompt($data);
+
+            $response = $this->client->chat()->create([
+                'model' => 'gpt-4o-mini',
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => $this->getPersonality($data['mode'] ?? 'strict') .
+                            ' Keep responses short (1–2 sentences) and powerful.'
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => $prompt
+                    ]
                 ],
-                [
-                    'role' => 'user',
-                    'content' => $prompt
-                ]
-            ],
-        ]);
+            ]);
 
-        return $response->choices[0]->message->content;
+            return $response->choices[0]->message->content ?? 'Stay focused and disciplined 💪';
+
+        } catch (\Exception $e) {
+            return "Stay disciplined. You're building momentum 💪";
+        }
     }
 
     /**
-     * Chat (used for voice AI or manual input)
+     * Chat (future feature)
      */
     public function chat($message)
     {
-        $mode = auth()->user()->coach_mode ?? 'strict';
+        if (!$this->client) {
+            return "AI not configured yet.";
+        }
 
-        $response = $this->client->chat()->create([
-            'model' => 'gpt-4o-mini',
-            'messages' => [
-                [
-                    'role' => 'system',
-                    'content' => $this->getPersonality($mode)
+        try {
+            $mode = auth()->user()->coach_mode ?? 'strict';
+
+            $response = $this->client->chat()->create([
+                'model' => 'gpt-4o-mini',
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => $this->getPersonality($mode)
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => $message
+                    ]
                 ],
-                [
-                    'role' => 'user',
-                    'content' => $message
-                ]
-            ],
-        ]);
+            ]);
 
-        return $response->choices[0]->message->content;
+            return $response->choices[0]->message->content ?? '';
+
+        } catch (\Exception $e) {
+            return "Stay focused.";
+        }
     }
 
     /**
-     * Build main coaching prompt
+     * Build coaching prompt
      */
     private function buildPrompt($data)
     {
@@ -95,11 +122,9 @@ $historyText
 " : '') . "
 
 Instructions:
-- Detect patterns in behavior
-- If journaling is missing → emphasize reflection
-- If focus is low → recommend deep work
-- If tasks are completed → reinforce discipline
-- Give 1 clear improvement action
+- Detect patterns
+- Push improvement
+- Give 1 clear action
 
 Return only a short coaching message.
 ";
@@ -111,9 +136,9 @@ Return only a short coaching message.
     private function getPersonality($mode)
     {
         return match ($mode) {
-            'calm' => "You are a calm, wise mentor. Speak gently, encourage reflection.",
-            'aggressive' => "You are an intense, no-excuses drill sergeant. Be direct, tough, and push hard.",
-            default => "You are a strict discipline coach. Be firm, structured, and no-nonsense.",
+            'calm' => "You are a calm, wise mentor. Speak gently.",
+            'aggressive' => "You are intense, direct, no excuses.",
+            default => "You are strict, structured, disciplined.",
         };
     }
 }
