@@ -12,28 +12,30 @@
 
             <!-- Content -->
             <div class="relative p-6 sm:p-8 lg:p-10">
-                <div class="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+                <!-- Top row: brand + photo (always side by side) -->
+                <div class="flex items-start justify-between gap-4">
                     <div class="space-y-3">
                         <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">SelfCheq</p>
-                        <h1 class="text-3xl font-semibold leading-tight text-white sm:text-4xl">
+                        <h1 class="text-2xl font-semibold leading-tight text-white sm:text-3xl lg:text-4xl">
                             Own your Day,<br />Stay Ahead.
                         </h1>
-                        <p class="text-lg text-slate-200">Welcome back, {{ auth()->user()->name }} 👋</p>
-                        <p class="max-w-2xl text-sm italic text-slate-400">"Discipline is the bridge between goals and accomplishment." — Jim Rohn</p>
                     </div>
+                    <!-- Profile photo - top right on all screens -->
+                    <img src="{{ auth()->user()->profile_photo_url }}"
+                         alt="{{ auth()->user()->name }}"
+                         class="h-14 w-14 shrink-0 rounded-2xl border-2 border-white/10 object-cover shadow-lg sm:h-16 sm:w-16" />
+                </div>
 
-                    <div class="flex flex-col items-end gap-4">
-                        <!-- Profile photo -->
-                        <img src="{{ auth()->user()->profile_photo_url }}"
-                             alt="{{ auth()->user()->name }}"
-                             class="h-16 w-16 rounded-2xl border-2 border-white/10 object-cover shadow-lg" />
+                <!-- Welcome + quote -->
+                <div class="mt-4 space-y-2">
+                    <p class="text-lg text-slate-200">Welcome back, {{ auth()->user()->name }} 👋</p>
+                    <p class="max-w-2xl text-sm italic text-slate-400">"Discipline is the bridge between goals and accomplishment." — Jim Rohn</p>
+                </div>
 
-                        <!-- Today's focus card -->
-                        <div class="rounded-2xl border border-indigo-400/20 bg-indigo-500/10 p-4 text-sm text-indigo-100 backdrop-blur">
-                            <p class="font-medium">Today's focus</p>
-                            <p class="mt-1 text-xl font-semibold">{{ $taskCompleted }}/{{ $taskTotal }} tasks completed</p>
-                        </div>
-                    </div>
+                <!-- Today's focus card -->
+                <div class="mt-5 inline-block rounded-2xl border border-indigo-400/20 bg-indigo-500/10 p-4 text-sm text-indigo-100 backdrop-blur">
+                    <p class="font-medium">Today's focus</p>
+                    <p class="mt-1 text-xl font-semibold">{{ $taskCompleted }}/{{ $taskTotal }} tasks completed</p>
                 </div>
             </div>
         </section>
@@ -59,35 +61,6 @@
 
         <section class="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
             <div class="space-y-6">
-                <div class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">AI coach</p>
-                            <p class="mt-1 text-lg font-medium text-white">Your calm accountability partner</p>
-                        </div>
-                        <form method="POST" action="{{ route('coach.mode') }}">
-                            @csrf
-                            <select name="mode" onchange="this.form.submit()" class="rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-slate-100">
-                                <option value="strict" {{ auth()->user()->coach_mode == 'strict' ? 'selected' : '' }}>Strict</option>
-                                <option value="calm" {{ auth()->user()->coach_mode == 'calm' ? 'selected' : '' }}>Calm</option>
-                                <option value="aggressive" {{ auth()->user()->coach_mode == 'aggressive' ? 'selected' : '' }}>Aggressive</option>
-                            </select>
-                        </form>
-                    </div>
-
-                    <div class="mt-5 rounded-2xl border border-indigo-400/20 bg-indigo-500/10 p-4 text-sm text-indigo-100">
-                        <p class="font-medium">Today's guidance</p>
-                        <p class="mt-2">{{ $coachMessage }}</p>
-                    </div>
-
-                    <div class="mt-5 rounded-2xl border border-white/10 bg-slate-800/70 p-4">
-                        <p id="coachMessage" class="text-sm text-slate-300">{{ $coachMessage }}</p>
-                        <button onclick="startListening()" class="mt-4 rounded-2xl bg-white px-4 py-2 text-sm font-semibold text-slate-900">
-                            🎙️ Talk to coach
-                        </button>
-                    </div>
-                </div>
-
                 <div class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
                     <div class="flex items-center justify-between">
                         <div>
@@ -230,45 +203,6 @@
                 }]
             }
         });
-    }
-    </script>
-
-    <script>
-    function startListening() {
-        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.lang = 'en-US';
-        recognition.start();
-        recognition.onresult = function(event) {
-            const transcript = event.results[0][0].transcript;
-            sendToCoach(transcript);
-        };
-    }
-    </script>
-
-    <script>
-    function sendToCoach(message) {
-        fetch('/ai-coach-chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ message })
-        })
-        .then(res => res.json())
-        .then(data => {
-            speak(data.reply);
-            document.getElementById('coachMessage').innerText = data.reply;
-        });
-    }
-    </script>
-
-    <script>
-    function speak(text) {
-        const speech = new SpeechSynthesisUtterance(text);
-        speech.lang = 'en-US';
-        speech.rate = 1;
-        window.speechSynthesis.speak(speech);
     }
     </script>
 </x-app-layout>

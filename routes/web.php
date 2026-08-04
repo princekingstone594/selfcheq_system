@@ -77,8 +77,8 @@ Route::middleware('auth')->group(function () {
         return back();
     })->name('notifications.read');
 
-    Route::post('/ai-coach-chat', [AiCoachController::class, 'chat']);
-
+    Route::get('/coach', [AiCoachController::class, 'index'])->name('coach.index');
+    Route::post('/ai-coach-chat', [AiCoachController::class, 'chat'])->name('coach.chat');
     Route::post('/coach-mode', [AiCoachController::class, 'setMode'])->name('coach.mode');
 
 });
