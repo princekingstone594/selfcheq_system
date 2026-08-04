@@ -16,12 +16,12 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
 
 
-            $table->integer('score');
-            $table->integer('tasks_completed');
-            $table->integer('tasks_total');
-            $table->integer('focus_minutes');
-            $table->integer('mood');
-            $table->boolean('jounaled');
+            $table->integer('score')->default(0);
+            $table->integer('tasks_completed')->default(0);
+            $table->integer('tasks_total')->default(0);
+            $table->integer('focus_minutes')->default(0);
+            $table->integer('mood')->nullable();
+            $table->boolean('journaled')->default(false);
 
             $table->date('date');
             $table->timestamps();

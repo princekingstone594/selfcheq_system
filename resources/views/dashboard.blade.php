@@ -14,7 +14,7 @@
             <select name="mode" onchange="this.form.submit()"
                class="border rounded px-3 py-2">
 
-               <option value="strict" {{ auth()->user()->coach_mode == 'strict' ? 'selected : ' '' }}>
+               <option value="strict" {{ auth()->user()->coach_mode == 'strict' ? 'selected' : '' }}>
                   😐 Strict Coach 
                </option>
 
@@ -22,7 +22,7 @@
                  😊 Calm Mentor
                </option>
 
-               <option value="aggressive" {{ auth()->user()->coach_mode == 'aggresive' ? 'selected' : '' }}>
+               <option value="aggressive" {{ auth()->user()->coach_mode == 'aggressive' ? 'selected' : '' }}>
                  😎 Aggressive Motivator
                </option>
 
@@ -67,7 +67,7 @@
             <p class="text-sm text-gray-600 mb-2">🎖️ Badges</p>
 
             @forelse(auth()->user()->badges as $badge)
-                <p class="text-sm">🎖️ {{$badhe->name }}</p>
+                <p class="text-sm">🎖️ {{ $badge->name }}</p>
             @empty
                 <p class="text-sm text-gray-400">No badges earned yet</p>
             @endforelse

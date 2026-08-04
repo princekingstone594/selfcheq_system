@@ -150,20 +150,33 @@ class DashboardController extends Controller
             ->take(7)
             ->get();
 
-        // 💾 Save today's stats
-        DailyStat::updateOrCreate(
-            [
-                'user_id' => $user->id,
-                'date' => $todayDate,
-            ],
-            [
+        // 💾 Save today's stats (guarded so dashboard still renders if schema is incomplete)
+        try {
+            $statsData = [
                 'score' => $disciplineScore,
                 'tasks_completed' => $taskCompleted,
                 'tasks_total' => $taskTotal,
                 'focus_minutes' => $focusMinutes,
-                'journaled' => $journalExists,
-            ]
-        );
+            ];
+
+            if (Schema::hasColumn('daily_stats', 'journaled')) {
+                $statsData['journaled'] = $journalExists;
+            }
+
+            if (Schema::hasColumn('daily_stats', 'mood')) {
+                $statsData['mood'] = $moodAvg ?? 0;
+            }
+
+            DailyStat::updateOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'date' => $todayDate,
+                ],
+                $statsData
+            );
+        } catch (\Throwable $e) {
+            // Keep dashboard rendering even if stats persistence is unavailable
+        }
 
         return view('dashboard', compact(
             'taskTotal',
