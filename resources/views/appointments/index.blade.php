@@ -1,48 +1,71 @@
 <x-app-layout>
-    <div class="max-w-xl mx-auto py-6">
+    <div class="mx-auto max-w-2xl space-y-6">
 
-        <h1 class="text-xl font-bold mb-4">Today's Schedule</h1>
+        <!-- Header -->
+        <section class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-2xl shadow-indigo-950/30 backdrop-blur">
+            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Schedule</p>
+            <h1 class="mt-1 text-2xl font-semibold text-white">Today's Schedule</h1>
+            <p class="mt-2 text-sm text-slate-400">Plan your appointments and keep your day aligned.</p>
+        </section>
 
-        <form method="POST" action="{{ route('appointments.store') }}" class="mb-4 flex gap-2">
-            @csrf
-            <input type="time" name="time" class="border rounded px-2 py-1">
-            <input type="text" name="title" placeholder="Appointment..."
-                class="border rounded px-3 py-1 flex-1">
-            <button class="bg-blue-500 text-white px-3 rounded">Add</button>
-        </form>
+        <!-- Add Appointment -->
+        <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
+            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Add appointment</p>
 
-        <ul>
-            @foreach($appointments as $appointment)
-                <li class="flex justify-between items-center mb-2">
-                    
-                    <div>
-                        <span class="text-sm text-gray-500">
-                            {{ \Carbon\Carbon::parse($appointment->time)->format('H:i') }}
-                        </span>
-                        <span class="{{ $appointment->is_completed ? 'line-through text-gray-400' : '' }}">
-                            {{ $appointment->title }}
-                        </span>
+            <form method="POST" action="{{ route('appointments.store') }}" class="mt-4 flex flex-col gap-3 sm:flex-row">
+                @csrf
+                <input type="time" name="time"
+                    class="rounded-2xl border border-slate-700 bg-slate-800/80 px-3 py-2.5 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                <input type="text" name="title" placeholder="Appointment..."
+                    class="flex-1 rounded-2xl border border-slate-700 bg-slate-800/80 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                <button class="rounded-2xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400 transition">
+                    Add
+                </button>
+            </form>
+        </section>
+
+        <!-- Appointment List -->
+        <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
+            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Your appointments</p>
+
+            <div class="mt-4 space-y-2">
+                @forelse($appointments as $appointment)
+                    <div class="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-slate-800/70 p-3 transition hover:bg-slate-800">
+                        <div class="flex items-center gap-3">
+                            <span class="rounded-xl bg-indigo-500/10 px-2.5 py-1 text-xs font-medium text-indigo-300">
+                                {{ \Carbon\Carbon::parse($appointment->time)->format('H:i') }}
+                            </span>
+                            <span class="text-sm {{ $appointment->is_completed ? 'line-through text-slate-500' : 'text-slate-100' }}">
+                                {{ $appointment->title }}
+                            </span>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <form method="POST" action="{{ route('appointments.toggle', $appointment) }}">
+                                @csrf
+                                @method('PATCH')
+                                <button class="rounded-xl px-3 py-1.5 text-xs font-medium {{ $appointment->is_completed ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' : 'bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30' }} transition">
+                                    {{ $appointment->is_completed ? 'Undo' : 'Done' }}
+                                </button>
+                            </form>
+
+                            <form method="POST" action="{{ route('appointments.destroy', $appointment) }}">
+                                @csrf
+                                @method('DELETE')
+                                <button class="text-rose-400 hover:text-rose-300 transition" title="Delete">
+                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3"/>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
                     </div>
-
-                    <div class="flex gap-2">
-                        <form method="POST" action="{{ route('appointments.toggle', $appointment) }}">
-                            @csrf
-                            @method('PATCH')
-                            <button class="text-green-500 text-sm">
-                                {{ $appointment->is_completed ? 'Undo' : 'Done' }}
-                            </button>
-                        </form>
-
-                        <form method="POST" action="{{ route('appointments.destroy', $appointment) }}">
-                            @csrf
-                            @method('DELETE')
-                            <button class="text-red-500 text-sm">Delete</button>
-                        </form>
+                @empty
+                    <div class="rounded-2xl border border-dashed border-white/10 p-8 text-center text-sm text-slate-500">
+                        No appointments today. Add one above.
                     </div>
-
-                </li>
-            @endforeach
-        </ul>
-
+                @endforelse
+            </div>
+        </section>
     </div>
 </x-app-layout>

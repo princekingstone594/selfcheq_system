@@ -10,6 +10,7 @@ use App\Http\Controllers\FocusController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DevotionalController;
 use App\Http\Controllers\AiCoachController;
+use App\Http\Controllers\OnboardingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,9 @@ Route::middleware('auth')->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
+
+    Route::get('/onboarding', [OnboardingController::class, 'show'])->name('onboarding');
+    Route::post('/onboarding/complete', [OnboardingController::class, 'complete'])->name('onboarding.complete');
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

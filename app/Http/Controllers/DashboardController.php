@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Services\AiCoachService;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
 use App\Models\DailyStat;
 
 class DashboardController extends Controller

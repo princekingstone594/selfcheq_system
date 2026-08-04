@@ -1,22 +1,27 @@
-<nav x-data="{ open: false, notifOpen: false }" class="bg-white border-b border-gray-100">
+<nav x-data="{ open: false, notifOpen: false }" class="sticky top-0 z-50 border-b border-white/10 bg-slate-950/80 backdrop-blur">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
-            
+
             <!-- LEFT -->
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
+                        <x-application-logo class="block h-9 w-9 rounded-lg object-contain" />
+                        <span class="hidden sm:inline text-sm font-semibold uppercase tracking-[0.25em] text-indigo-300">SelfCheq</span>
                     </a>
                 </div>
 
                 <!-- Nav Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        Dashboard
-                    </x-nav-link>
+                <div class="hidden space-x-1 sm:-my-px sm:ms-8 sm:flex">
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">Dashboard</x-nav-link>
+                    <x-nav-link :href="route('tasks.index')" :active="request()->routeIs('tasks.*')">Tasks</x-nav-link>
+                    <x-nav-link :href="route('routines.index')" :active="request()->routeIs('routines.*')">Routines</x-nav-link>
+                    <x-nav-link :href="route('appointments.index')" :active="request()->routeIs('appointments.*')">Schedule</x-nav-link>
+                    <x-nav-link :href="route('focus.index')" :active="request()->routeIs('focus.*')">Focus</x-nav-link>
+                    <x-nav-link :href="route('journal.index')" :active="request()->routeIs('journal.*')">Journal</x-nav-link>
+                    <x-nav-link :href="route('devotional.today')" :active="request()->routeIs('devotional.*')">Devotional</x-nav-link>
                 </div>
             </div>
 
@@ -25,12 +30,12 @@
 
                 <!-- 🔔 NOTIFICATIONS -->
                 <div class="relative">
-                    <button @click="notifOpen = !notifOpen" class="relative text-xl">
+                    <button @click="notifOpen = !notifOpen" class="relative text-xl hover:text-indigo-300 transition">
                         🔔
 
                         <!-- 🔴 Unread badge -->
                         @if(auth()->user()->unreadNotifications->count())
-                            <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1 rounded-full">
+                            <span class="absolute -top-2 -right-2 bg-rose-500 text-white text-[10px] font-semibold px-1.5 rounded-full">
                                 {{ auth()->user()->unreadNotifications->count() }}
                             </span>
                         @endif
@@ -38,34 +43,36 @@
 
                     <!-- Dropdown -->
                     <div x-show="notifOpen" @click.outside="notifOpen = false"
-                         class="absolute right-0 mt-2 w-72 bg-white rounded shadow z-50">
+                         x-transition
+                         class="absolute right-0 mt-2 w-80 rounded-2xl border border-white/10 bg-slate-900 shadow-2xl z-50 overflow-hidden">
 
                         <!-- ✅ Mark as read -->
                         <form method="POST" action="{{ route('notifications.read') }}">
                             @csrf
-                            <button class="w-full text-left text-xs text-blue-500 px-3 py-2 border-b hover:bg-gray-100">
+                            <button class="w-full text-left text-xs text-indigo-300 px-4 py-3 border-b border-white/10 hover:bg-white/5 transition">
                                 Mark all as read
                             </button>
                         </form>
 
                         <!-- Notifications -->
-                        @forelse(auth()->user()->notifications->take(5) as $notification)
-                            <div class="px-3 py-2 text-sm border-b">
-                                {{ $notification->data['message'] }}
-                            </div>
-                        @empty
-                            <div class="px-3 py-2 text-gray-400 text-sm">
-                                No notifications
-                            </div>
-                        @endforelse
-
+                        <div class="max-h-80 overflow-y-auto">
+                            @forelse(auth()->user()->notifications->take(8) as $notification)
+                                <div class="px-4 py-3 text-sm text-slate-300 border-b border-white/5 hover:bg-white/5 transition">
+                                    {{ $notification->data['message'] ?? 'Notification' }}
+                                </div>
+                            @empty
+                                <div class="px-4 py-6 text-center text-slate-500 text-sm">
+                                    No notifications
+                                </div>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
 
                 <!-- 👤 USER DROPDOWN -->
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 text-sm text-gray-500 bg-white hover:text-gray-700">
+                        <button class="inline-flex items-center gap-1.5 px-3 py-2 text-sm text-slate-300 hover:text-white transition">
                             <div>{{ Auth::user()->name }}</div>
 
                             <div class="ms-1">
@@ -92,24 +99,33 @@
                         </form>
                     </x-slot>
                 </x-dropdown>
-
             </div>
 
             <!-- MOBILE MENU BUTTON -->
             <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="p-2 text-gray-400 hover:text-gray-500">
-                    ☰
+                <button @click="open = ! open" class="p-2 text-slate-300 hover:text-white transition">
+                    <svg x-show="!open" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                    <svg x-show="open" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display:none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
                 </button>
             </div>
         </div>
     </div>
 
     <!-- MOBILE MENU -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')">
-                Dashboard
-            </x-responsive-nav-link>
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden border-t border-white/10">
+        <div class="pt-2 pb-3 space-y-1 px-4">
+            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">Dashboard</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('tasks.index')" :active="request()->routeIs('tasks.*')">Tasks</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('routines.index')" :active="request()->routeIs('routines.*')">Routines</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('appointments.index')" :active="request()->routeIs('appointments.*')">Schedule</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('focus.index')" :active="request()->routeIs('focus.*')">Focus</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('journal.index')" :active="request()->routeIs('journal.*')">Journal</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('devotional.today')" :active="request()->routeIs('devotional.*')">Devotional</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.*')">Profile</x-responsive-nav-link>
         </div>
     </div>
 </nav>

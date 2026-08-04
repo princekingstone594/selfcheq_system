@@ -1,17 +1,27 @@
 <x-app-layout>
-    <div class="max-w-xl mx-auto py-10 text-center">
+    <div class="mx-auto max-w-2xl space-y-6">
 
-        <h1 class="text-xl font-bold mb-6">Daily Devotional</h1>
+        <!-- Header -->
+        <section class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-2xl shadow-indigo-950/30 backdrop-blur">
+            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Spirit</p>
+            <h1 class="mt-1 text-2xl font-semibold text-white">Daily Devotional</h1>
+            <p class="mt-2 text-sm text-slate-400">A moment of stillness and guidance for your day.</p>
+        </section>
 
-        @if($devotional)
-            <div class="bg-white p-6 rounded shadow">
-                <p class="text-lg italic text-gray-700">
-                    "{{ $devotional->content }}"
-                </p>
-            </div>
-        @else
-            <p class="text-gray-400">No message for today</p>
-        @endif
-
+        <!-- Devotional Content -->
+        <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-8 shadow-xl">
+            @if($devotional)
+                <div class="relative">
+                    <span class="absolute -top-4 -left-2 text-6xl text-indigo-500/30 select-none">"</span>
+                    <p class="relative text-lg italic leading-relaxed text-slate-200">
+                        {{ $devotional->content }}
+                    </p>
+                </div>
+            @else
+                <div class="rounded-2xl border border-dashed border-white/10 p-8 text-center text-sm text-slate-500">
+                    No message for today. Check back tomorrow.
+                </div>
+            @endif
+        </section>
     </div>
 </x-app-layout>
