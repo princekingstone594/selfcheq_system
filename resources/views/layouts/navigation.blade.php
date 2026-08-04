@@ -72,8 +72,11 @@
                 <!-- 👤 USER DROPDOWN -->
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center gap-1.5 px-3 py-2 text-sm text-slate-300 hover:text-white transition">
-                            <div>{{ Auth::user()->name }}</div>
+                        <button class="inline-flex items-center gap-2 px-2 py-1.5 text-sm text-slate-300 hover:text-white transition">
+                            <img src="{{ Auth::user()->profile_photo_url }}"
+                                 alt="{{ Auth::user()->name }}"
+                                 class="h-8 w-8 rounded-full border border-white/10 object-cover" />
+                            <span class="hidden sm:inline">{{ Auth::user()->name }}</span>
 
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" viewBox="0 0 20 20">

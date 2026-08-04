@@ -8,6 +8,12 @@
     <div class="space-y-6">
         <div class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
             <div class="max-w-xl">
+                @include('profile.partials.update-profile-photo-form')
+            </div>
+        </div>
+
+        <div class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
+            <div class="max-w-xl">
                 @include('profile.partials.update-profile-information-form')
             </div>
         </div>

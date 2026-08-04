@@ -12,16 +12,27 @@
 
             <!-- Content -->
             <div class="relative p-6 sm:p-8 lg:p-10">
-                <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+                <div class="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
                     <div class="space-y-3">
                         <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">SelfCheq</p>
-                        <h1 class="text-3xl font-semibold text-white sm:text-4xl">Own your day, stay ahead.</h1>
-                        <p class="max-w-2xl text-sm text-slate-300">Stay focused on the promises that matter, keep your calendar aligned, and let your routine carry you through the day.</p>
+                        <h1 class="text-3xl font-semibold leading-tight text-white sm:text-4xl">
+                            Own your Day,<br />Stay Ahead.
+                        </h1>
+                        <p class="text-lg text-slate-200">Welcome back, {{ auth()->user()->name }} 👋</p>
+                        <p class="max-w-2xl text-sm italic text-slate-400">"Discipline is the bridge between goals and accomplishment." — Jim Rohn</p>
                     </div>
 
-                    <div class="rounded-2xl border border-indigo-400/20 bg-indigo-500/10 p-4 text-sm text-indigo-100 backdrop-blur">
-                        <p class="font-medium">Today's focus</p>
-                        <p class="mt-1 text-xl font-semibold">{{ $taskCompleted }}/{{ $taskTotal }} tasks completed</p>
+                    <div class="flex flex-col items-end gap-4">
+                        <!-- Profile photo -->
+                        <img src="{{ auth()->user()->profile_photo_url }}"
+                             alt="{{ auth()->user()->name }}"
+                             class="h-16 w-16 rounded-2xl border-2 border-white/10 object-cover shadow-lg" />
+
+                        <!-- Today's focus card -->
+                        <div class="rounded-2xl border border-indigo-400/20 bg-indigo-500/10 p-4 text-sm text-indigo-100 backdrop-blur">
+                            <p class="font-medium">Today's focus</p>
+                            <p class="mt-1 text-xl font-semibold">{{ $taskCompleted }}/{{ $taskTotal }} tasks completed</p>
+                        </div>
                     </div>
                 </div>
             </div>

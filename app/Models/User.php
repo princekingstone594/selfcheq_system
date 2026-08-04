@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -24,6 +25,7 @@ class User extends Authenticatable
         'phone',
         'birthday',
         'bio',
+        'profile_photo_path',
         'password',
         'onboarding_complete',
     ];
@@ -51,6 +53,20 @@ class User extends Authenticatable
             'onboarding_complete' => 'boolean',
             'birthday' => 'date',
         ];
+    }
+
+    /**
+     * Get the URL to the user's profile photo.
+     */
+    public function getProfilePhotoUrlAttribute(): string
+    {
+        if ($this->profile_photo_path && Storage::disk('public')->exists($this->profile_photo_path)) {
+            return Storage::disk('public')->url($this->profile_photo_path);
+        }
+
+        // Fallback: generated avatar from initials
+        $name = trim(collect(explode(' ', $this->name))->map(fn ($n) => mb_substr($n, 0, 1))->join(''));
+        return 'https://ui-avatars.com/api/?name=' . urlencode($name ?: 'U') . '&color=FFFFFF&background=6366F1&bold=true';
     }
 
     public function tasks()
