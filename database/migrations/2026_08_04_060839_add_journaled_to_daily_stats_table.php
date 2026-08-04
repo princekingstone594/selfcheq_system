@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('daily_stats', function (Blueprint $table) {
-            $table->boolean('journaled')->default(false);
-        });
+        if (!Schema::hasColumn('daily_stats', 'journaled')) {
+            Schema::table('daily_stats', function (Blueprint $table) {
+                $table->boolean('journaled')->default(false);
+            });
+        }
     }
 
     /**

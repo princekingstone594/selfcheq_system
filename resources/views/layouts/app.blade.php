@@ -40,21 +40,19 @@
         })
     }, 60000);
     </script>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+    <body class="font-sans antialiased bg-slate-950 text-slate-100">
+        <div class="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.16),_transparent_30%),linear-gradient(135deg,_#020617_0%,_#0f172a_100%)]">
             @include('layouts.navigation')
 
-            <!-- Page Heading -->
             @isset($header)
-                <header class="bg-white shadow">
+                <header class="border-b border-white/10 bg-white/5 backdrop-blur">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
                 </header>
             @endisset
 
-            <!-- Page Content -->
-            <main>
+            <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {{ $slot }}
             </main>
         </div>
