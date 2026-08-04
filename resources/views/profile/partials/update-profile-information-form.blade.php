@@ -47,6 +47,24 @@
             @endif
         </div>
 
+        <div>
+            <x-input-label for="phone" :value="__('Contact (Phone)')" class="text-slate-300" />
+            <x-text-input id="phone" name="phone" type="tel" class="mt-1 block w-full rounded-2xl border-slate-700 bg-slate-800/80 text-white" :value="old('phone', $user->phone)" autocomplete="tel" placeholder="+254 712 345 678" />
+            <x-input-error class="mt-2" :messages="$errors->get('phone')" />
+        </div>
+
+        <div>
+            <x-input-label for="birthday" :value="__('Date of Birth')" class="text-slate-300" />
+            <x-text-input id="birthday" name="birthday" type="date" class="mt-1 block w-full rounded-2xl border-slate-700 bg-slate-800/80 text-white" :value="old('birthday', $user->birthday?->format('Y-m-d'))" autocomplete="bday" />
+            <x-input-error class="mt-2" :messages="$errors->get('birthday')" />
+        </div>
+
+        <div>
+            <x-input-label for="bio" :value="__('Profile (Short Bio)')" class="text-slate-300" />
+            <textarea id="bio" name="bio" rows="3" class="mt-1 block w-full rounded-2xl border-slate-700 bg-slate-800/80 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-indigo-500" placeholder="Tell us a little about yourself...">{{ old('bio', $user->bio) }}</textarea>
+            <x-input-error class="mt-2" :messages="$errors->get('bio')" />
+        </div>
+
         <div class="flex items-center gap-4">
             <x-primary-button class="rounded-2xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400">{{ __('Save') }}</x-primary-button>
 

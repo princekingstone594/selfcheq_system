@@ -22,6 +22,24 @@
             </div>
 
             <div>
+                <x-input-label for="phone" :value="__('Contact (Phone)')" class="text-slate-300" />
+                <x-text-input id="phone" class="block mt-1 w-full rounded-2xl border-slate-700 bg-slate-800/80 text-white" type="tel" name="phone" :value="old('phone')" autocomplete="tel" placeholder="+254 712 345 678" />
+                <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+            </div>
+
+            <div>
+                <x-input-label for="birthday" :value="__('Date of Birth')" class="text-slate-300" />
+                <x-text-input id="birthday" class="block mt-1 w-full rounded-2xl border-slate-700 bg-slate-800/80 text-white" type="date" name="birthday" :value="old('birthday')" autocomplete="bday" />
+                <x-input-error :messages="$errors->get('birthday')" class="mt-2" />
+            </div>
+
+            <div>
+                <x-input-label for="bio" :value="__('Profile (Short Bio)')" class="text-slate-300" />
+                <textarea id="bio" name="bio" rows="3" class="block mt-1 w-full rounded-2xl border-slate-700 bg-slate-800/80 text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-indigo-500" placeholder="Tell us a little about yourself...">{{ old('bio') }}</textarea>
+                <x-input-error :messages="$errors->get('bio')" class="mt-2" />
+            </div>
+
+            <div>
                 <x-input-label for="password" :value="__('Password')" class="text-slate-300" />
                 <x-text-input id="password" class="block mt-1 w-full rounded-2xl border-slate-700 bg-slate-800/80 text-white"
                             type="password"
