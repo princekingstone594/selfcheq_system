@@ -94,6 +94,23 @@
                             {{ $task->title }}
                         </span>
 
+                        @php
+                            if ($task->is_important && $task->is_urgent) {
+                                $label = 'Do now';
+                                $badgeClass = 'bg-rose-500/20 text-rose-300 border-rose-400/30';
+                            } elseif ($task->is_important && !$task->is_urgent) {
+                                $label = 'Schedule';
+                                $badgeClass = 'bg-amber-500/20 text-amber-300 border-amber-400/30';
+                            } elseif (!$task->is_important && $task->is_urgent) {
+                                $label = 'Delegate';
+                                $badgeClass = 'bg-sky-500/20 text-sky-300 border-sky-400/30';
+                            } else {
+                                $label = 'Eliminate';
+                                $badgeClass = 'bg-slate-600/40 text-slate-300 border-slate-500/30';
+                            }
+                        @endphp
+                        <span class="rounded-full border px-2 py-0.5 text-[10px] font-semibold {{ $badgeClass }}">{{ $label }}</span>
+
                         <form method="POST" action="{{ route('tasks.destroy', $task) }}">
                             @csrf
                             @method('DELETE')
