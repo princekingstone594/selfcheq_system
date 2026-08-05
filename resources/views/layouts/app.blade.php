@@ -41,6 +41,21 @@
         </main>
     </div>
 
+    <!-- Floating Coach Zoe button (fixed, follows scroll) -->
+    @auth
+    <a href="{{ route('coach.index') }}"
+       class="group fixed bottom-5 right-5 z-50 flex items-center gap-3 rounded-full border border-white/10 bg-indigo-600/90 p-3 pr-4 text-white shadow-2xl shadow-indigo-900/50 backdrop-blur transition hover:bg-indigo-500 hover:scale-105 sm:bottom-6 sm:right-6"
+       aria-label="Chat with Coach Zoe"
+       title="Coach Zoe">
+        <span class="relative flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-xl">
+            🧑‍🏫
+            <!-- Pulsing ring -->
+            <span class="absolute inset-0 animate-ping rounded-full bg-indigo-400/40"></span>
+        </span>
+        <span class="hidden text-sm font-semibold sm:inline">Coach Zoe</span>
+    </a>
+    @endauth
+
     <script>
     if ('Notification' in window) {
         Notification.requestPermission();
