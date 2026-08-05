@@ -4,7 +4,7 @@
         <!-- Welcome -->
         <section class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-2xl shadow-indigo-950/30 backdrop-blur sm:p-8">
             <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">SelfCheq Coach</p>
-            <h1 class="mt-1 text-2xl font-semibold text-white">Welcome, {{ auth()->user()->name }} 👋</h1>
+            <h1 class="mt-1 text-2xl font-semibold text-white">Welcome, {{ explode(' ', auth()->user()->name)[0] }} 👋</h1>
         </section>
 
         <!-- Coach Zoe intro -->
