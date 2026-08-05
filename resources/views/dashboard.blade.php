@@ -12,18 +12,17 @@
 
             <!-- Content -->
             <div class="relative p-6 sm:p-8 lg:p-10">
-                <!-- Top row: brand + photo (always side by side) -->
-                <div class="flex items-start justify-between gap-4">
-                    <div class="space-y-3">
-                        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">SelfCheq</p>
-                        <h1 class="text-2xl font-semibold leading-tight text-white sm:text-3xl lg:text-4xl">
-                            Own your Day,<br />Stay Ahead.
-                        </h1>
-                    </div>
-                    <!-- Profile photo - top right on all screens -->
-                    <img src="{{ auth()->user()->profile_photo_url }}"
-                         alt="{{ auth()->user()->name }}"
-                         class="h-14 w-14 shrink-0 rounded-2xl border-2 border-white/10 object-cover shadow-lg sm:h-16 sm:w-16" />
+                <!-- Profile photo - pinned to top-right corner on all screens -->
+                <img src="{{ auth()->user()->profile_photo_url }}"
+                     alt="{{ auth()->user()->name }}"
+                     class="absolute right-6 top-6 h-14 w-14 rounded-2xl border-2 border-white/10 object-cover shadow-lg sm:right-8 sm:top-8 sm:h-16 sm:w-16 lg:right-10 lg:top-10" />
+
+                <!-- Brand + headline -->
+                <div class="space-y-3 pr-16 sm:pr-20">
+                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">SelfCheq</p>
+                    <h1 class="text-2xl font-semibold leading-tight text-white sm:text-3xl lg:text-4xl">
+                        Own your Day,<br />Stay Ahead.
+                    </h1>
                 </div>
 
                 <!-- Welcome + quote -->
