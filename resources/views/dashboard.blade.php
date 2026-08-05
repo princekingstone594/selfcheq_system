@@ -39,169 +39,113 @@
             </div>
         </section>
 
-        <section class="grid gap-4 lg:grid-cols-4">
-            <div class="rounded-2xl border border-white/10 bg-slate-900/70 p-5 shadow-lg">
-                <p class="text-sm text-slate-400">Discipline score</p>
-                <p class="mt-2 text-3xl font-semibold text-white">{{ $disciplineScore }}/100</p>
-            </div>
-            <div class="rounded-2xl border border-white/10 bg-slate-900/70 p-5 shadow-lg">
-                <p class="text-sm text-slate-400">Current streak</p>
-                <p class="mt-2 text-3xl font-semibold text-white">{{ auth()->user()->streak }} days</p>
-            </div>
-            <div class="rounded-2xl border border-white/10 bg-slate-900/70 p-5 shadow-lg">
-                <p class="text-sm text-slate-400">Level</p>
-                <p class="mt-2 text-3xl font-semibold text-white">{{ auth()->user()->level }}</p>
-            </div>
-            <div class="rounded-2xl border border-white/10 bg-slate-900/70 p-5 shadow-lg">
-                <p class="text-sm text-slate-400">Focus time</p>
-                <p class="mt-2 text-3xl font-semibold text-white">{{ $focusMinutes }} mins</p>
-            </div>
-        </section>
+        <!-- Daily Rhythm (first) -->
+        <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
+            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Daily rhythm</p>
+            <p class="mt-1 text-lg font-medium text-white">A snapshot of your day</p>
 
-        <section class="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-            <div class="space-y-6">
-                <div class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Today's momentum</p>
-                            <p class="mt-1 text-lg font-medium text-white">The next moves that matter most</p>
-                        </div>
-                    </div>
-                    <div class="mt-5 grid gap-3 md:grid-cols-2">
-                        <div class="rounded-2xl border border-rose-400/20 bg-rose-500/10 p-4">
-                            <p class="text-sm font-semibold text-rose-200">⏱️ Do now</p>
-                            @foreach($doNow as $task)
-                                <p class="mt-2 text-sm text-rose-100">• {{ $task->title }}</p>
-                            @endforeach
-                        </div>
-                        <div class="rounded-2xl border border-amber-400/20 bg-amber-500/10 p-4">
-                            <p class="text-sm font-semibold text-amber-200">📅 Schedule</p>
-                            @foreach($schedule as $task)
-                                <p class="mt-2 text-sm text-amber-100">• {{ $task->title }}</p>
-                            @endforeach
-                        </div>
-                        <div class="rounded-2xl border border-sky-400/20 bg-sky-500/10 p-4">
-                            <p class="text-sm font-semibold text-sky-200">🤝 Delegate</p>
-                            @foreach($delegate as $task)
-                                <p class="mt-2 text-sm text-sky-100">• {{ $task->title }}</p>
-                            @endforeach
-                        </div>
-                        <div class="rounded-2xl border border-slate-400/20 bg-slate-800/70 p-4">
-                            <p class="text-sm font-semibold text-slate-200">🗑️ Eliminate</p>
-                            @foreach($eliminate as $task)
-                                <p class="mt-2 text-sm text-slate-100">• {{ $task->title }}</p>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="space-y-6">
-                <div class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Daily rhythm</p>
-                    <div class="mt-4 space-y-3 text-sm text-slate-300">
-                        <div class="rounded-2xl border border-white/10 bg-slate-800/70 p-3">
-                            <p class="font-medium text-white">📖 Devotional</p>
-                            <a href="{{ route('devotional.today') }}" class="mt-2 inline-block text-indigo-300">Open today's guide</a>
-                        </div>
-                        <div class="rounded-2xl border border-white/10 bg-slate-800/70 p-3">
-                            <p class="font-medium text-white">📝 Journal</p>
-                            <a href="{{ route('journal.index') }}" class="mt-2 inline-block text-indigo-300">{{ $journalExists ? 'View / edit entry' : 'Write today’s entry' }}</a>
-                        </div>
-                        <div class="rounded-2xl border border-white/10 bg-slate-800/70 p-3">
-                            <p class="font-medium text-white">🔁 Routines</p>
-                            <p class="mt-2">{{ $routineCompleted }}/{{ $routineTotal }} completed</p>
-                        </div>
-                        <div class="rounded-2xl border border-white/10 bg-slate-800/70 p-3">
-                            <p class="font-medium text-white">🗓️ Appointments</p>
-                            @forelse($appointments as $a)
-                                <p class="mt-2 text-sm">{{ \Carbon\Carbon::parse($a->time)->format('H:i') }} — {{ $a->title }}</p>
-                            @empty
-                                <p class="mt-2 text-sm text-slate-400">No appointments today</p>
-                            @endforelse
-                        </div>
-                    </div>
+            <div class="mt-5 grid gap-4 md:grid-cols-2">
+                <!-- 📖 Devotional verse -->
+                <div class="rounded-2xl border border-white/10 bg-slate-800/70 p-4">
+                    <p class="font-medium text-white">📖 Devotional</p>
+                    @if($devotional)
+                        <p class="mt-2 text-sm italic text-slate-300 line-clamp-3">{{ $devotional->content }}</p>
+                        <a href="{{ route('devotional.today') }}" class="mt-3 inline-block text-xs font-semibold text-indigo-300 hover:text-indigo-200">See more →</a>
+                    @else
+                        <p class="mt-2 text-sm text-slate-400">No verse for today.</p>
+                        <a href="{{ route('devotional.today') }}" class="mt-3 inline-block text-xs font-semibold text-indigo-300 hover:text-indigo-200">Open devotional →</a>
+                    @endif
                 </div>
 
-                <div class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Progress & rewards</p>
-                    <div class="mt-4 space-y-3 text-sm text-slate-300">
-                        <div class="rounded-2xl border border-white/10 bg-slate-800/70 p-3">
-                            <p class="font-medium text-white">🌟 Smart nudges</p>
-                            @foreach($nudges as $nudge)
-                                <p class="mt-2">• {{ $nudge }}</p>
-                            @endforeach
-                        </div>
-                        <div class="rounded-2xl border border-white/10 bg-slate-800/70 p-3">
-                            <p class="font-medium text-white">🎖️ Badges</p>
-                            @forelse(auth()->user()->badges as $badge)
-                                <p class="mt-2">• {{ $badge->name }}</p>
-                            @empty
-                                <p class="mt-2 text-slate-400">No badges yet</p>
-                            @endforelse
-                        </div>
-                        <div class="rounded-2xl border border-white/10 bg-slate-800/70 p-3">
-                            <p class="font-medium text-white">🎂 Birthdays</p>
-                            @forelse($birthdays as $b)
-                                <p class="mt-2">• {{ $b->name }} ({{ $b->relationship }})</p>
-                            @empty
-                                <p class="mt-2 text-slate-400">No birthdays today</p>
-                            @endforelse
-                        </div>
-                    </div>
+                <!-- 📝 Journal -->
+                <div class="rounded-2xl border border-white/10 bg-slate-800/70 p-4">
+                    <p class="font-medium text-white">📝 Journal</p>
+                    <p class="mt-2 text-sm text-slate-300">{{ $journalExists ? 'You have an entry for today.' : 'No entry yet today.' }}</p>
+                    <a href="{{ route('journal.index') }}" class="mt-3 inline-block text-xs font-semibold text-indigo-300 hover:text-indigo-200">{{ $journalExists ? 'View / edit entry →' : 'Write today’s entry →' }}</a>
+                </div>
+
+                <!-- ✅ Tasks -->
+                <div class="rounded-2xl border border-white/10 bg-slate-800/70 p-4">
+                    <p class="font-medium text-white">✅ Tasks</p>
+                    <p class="mt-2 text-sm text-slate-300">{{ $taskCompleted }}/{{ $taskTotal }} completed</p>
+                    @forelse($tasksToday->take(3) as $task)
+                        <p class="mt-1 text-xs {{ $task->is_completed ? 'line-through text-slate-500' : 'text-slate-300' }}">• {{ $task->title }}</p>
+                    @empty
+                        <p class="mt-1 text-xs text-slate-500">No tasks yet</p>
+                    @endforelse
+                    <a href="{{ route('tasks.index') }}" class="mt-3 inline-block text-xs font-semibold text-indigo-300 hover:text-indigo-200">See more →</a>
+                </div>
+
+                <!-- 🔁 Routines -->
+                <div class="rounded-2xl border border-white/10 bg-slate-800/70 p-4">
+                    <p class="font-medium text-white">🔁 Routines</p>
+                    <p class="mt-2 text-sm text-slate-300">{{ $routineCompleted }}/{{ $routineTotal }} completed</p>
+                    @forelse($routines->take(3) as $routine)
+                        <p class="mt-1 text-xs {{ $routine->is_completed ? 'line-through text-slate-500' : 'text-slate-300' }}">• {{ $routine->title }}</p>
+                    @empty
+                        <p class="mt-1 text-xs text-slate-500">No routines today</p>
+                    @endforelse
+                    <a href="{{ route('routines.index') }}" class="mt-3 inline-block text-xs font-semibold text-indigo-300 hover:text-indigo-200">See more →</a>
+                </div>
+
+                <!-- 🗓️ Appointments -->
+                <div class="rounded-2xl border border-white/10 bg-slate-800/70 p-4">
+                    <p class="font-medium text-white">🗓️ Appointments</p>
+                    @forelse($appointments->take(2) as $a)
+                        <p class="mt-2 text-sm text-slate-300">{{ \Carbon\Carbon::parse($a->time)->format('H:i') }} — {{ $a->title }}</p>
+                    @empty
+                        <p class="mt-2 text-sm text-slate-400">No appointments today</p>
+                    @endforelse
+                    <a href="{{ route('appointments.index') }}" class="mt-3 inline-block text-xs font-semibold text-indigo-300 hover:text-indigo-200">See more →</a>
+                </div>
+
+                <!-- 📊 Progress link -->
+                <div class="rounded-2xl border border-indigo-400/20 bg-indigo-500/10 p-4">
+                    <p class="font-medium text-white">📊 Progress</p>
+                    <p class="mt-2 text-sm text-indigo-100">View your discipline score, streak, level, focus time, charts and rewards.</p>
+                    <a href="{{ route('progress.index') }}" class="mt-3 inline-block text-xs font-semibold text-indigo-300 hover:text-indigo-200">Open progress →</a>
                 </div>
             </div>
         </section>
 
-        <section class="grid gap-6 lg:grid-cols-2">
-            <div class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-                <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Tasks (last 7 days)</p>
-                <canvas id="taskChart" class="mt-4 h-64 w-full"></canvas>
+        <!-- Today's momentum (Eisenhower Matrix) -->
+        <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Today's momentum</p>
+                    <p class="mt-1 text-lg font-medium text-white">The next moves that matter most</p>
+                </div>
             </div>
-            <div class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-                <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Mood (last 7 days)</p>
-                <canvas id="moodChart" class="mt-4 h-64 w-full"></canvas>
+            <div class="mt-5 grid gap-3 md:grid-cols-2">
+                <div class="rounded-2xl border border-rose-400/20 bg-rose-500/10 p-4">
+                    <p class="text-sm font-semibold text-rose-200">⏱️ Do now</p>
+                    <p class="text-xs text-rose-300/70">Important & urgent</p>
+                    @foreach($doNow as $task)
+                        <p class="mt-2 text-sm text-rose-100">• {{ $task->title }}</p>
+                    @endforeach
+                </div>
+                <div class="rounded-2xl border border-amber-400/20 bg-amber-500/10 p-4">
+                    <p class="text-sm font-semibold text-amber-200">📅 Schedule</p>
+                    <p class="text-xs text-amber-300/70">Important, not urgent</p>
+                    @foreach($schedule as $task)
+                        <p class="mt-2 text-sm text-amber-100">• {{ $task->title }}</p>
+                    @endforeach
+                </div>
+                <div class="rounded-2xl border border-sky-400/20 bg-sky-500/10 p-4">
+                    <p class="text-sm font-semibold text-sky-200">🤝 Delegate</p>
+                    <p class="text-xs text-sky-300/70">Urgent, not important</p>
+                    @foreach($delegate as $task)
+                        <p class="mt-2 text-sm text-sky-100">• {{ $task->title }}</p>
+                    @endforeach
+                </div>
+                <div class="rounded-2xl border border-slate-400/20 bg-slate-800/70 p-4">
+                    <p class="text-sm font-semibold text-slate-200">🗑️ Eliminate</p>
+                    <p class="text-xs text-slate-400">Not important, not urgent</p>
+                    @foreach($eliminate as $task)
+                        <p class="mt-2 text-sm text-slate-100">• {{ $task->title }}</p>
+                    @endforeach
+                </div>
             </div>
         </section>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <script>
-    const taskCtx = document.getElementById('taskChart');
-
-    if (taskCtx) {
-        new Chart(taskCtx, {
-            type: 'bar',
-            data: {
-                labels: @json($taskLabels),
-                datasets: [{
-                    label: 'Tasks Completed',
-                    data: @json($taskChart),
-                    borderWidth: 1,
-                    backgroundColor: 'rgba(129,140,248,0.7)',
-                    borderColor: 'rgba(129,140,248,1)'
-                }]
-            }
-        });
-    }
-
-    const moodCtx = document.getElementById('moodChart');
-
-    if (moodCtx) {
-        new Chart(moodCtx, {
-            type: 'line',
-            data: {
-                labels: @json($taskLabels),
-                datasets: [{
-                    label: 'Mood',
-                    data: @json($moodChart),
-                    borderWidth: 2,
-                    borderColor: 'rgba(45,212,191,1)',
-                    backgroundColor: 'rgba(45,212,191,0.2)'
-                }]
-            }
-        });
-    }
-    </script>
 </x-app-layout>

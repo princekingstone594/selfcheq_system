@@ -11,6 +11,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DevotionalController;
 use App\Http\Controllers\AiCoachController;
 use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\ProgressController;
 
 /*
 |--------------------------------------------------------------------------
@@ -80,6 +81,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/coach', [AiCoachController::class, 'index'])->name('coach.index');
     Route::post('/ai-coach-chat', [AiCoachController::class, 'chat'])->name('coach.chat');
     Route::post('/coach-mode', [AiCoachController::class, 'setMode'])->name('coach.mode');
+
+    // Progress
+    Route::get('/progress', [ProgressController::class, 'index'])->name('progress.index');
 
 });
 

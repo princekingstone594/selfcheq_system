@@ -8,6 +8,7 @@ use App\Services\AiCoachService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use App\Models\DailyStat;
+use App\Models\Devotional;
 
 class DashboardController extends Controller
 {
@@ -115,13 +116,19 @@ class DashboardController extends Controller
                 Carbon::parse($contact->birthday)->isSameDay($today);
         });
 
-        // 📊 Eisenhower Matrix
-        $allTasks = $user->tasks()->whereDate('created_at', $todayDate)->get();
+        // 📊 Eisenhower Matrix (today's tasks)
+        $allTasks = $tasksToday;
 
         $doNow = $allTasks->where('is_important', true)->where('is_urgent', true);
         $schedule = $allTasks->where('is_important', true)->where('is_urgent', false);
         $delegate = $allTasks->where('is_important', false)->where('is_urgent', true);
         $eliminate = $allTasks->where('is_important', false)->where('is_urgent', false);
+
+        // 📖 Devotional (for dashboard snippet)
+        $devotional = Devotional::whereDate('date', $todayDate)->first();
+        if (!$devotional) {
+            $devotional = Devotional::inRandomOrder()->first();
+        }
 
         // 🤖 AI Coach
         $data = [
@@ -200,7 +207,10 @@ class DashboardController extends Controller
             'schedule',
             'delegate',
             'eliminate',
-            'coachMessage'
+            'coachMessage',
+            'tasksToday',
+            'routines',
+            'devotional'
         ));
     }
 }
