@@ -8,6 +8,7 @@ class Devotional extends Model
 {
     protected $fillable = [
         'content',
+        'passage',
         'date',
     ];
 }
