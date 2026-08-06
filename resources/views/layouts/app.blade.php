@@ -9,6 +9,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="apple-touch-icon" href="/icon-192.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
 
     <title>@yield('title', config('app.name', 'SelfCheq'))</title>
 
@@ -59,7 +61,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
                     <div class="flex items-center gap-2">
-                        <x-application-logo class="h-8 w-8 rounded-lg object-contain" />
+                        <x-application-logo class="h-8 w-8" />
                         <span class="text-sm font-semibold uppercase tracking-[0.25em] text-indigo-300">SelfCheq</span>
                     </div>
                     <p class="text-xs {{ auth()->check() && auth()->user()->theme === 'light' ? 'text-slate-500' : 'text-slate-500' }}">© 2026 SelfCheq. All rights reserved.</p>

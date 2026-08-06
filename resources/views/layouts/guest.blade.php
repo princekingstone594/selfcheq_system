@@ -21,7 +21,7 @@
     <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.16),_transparent_30%),linear-gradient(135deg,_#020617_0%,_#0f172a_100%)] px-4">
         <div>
             <a href="/">
-                <x-application-logo class="w-20 h-20 rounded-2xl object-contain" />
+                <x-application-logo class="w-20 h-20" />
             </a>
         </div>
 

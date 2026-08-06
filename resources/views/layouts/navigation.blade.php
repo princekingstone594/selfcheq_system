@@ -8,7 +8,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
-                        <x-application-logo class="block h-9 w-9 rounded-lg object-contain" />
+                        <x-application-logo class="block h-9 w-9" />
                         <span class="hidden sm:inline text-sm font-semibold uppercase tracking-[0.25em] text-indigo-300">SelfCheq</span>
                     </a>
                 </div>
