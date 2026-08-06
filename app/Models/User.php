@@ -28,6 +28,10 @@ class User extends Authenticatable
         'profile_photo_path',
         'password',
         'onboarding_complete',
+        'theme',
+        'notifications_enabled',
+        'contacts_enabled',
+        'reminders_enabled',
     ];
 
     /**

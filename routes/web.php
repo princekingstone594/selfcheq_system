@@ -12,6 +12,7 @@ use App\Http\Controllers\DevotionalController;
 use App\Http\Controllers\AiCoachController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProgressController;
+use App\Http\Controllers\SettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -84,6 +85,11 @@ Route::middleware('auth')->group(function () {
 
     // Progress
     Route::get('/progress', [ProgressController::class, 'index'])->name('progress.index');
+
+    // Settings
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::post('/settings/theme', [SettingsController::class, 'updateTheme'])->name('settings.theme');
+    Route::post('/settings/permissions', [SettingsController::class, 'updatePermissions'])->name('settings.permissions');
 
 });
 

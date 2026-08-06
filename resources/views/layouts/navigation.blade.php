@@ -1,4 +1,4 @@
-<nav x-data="{ open: false, notifOpen: false }" class="sticky top-0 z-50 border-b border-white/10 bg-slate-950/80 backdrop-blur">
+<nav x-data="{ open: false, notifOpen: false }" class="sticky top-0 z-50 border-b {{ auth()->user()->theme === 'light' ? 'border-slate-200 bg-white/80' : 'border-white/10 bg-slate-950/80' }} backdrop-blur">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -23,6 +23,7 @@
                     <x-nav-link :href="route('focus.index')" :active="request()->routeIs('focus.*')">Focus</x-nav-link>
                     <x-nav-link :href="route('devotional.today')" :active="request()->routeIs('devotional.*')">Devotional</x-nav-link>
                     <x-nav-link :href="route('progress.index')" :active="request()->routeIs('progress.*')">Progress</x-nav-link>
+                    <x-nav-link :href="route('settings.index')" :active="request()->routeIs('settings.*')">Settings</x-nav-link>
                 </div>
             </div>
 
@@ -130,6 +131,7 @@
             <x-responsive-nav-link :href="route('focus.index')" :active="request()->routeIs('focus.*')">Focus</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('devotional.today')" :active="request()->routeIs('devotional.*')">Devotional</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('progress.index')" :active="request()->routeIs('progress.*')">Progress</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('settings.index')" :active="request()->routeIs('settings.*')">Settings</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.*')">Profile</x-responsive-nav-link>
         </div>
     </div>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="{{ auth()->check() && auth()->user()->theme === 'light' ? 'light' : 'dark' }}">
 <head>
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#0f172a">
@@ -18,18 +18,32 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        // Keep existing colors
+                    }
+                }
+            }
+        }
+    </script>
 
     <!-- Alpine JS -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     @stack('scripts')
 </head>
-<body class="font-sans antialiased bg-slate-950 text-slate-100">
-    <div class="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.16),_transparent_30%),linear-gradient(135deg,_#020617_0%,_#0f172a_100%)]">
+<body class="font-sans antialiased {{ auth()->check() && auth()->user()->theme === 'light' ? 'bg-slate-100 text-slate-900' : 'bg-slate-950 text-slate-100' }}">
+    <div class="min-h-screen {{ auth()->check() && auth()->user()->theme === 'light'
+        ? 'bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.10),_transparent_30%),linear-gradient(135deg,_#f1f5f9_0%,_#e2e8f0_100%)]'
+        : 'bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.16),_transparent_30%),linear-gradient(135deg,_#020617_0%,_#0f172a_100%)]' }}">
         @include('layouts.navigation')
 
         @isset($header)
-            <header class="border-b border-white/10 bg-white/5 backdrop-blur">
+            <header class="border-b {{ auth()->check() && auth()->user()->theme === 'light' ? 'border-slate-200 bg-white/60' : 'border-white/10 bg-white/5' }} backdrop-blur">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     {{ $header }}
                 </div>
@@ -41,14 +55,14 @@
         </main>
 
         <!-- Footer -->
-        <footer class="border-t border-white/10 bg-slate-950/80 backdrop-blur">
+        <footer class="border-t {{ auth()->check() && auth()->user()->theme === 'light' ? 'border-slate-200 bg-white/80' : 'border-white/10 bg-slate-950/80' }} backdrop-blur">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
                     <div class="flex items-center gap-2">
                         <x-application-logo class="h-8 w-8 rounded-lg object-contain" />
                         <span class="text-sm font-semibold uppercase tracking-[0.25em] text-indigo-300">SelfCheq</span>
                     </div>
-                    <p class="text-xs text-slate-500">© 2026 SelfCheq. All rights reserved.</p>
+                    <p class="text-xs {{ auth()->check() && auth()->user()->theme === 'light' ? 'text-slate-500' : 'text-slate-500' }}">© 2026 SelfCheq. All rights reserved.</p>
                 </div>
             </div>
         </footer>
