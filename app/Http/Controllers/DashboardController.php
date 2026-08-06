@@ -116,15 +116,7 @@ class DashboardController extends Controller
                 Carbon::parse($contact->birthday)->isSameDay($today);
         });
 
-        // 📊 Eisenhower Matrix (today's tasks)
-        $allTasks = $tasksToday;
-
-        $doNow = $allTasks->where('is_important', true)->where('is_urgent', true);
-        $schedule = $allTasks->where('is_important', true)->where('is_urgent', false);
-        $delegate = $allTasks->where('is_important', false)->where('is_urgent', true);
-        $eliminate = $allTasks->where('is_important', false)->where('is_urgent', false);
-
-        // 📖 Devotional (for dashboard snippet)
+        //  Devotional (for dashboard snippet)
         $devotional = Devotional::whereDate('date', $todayDate)->first();
         if (!$devotional) {
             $devotional = Devotional::inRandomOrder()->first();
@@ -203,10 +195,6 @@ class DashboardController extends Controller
             'disciplineScore',
             'nudges',
             'birthdays',
-            'doNow',
-            'schedule',
-            'delegate',
-            'eliminate',
             'coachMessage',
             'tasksToday',
             'routines',

@@ -36,7 +36,17 @@ class RoutineController extends Controller
             ->whereDate('date', $today)
             ->get();
 
-        return view('routines.index', compact('routines'));
+        // 📜 History (past routines, excluding today, grouped by date)
+        $history = $user->routines()
+            ->whereDate('date', '<', $today)
+            ->orderBy('date', 'desc')
+            ->take(30)
+            ->get()
+            ->groupBy(function ($r) {
+                return \Carbon\Carbon::parse($r->date)->format('Y-m-d');
+            });
+
+        return view('routines.index', compact('routines', 'history'));
     }
 
     public function store(Request $request)

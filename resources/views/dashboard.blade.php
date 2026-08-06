@@ -34,6 +34,7 @@
                 <!-- Today's focus card (toggleable with eye icon) -->
                 <div class="mt-5" x-data="{ show: false }">
                     <button @click="show = !show"
+                            :title="show ? 'Hide focus' : 'View focus'"
                             class="inline-flex items-center gap-2 rounded-2xl border border-indigo-400/20 bg-indigo-500/10 px-4 py-2.5 text-sm font-medium text-indigo-100 backdrop-blur transition hover:bg-indigo-500/20">
                         <svg x-show="!show" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -42,10 +43,10 @@
                         <svg x-show="show" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display:none;">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
                         </svg>
-                        Today's focus
+                        <span x-text="show ? 'Hide focus' : 'Today\'s focus'"></span>
                     </button>
                     <div x-show="show" x-transition class="mt-3 inline-block rounded-2xl border border-indigo-400/20 bg-indigo-500/10 p-4 text-sm text-indigo-100 backdrop-blur" style="display:none;">
-                        <p class="font-medium">Progress</p>
+                        <p class="font-medium">Today's focus</p>
                         <p class="mt-1 text-xl font-semibold">{{ $taskCompleted }}/{{ $taskTotal }} tasks completed</p>
                         <p class="mt-1 text-xs text-indigo-200/80">{{ $routineCompleted }}/{{ $routineTotal }} routines · {{ $focusMinutes }} min focus</p>
                     </div>
@@ -69,13 +70,6 @@
                         <p class="mt-2 text-sm text-slate-400">No verse for today.</p>
                         <a href="{{ route('devotional.today') }}" class="mt-3 inline-block text-xs font-semibold text-indigo-300 hover:text-indigo-200">Open devotional →</a>
                     @endif
-                </div>
-
-                <!-- 📝 Journal -->
-                <div class="rounded-2xl border border-white/10 bg-slate-800/70 p-4">
-                    <p class="font-medium text-white">📝 Journal</p>
-                    <p class="mt-2 text-sm text-slate-300">{{ $journalExists ? 'You have an entry for today.' : 'No entry yet today.' }}</p>
-                    <a href="{{ route('journal.index') }}" class="mt-3 inline-block text-xs font-semibold text-indigo-300 hover:text-indigo-200">{{ $journalExists ? 'View / edit entry →' : 'Write today’s entry →' }}</a>
                 </div>
 
                 <!-- ✅ Tasks -->
@@ -111,6 +105,13 @@
                         <p class="mt-2 text-sm text-slate-400">No appointments today</p>
                     @endforelse
                     <a href="{{ route('appointments.index') }}" class="mt-3 inline-block text-xs font-semibold text-indigo-300 hover:text-indigo-200">See more →</a>
+                </div>
+
+                <!-- 📝 Journal (after appointments) -->
+                <div class="rounded-2xl border border-white/10 bg-slate-800/70 p-4">
+                    <p class="font-medium text-white">📝 Journal</p>
+                    <p class="mt-2 text-sm text-slate-300">{{ $journalExists ? 'You have an entry for today.' : 'No entry yet today.' }}</p>
+                    <a href="{{ route('journal.index') }}" class="mt-3 inline-block text-xs font-semibold text-indigo-300 hover:text-indigo-200">{{ $journalExists ? 'View / edit entry →' : 'Write today’s entry →' }}</a>
                 </div>
 
                 <!-- 📊 Progress link -->

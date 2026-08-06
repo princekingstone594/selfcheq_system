@@ -17,16 +17,13 @@ class JournalController extends Controller
             ->whereDate('date', $today)
             ->first();
 
-        // 📜 History (past journals, excluding today, grouped by date)
+        // 📜 History (past entries, excluding today)
         $history = Auth::user()
             ->journals()
             ->whereDate('date', '<', $today)
             ->orderBy('date', 'desc')
-            ->take(30)
-            ->get()
-            ->groupBy(function ($j) {
-                return \Carbon\Carbon::parse($j->date)->format('Y-m-d');
-            });
+            ->take(10)
+            ->get();
 
         return view('journals.index', compact('journal', 'today', 'history'));
     }
@@ -43,13 +40,13 @@ class JournalController extends Controller
         Auth::user()->journals()->updateOrCreate(
             ['date' => now()->toDateString()],
             [
-                'content' => $request->entry,
+                'entry' => $request->entry,
                 'mood' => $request->mood,
                 'gratitude' => $request->gratitude,
                 'reflection' => $request->reflection,
             ]
         );
 
-        return back();
+        return back()->with('success', 'Journal saved successfully.');
     }
 }

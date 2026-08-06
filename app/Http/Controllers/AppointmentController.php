@@ -17,7 +17,17 @@ class AppointmentController extends Controller
             ->orderBy('time')
             ->get();
 
-        return view('appointments.index', compact('appointments'));
+        // 📜 History (past appointments, excluding today, grouped by date)
+        $history = Auth::user()->appointments()
+            ->whereDate('date', '<', $today)
+            ->orderBy('date', 'desc')
+            ->take(30)
+            ->get()
+            ->groupBy(function ($a) {
+                return \Carbon\Carbon::parse($a->date)->format('Y-m-d');
+            });
+
+        return view('appointments.index', compact('appointments', 'history'));
     }
 
     public function store(Request $request)

@@ -23,6 +23,16 @@ class TaskController extends Controller
             ->latest()
             ->get();
 
+        // 📜 History (past tasks, excluding today, grouped by date)
+        $history = $user->tasks()
+            ->whereDate('due_date', '<', $todayDate)
+            ->orderBy('due_date', 'desc')
+            ->take(30)
+            ->get()
+            ->groupBy(function ($task) {
+                return Carbon::parse($task->due_date)->format('Y-m-d');
+            });
+
         // Progress calculation
         $total = $tasks->count();
         $completed = $tasks->where('is_completed', true)->count();
@@ -50,7 +60,8 @@ class TaskController extends Controller
             'today',
             'total',
             'completed',
-            'progress'
+            'progress',
+            'history'
         ));
     }
 

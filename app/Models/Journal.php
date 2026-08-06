@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Journal extends Model
 {
     protected $fillable = [
-    'entry',
-    'mood',
-    'gratitude',
-    'reflection',
-    'date',
-    'content',
+        'user_id',
+        'entry',
+        'content',
+        'mood',
+        'gratitude',
+        'reflection',
+        'date',
     ];
 }
