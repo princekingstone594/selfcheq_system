@@ -39,6 +39,19 @@
         <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {{ $slot }}
         </main>
+
+        <!-- Footer -->
+        <footer class="border-t border-white/10 bg-slate-950/80 backdrop-blur">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
+                    <div class="flex items-center gap-2">
+                        <x-application-logo class="h-8 w-8 rounded-lg object-contain" />
+                        <span class="text-sm font-semibold uppercase tracking-[0.25em] text-indigo-300">SelfCheq</span>
+                    </div>
+                    <p class="text-xs text-slate-500">© 2026 SelfCheq. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
     </div>
 
     <!-- Floating Coach Zoe button (fixed, follows scroll) -->
