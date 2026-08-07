@@ -49,6 +49,12 @@
             @endif
         </section>
 
+        @if(session('success'))
+            <div class="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 text-sm text-emerald-100">
+                {{ session('success') }}
+            </div>
+        @endif
+
         <!-- Add Task -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
             <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Add a task</p>
@@ -73,11 +79,20 @@
                         <input type="checkbox" name="is_urgent" class="rounded border-slate-700 bg-slate-800 text-indigo-500 focus:ring-indigo-500">
                         Urgent
                     </label>
+                    <label class="inline-flex items-center gap-2 text-sm text-slate-300">
+                        <input type="checkbox" name="alarm_enabled" class="rounded border-slate-700 bg-slate-800 text-amber-500 focus:ring-amber-500">
+                        ⏰ Set alarm
+                    </label>
                 </div>
 
-                <button class="rounded-2xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400 transition">
-                    Add Task
-                </button>
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-end">
+                    <input type="time" name="alarm_time" placeholder="Alarm time"
+                        class="rounded-2xl border border-slate-700 bg-slate-800/80 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
+                        placeholder="Alarm time">
+                    <button type="submit" class="rounded-2xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400 transition">
+                        Add Task
+                    </button>
+                </div>
             </form>
         </section>
 
@@ -89,23 +104,46 @@
                 @forelse ($tasks->sortBy('is_completed') as $task)
                     <div class="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-slate-800/70 p-3 transition hover:bg-slate-800">
 
-                        <form method="POST" action="{{ route('tasks.toggle', $task) }}">
+                        <div class="flex items-center gap-3">
+                            <form method="POST" action="{{ route('tasks.toggle', $task) }}">
+                                @csrf
+                                @method('PATCH')
+                                <button class="text-xl transition hover:scale-110" title="{{ $task->is_completed ? 'Mark incomplete' : 'Mark complete' }}">
+                                    @if ($task->is_completed)
+                                        ✅
+                                    @else
+                                        ⬜
+                                    @endif
+                                </button>
+                            </form>
+
+                            <div class="flex-1 min-w-0">
+                                <span class="block text-sm {{ $task->is_completed ? 'line-through text-slate-500' : 'text-slate-100' }}">
+                                    {{ $task->title }}
+                                </span>
+                                @if($task->alarm_enabled)
+                                    <p class="mt-0.5 flex items-center gap-1 text-xs text-amber-300">
+                                        <span>⏰</span>
+                                        Alarm at {{ $task->formatted_alarm_time }}
+                                    </p>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- Alarm toggle button -->
+                        <form method="POST" action="{{ route('tasks.alarmToggle', $task) }}">
                             @csrf
                             @method('PATCH')
-                            <button class="text-xl transition hover:scale-110" title="{{ $task->is_completed ? 'Mark incomplete' : 'Mark complete' }}">
-                                @if ($task->is_completed)
-                                    ✅
+                            <button class="rounded-xl px-2.5 py-1 text-xs font-medium transition"
+                                    title="{{ $task->alarm_enabled ? 'Disable alarm' : 'Enable alarm' }}"
+                                    onclick="event.preventDefault(); if(confirm('{{ $task->alarm_enabled ? 'Disable alarm for this task?' : 'Enable alarm for this task?' }}')) { this.closest('form').submit(); }">
+                                @if($task->alarm_enabled)
+                                    <span class="text-amber-400">🔔</span>
                                 @else
-                                    ⬜
+                                    <span class="text-slate-500">🔕</span>
                                 @endif
                             </button>
                         </form>
-
-                        <div class="flex-1 min-w-0">
-                            <span class="block text-sm {{ $task->is_completed ? 'line-through text-slate-500' : 'text-slate-100' }}">
-                                {{ $task->title }}
-                            </span>
-                        </div>
 
                         @php
                             if ($task->is_important && $task->is_urgent) {
@@ -163,6 +201,9 @@
                                 <div class="flex items-center gap-2 text-sm">
                                     <span>{{ $task->is_completed ? '✅' : '⬜' }}</span>
                                     <span class="{{ $task->is_completed ? 'line-through text-slate-500' : 'text-slate-300' }}">{{ $task->title }}</span>
+                                    @if($task->alarm_enabled)
+                                        <span class="text-xs text-amber-400" title="Alarm on">⏰</span>
+                                    @endif
                                 </div>
                             @endforeach
                         </div>

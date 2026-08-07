@@ -73,15 +73,21 @@ class TaskController extends Controller
             'reminder_time' => 'nullable|date_format:H:i',
         ]);
 
-        Auth::user()->tasks()->create([
+        $task = Auth::user()->tasks()->create([
             'title' => $request->title,
             'due_date' => $request->due_date ?? now()->toDateString(),
             'reminder_time' => $request->reminder_time,
             'is_important' => $request->has('is_important'),
             'is_urgent' => $request->has('is_urgent'),
+            'alarm_enabled' => $request->has('alarm_enabled'),
+            'alarm_time' => $request->alarm_time,
         ]);
 
-        return back();
+        $msg = $task->alarm_enabled
+            ? 'Task added with alarm! ⏰'
+            : 'Task added! Tap the alarm button to set a reminder. 🔔';
+
+        return back()->with('success', $msg);
     }
 
     public function toggle(Task $task)
@@ -109,7 +115,25 @@ class TaskController extends Controller
 
         $user->save();
 
-        return back();
+        return back()->with('success', $task->is_completed
+            ? '✅ Task completed! +10 XP'
+            : '🔄 Task marked incomplete');
+    }
+
+    public function alarmToggle(Task $task)
+    {
+        // 🔒 Security: ensure task belongs to user
+        if ($task->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $task->update([
+            'alarm_enabled' => !$task->alarm_enabled
+        ]);
+
+        return back()->with('success', $task->alarm_enabled
+            ? '🔔 Alarm activated for this task!'
+            : '🔕 Alarm deactivated for this task');
     }
 
     public function destroy(Task $task)
@@ -121,7 +145,7 @@ class TaskController extends Controller
 
         $task->delete();
 
-        return back();
+        return back()->with('success', 'Task removed. 🗑️');
     }
 
     private function updateLevel($user)

@@ -49,12 +49,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index'); // ✅ fixed name
     Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
     Route::patch('/tasks/{task}/toggle', [TaskController::class, 'toggle'])->name('tasks.toggle');
+    Route::patch('/tasks/{task}/alarm', [TaskController::class, 'alarmToggle'])->name('tasks.alarmToggle');
     Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
     // Routines
     Route::get('/routines', [RoutineController::class, 'index'])->name('routines.index');
     Route::post('/routines', [RoutineController::class, 'store'])->name('routines.store');
     Route::patch('/routines/{routine}/toggle', [RoutineController::class, 'toggle'])->name('routines.toggle');
+    Route::delete('/routines/{routine}', [RoutineController::class, 'destroy'])->name('routines.destroy');
 
     // Appointments
     Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');

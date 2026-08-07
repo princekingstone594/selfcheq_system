@@ -86,25 +86,35 @@
     @endauth
 
     <script>
-    if ('Notification' in window) {
-        Notification.requestPermission();
-    }
-    </script>
-    <script>
-    setInterval(async () => {
+    // Browser notifications for alarms & reminders
+    const showReminder = (reminder) => {
+        const icon = reminder.type === 'routine' ? '⏰' : '🔔';
+        const label = reminder.type === 'routine' ? 'Routine' : 'Task';
+        new Notification(`${icon} ${label} Reminder`, {
+            body: reminder.title,
+            icon: '/icon-192.png'
+        });
+    };
+
+    const checkReminders = async () => {
         try {
             const response = await fetch('/api/reminders');
-            const tasks = await response.json();
-
-            tasks.forEach(task => {
-                new Notification("⏰ Reminder", {
-                    body: task.title
-                });
-            });
+            if (!response.ok) return;
+            const reminders = await response.json();
+            reminders.forEach(showReminder);
         } catch (e) {
             // silently ignore network errors
         }
-    }, 60000);
+    };
+
+    if ('Notification' in window) {
+        Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+                checkReminders();
+                setInterval(checkReminders, 60000);
+            }
+        });
+    }
     </script>
     <script>
     if ('serviceWorker' in navigator) {

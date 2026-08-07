@@ -77,7 +77,12 @@
                     <p class="font-medium text-white">✅ Tasks</p>
                     <p class="mt-2 text-sm text-slate-300">{{ $taskCompleted }}/{{ $taskTotal }} completed</p>
                     @forelse($tasksToday->take(3) as $task)
-                        <p class="mt-1 text-xs {{ $task->is_completed ? 'line-through text-slate-500' : 'text-slate-300' }}">• {{ $task->title }}</p>
+                        <p class="mt-1 flex items-center justify-between text-xs {{ $task->is_completed ? 'line-through text-slate-500' : 'text-slate-300' }}">
+                            <span>• {{ $task->title }}</span>
+                            @if($task->alarm_enabled)
+                                <span class="text-amber-400" title="Alarm: {{ $task->formatted_alarm_time }}">⏰</span>
+                            @endif
+                        </p>
                     @empty
                         <p class="mt-1 text-xs text-slate-500">No tasks yet</p>
                     @endforelse
@@ -89,7 +94,12 @@
                     <p class="font-medium text-white">🔁 Routines</p>
                     <p class="mt-2 text-sm text-slate-300">{{ $routineCompleted }}/{{ $routineTotal }} completed</p>
                     @forelse($routines->take(3) as $routine)
-                        <p class="mt-1 text-xs {{ $routine->is_completed ? 'line-through text-slate-500' : 'text-slate-300' }}">• {{ $routine->title }}</p>
+                        <p class="mt-1 flex items-center justify-between text-xs {{ $routine->is_completed ? 'line-through text-slate-500' : 'text-slate-300' }}">
+                            <span>• {{ $routine->title }}</span>
+                            @if($routine->reminder_time)
+                                <span class="text-amber-400" title="Alarm: {{ $routine->formatted_alarm_time }}">⏰</span>
+                            @endif
+                        </p>
                     @empty
                         <p class="mt-1 text-xs text-slate-500">No routines today</p>
                     @endforelse
