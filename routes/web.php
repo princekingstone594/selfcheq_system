@@ -14,6 +14,7 @@ use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\FinancialController;
 
 /*
 |--------------------------------------------------------------------------
