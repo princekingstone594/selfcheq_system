@@ -6,8 +6,8 @@
             <div class="flex items-start justify-between gap-4">
                 <div>
                     <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Rituals</p>
-                    <h1 class="mt-1 text-2xl font-semibold text-white">Morning Routine</h1>
-                    <p class="mt-2 text-sm text-slate-400">Build the habits that set your day in motion.</p>
+                    <h1 class="mt-1 text-2xl font-semibold text-white">My Routines</h1>
+                    <p class="mt-2 text-sm text-slate-400">Build the habits that set your day in motion. Every routine has an alarm. ⏰</p>
                 </div>
 
                 <!-- History button -->
@@ -30,24 +30,34 @@
         <!-- Add Routine -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
             <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Add routine</p>
-            <p class="mt-1 text-xs text-slate-500">Every routine is discipline — set an alarm so you never miss it.</p>
+            <p class="mt-1 text-xs text-slate-500">Set how often this routine repeats, plus an alarm so you never miss it.</p>
 
             <form method="POST" action="{{ route('routines.store') }}" class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-4">
                 @csrf
                 <input type="text" name="title" placeholder="Routine..."
                     class="sm:col-span-2 rounded-2xl border border-slate-700 bg-slate-800/80 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
-                <input type="time" name="reminder_time" placeholder="Alarm time"
+
+                <input type="time" name="reminder_time"
                     class="sm:col-span-1 rounded-2xl border border-slate-700 bg-slate-800/80 px-3 py-2.5 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"
-                    title="Alarm time (required for discipline)">
-                <button type="submit" class="sm:col-span-1 rounded-2xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400 transition">
-                    Add
+                    title="Alarm time (every routine has an alarm)">
+
+                <select name="frequency"
+                    class="sm:col-span-2 rounded-2xl border border-slate-700 bg-slate-800/80 px-3 py-2.5 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                    <option value="daily">📅 Every day</option>
+                    <option value="weekday">📅 Weekdays (Mon–Fri)</option>
+                    <option value="weekend">📅 Weekends (Sat–Sun)</option>
+                    <option value="once">📅 Extra (just today)</option>
+                </select>
+
+                <button type="submit" class="sm:col-span-4 rounded-2xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400 transition">
+                    Add Routine
                 </button>
             </form>
         </section>
 
         <!-- Routine List -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Your routines</p>
+            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Today's routines</p>
 
             <div class="mt-4 space-y-2">
                 @forelse($routines as $routine)
@@ -60,18 +70,13 @@
                                 <span class="text-sm {{ $routine->is_completed ? 'line-through text-slate-500' : 'text-slate-100' }}">
                                     {{ $routine->title }}
                                 </span>
+                                @if($routine->reminder_time)
+                                    <span class="text-xs text-amber-300">⏰ {{ $routine->formatted_alarm_time }}</span>
+                                @endif
                             </div>
-                            @if($routine->reminder_time)
-                                <p class="mt-1 flex items-center gap-1 text-xs text-amber-300">
-                                    <span>⏰</span>
-                                    Reminder: {{ $routine->formatted_alarm_time }}
-                                </p>
-                            @else
-                                <p class="mt-1 flex items-center gap-1 text-xs text-slate-500">
-                                    <span>⏰</span>
-                                    No alarm set
-                                </p>
-                            @endif
+                            <p class="mt-1 text-xs text-slate-500">
+                                {{ $routine->frequency_label }}
+                            </p>
                         </div>
 
                         <div class="flex items-center gap-2">
@@ -96,10 +101,21 @@
                     </div>
                 @empty
                     <div class="rounded-2xl border border-dashed border-white/10 p-8 text-center text-sm text-slate-500">
-                        No routines yet. Add one above.
+                        No routines yet. Add one above or check back tomorrow for your weekday/weekend templates.
                     </div>
                 @endforelse
             </div>
+        </section>
+
+        <!-- My Calendar (link to full calendar) -->
+        <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
+            <a href="{{ route('calendar.index') }}" class="flex items-center justify-between rounded-2xl border border-indigo-400/30 bg-indigo-600/10 p-4 text-left transition hover:bg-indigo-600/20">
+                <div>
+                    <p class="font-medium text-white">📅 My Calendar</p>
+                    <p class="mt-1 text-xs text-slate-400">View all your appointments and upcoming tasks in a month layout.</p>
+                </div>
+                <span class="text-2xl">→</span>
+            </a>
         </section>
 
         <!-- History -->
@@ -123,6 +139,7 @@
                                 <div class="flex items-center gap-2 text-sm">
                                     <span>{{ $rtn->is_completed ? '✅' : '⬜' }}</span>
                                     <span class="{{ $rtn->is_completed ? 'line-through text-slate-500' : 'text-slate-300' }}">{{ $rtn->title }}</span>
+                                    <span class="text-xs text-slate-500">{{ $rtn->frequency_label }}</span>
                                 </div>
                             @endforeach
                         </div>

@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use App\Models\DailyStat;
 use App\Models\Devotional;
+use App\Models\Appointment;
+use App\Models\Task;
 
 class DashboardController extends Controller
 {
@@ -145,6 +147,22 @@ class DashboardController extends Controller
             }
         );
 
+        // 📅 Calendar preview (next 7 days)
+        $calendarStart = $today->copy();
+        $calendarEnd = $today->copy()->addDays(7);
+        $calendarAppointments = $user->appointments()
+            ->whereBetween('date', [$calendarStart->toDateString(), $calendarEnd->toDateString()])
+            ->orderBy('date')
+            ->orderBy('time')
+            ->get()
+            ->groupBy('date');
+        $calendarTasks = $user->tasks()
+            ->whereDate('due_date', '>=', $todayDate)
+            ->whereDate('due_date', '<=', $calendarEnd->toDateString())
+            ->orderBy('due_date')
+            ->get()
+            ->groupBy('due_date');
+
         // 📊 History (last 7)
         $history = DailyStat::where('user_id', $user->id)
             ->latest('date')
@@ -200,7 +218,9 @@ class DashboardController extends Controller
             'coachMessage',
             'tasksToday',
             'routines',
-            'devotional'
+            'devotional',
+            'calendarAppointments',
+            'calendarTasks'
         ));
     }
 }
