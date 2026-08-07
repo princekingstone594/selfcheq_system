@@ -51,6 +51,20 @@
                         <p class="mt-1 text-xs text-indigo-200/80">{{ $routineCompleted }}/{{ $routineTotal }} routines · {{ $focusMinutes }} min focus</p>
                     </div>
                 </div>
+
+                <!-- 🕐 Live Clock & Date (bottom-right) -->
+                <div class="absolute bottom-4 right-4 sm:bottom-8 sm:right-8 lg:bottom-10 lg:right-10"
+                     x-data="{ now: new Date() }"
+                     x-init="setInterval(() => now = new Date(), 1000)">
+                    <div class="rounded-lg border border-white/10 bg-slate-950/60 px-2.5 py-1.5 text-right backdrop-blur-md sm:rounded-xl sm:px-4 sm:py-3 lg:rounded-2xl">
+                        <p class="text-base font-bold tracking-wide text-white sm:text-xl lg:text-3xl"
+                           x-text="now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })">
+                        </p>
+                        <p class="mt-0.5 text-[11px] font-medium text-slate-300 sm:mt-1 sm:text-xs lg:text-sm"
+                           x-text="now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })">
+                        </p>
+                    </div>
+                </div>
             </div>
         </section>
 
