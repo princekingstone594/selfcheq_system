@@ -211,6 +211,8 @@ class DashboardController extends Controller
             // Keep dashboard rendering even if stats persistence is unavailable
         }
 
+        $financials = $user->financials()->latest()->take(5)->get();
+
         return view('dashboard', compact(
             'taskTotal',
             'taskCompleted',
@@ -236,7 +238,8 @@ class DashboardController extends Controller
             'calendarAppointments',
             'calendarTasks',
             'upcomingAppointments',
-            'upcomingTasks'
+            'upcomingTasks',
+            'financials'
         ));
     }
 }

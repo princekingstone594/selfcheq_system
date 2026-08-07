@@ -103,7 +103,8 @@ class ProgressController extends Controller
             'taskLabels',
             'moodChart',
             'nudges',
-            'birthdays'
+            'birthdays',
+            'taskTotal'
         ));
     }
 }

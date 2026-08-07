@@ -54,11 +54,27 @@ class ProfileController extends Controller
             Storage::disk('public')->delete($user->profile_photo_path);
         }
 
-        // Store new photo under profile-photos/
-        $path = $request->file('profile_photo')->store('profile-photos', 'public');
+        // Simple file upload without complex image processing
+        $image = $request->file('profile_photo');
+        $filename = 'profile-' . time() . '-' . uniqid() . '.jpg';
+        $path = 'profile-photos/' . $filename;
+
+        // Move uploaded file directly to storage
+        $fullPath = storage_path('app/public/' . $path);
+        
+        // Create directory if it doesn't exist
+        if (!file_exists(dirname($fullPath))) {
+            mkdir(dirname($fullPath), 0755, true);
+        }
+        
+        // Move the uploaded file
+        $image->move(dirname($fullPath), basename($fullPath));
 
         $user->profile_photo_path = $path;
         $user->save();
+        
+        // Refresh user model to ensure fresh data
+        $user->refresh();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }

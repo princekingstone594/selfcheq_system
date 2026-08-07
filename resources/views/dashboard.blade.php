@@ -219,6 +219,32 @@
                         </a>
                     </div>
                 </div>
+
+                <!-- 💰 Financials -->
+                <div class="group relative overflow-hidden rounded-2xl border border-emerald-400/20 bg-gradient-to-br from-slate-800/80 to-slate-800/40 p-5 backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-emerald-400/30 hover:shadow-xl hover:shadow-emerald-500/10">
+                    <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
+                    <div class="relative">
+                        <p class="font-semibold text-white">💰 Financials</p>
+                        @if($financials->count() > 0)
+                            <div class="mt-3 space-y-2">
+                                @foreach($financials->take(3) as $financial)
+                                    <div class="flex items-center justify-between text-xs {{ $financial->is_completed ? 'line-through text-slate-500' : 'text-slate-300' }}">
+                                        <span class="flex items-center gap-2">
+                                            <span class="h-1.5 w-1.5 rounded-full {{ $financial->is_completed ? 'bg-emerald-400' : 'bg-slate-500' }}"></span>
+                                            {{ $financial->title }}
+                                        </span>
+                                        <span class="font-medium text-emerald-300">${{ number_format($financial->amount, 2) }}</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <p class="mt-3 text-xs text-slate-500">No financial entries yet.</p>
+                        @endif
+                        <a href="{{ route('financials.index') }}" class="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-emerald-300 hover:text-emerald-200 transition">
+                            Manage finances <span class="group-hover:translate-x-1 transition-transform">→</span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </section>
     </div>

@@ -92,6 +92,12 @@ Route::middleware('auth')->group(function () {
     // Progress
     Route::get('/progress', [ProgressController::class, 'index'])->name('progress.index');
 
+    // Financials
+    Route::get('/financials', [FinancialController::class, 'index'])->name('financials.index');
+    Route::post('/financials', [FinancialController::class, 'store'])->name('financials.store');
+    Route::patch('/financials/{financial}/toggle', [FinancialController::class, 'toggle'])->name('financials.toggle');
+    Route::delete('/financials/{financial}', [FinancialController::class, 'destroy'])->name('financials.destroy');
+
     // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::post('/settings/theme', [SettingsController::class, 'updateTheme'])->name('settings.theme');

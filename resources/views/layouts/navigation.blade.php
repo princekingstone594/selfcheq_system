@@ -23,6 +23,7 @@
                     <x-nav-link :href="route('journal.index')" :active="request()->routeIs('journal.*')">Journal</x-nav-link>
                     <x-nav-link :href="route('focus.index')" :active="request()->routeIs('focus.*')">Focus</x-nav-link>
                     <x-nav-link :href="route('devotional.today')" :active="request()->routeIs('devotional.*')">Devotional</x-nav-link>
+                    <x-nav-link :href="route('financials.index')" :active="request()->routeIs('financials.*')">Financials</x-nav-link>
                     <x-nav-link :href="route('progress.index')" :active="request()->routeIs('progress.*')">Progress</x-nav-link>
                     <x-nav-link :href="route('settings.index')" :active="request()->routeIs('settings.*')">Settings</x-nav-link>
                 </div>
@@ -79,7 +80,7 @@
                             <img src="{{ Auth::user()->profile_photo_url }}"
                                  alt="{{ Auth::user()->name }}"
                                  class="h-8 w-8 rounded-full border border-white/10 object-cover" />
-                            <span class="hidden sm:inline">{{ Auth::user()->name }}</span>
+                            <span class="hidden sm:inline">{{ explode(' ', Auth::user()->name)[0] }}</span>
 
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" viewBox="0 0 20 20">
@@ -132,6 +133,7 @@
             <x-responsive-nav-link :href="route('journal.index')" :active="request()->routeIs('journal.*')">Journal</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('focus.index')" :active="request()->routeIs('focus.*')">Focus</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('devotional.today')" :active="request()->routeIs('devotional.*')">Devotional</x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('financials.index')" :active="request()->routeIs('financials.*')">Financials</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('progress.index')" :active="request()->routeIs('progress.*')">Progress</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('settings.index')" :active="request()->routeIs('settings.*')">Settings</x-responsive-nav-link>
             <x-responsive-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.*')">Profile</x-responsive-nav-link>

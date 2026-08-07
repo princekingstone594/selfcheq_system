@@ -64,8 +64,14 @@ class User extends Authenticatable
      */
     public function getProfilePhotoUrlAttribute(): string
     {
-        if ($this->profile_photo_path && Storage::disk('public')->exists($this->profile_photo_path)) {
-            return Storage::disk('public')->url($this->profile_photo_path);
+        try {
+            if ($this->profile_photo_path && Storage::disk('public')->exists($this->profile_photo_path)) {
+                $url = Storage::disk('public')->url($this->profile_photo_path);
+                // Add cache buster to ensure fresh image loads
+                return $url . '?v=' . filemtime(storage_path('app/public/' . $this->profile_photo_path));
+            }
+        } catch (\Exception $e) {
+            // If file check fails, fall back to initials
         }
 
         // Fallback: generated avatar from initials
@@ -106,5 +112,10 @@ class User extends Authenticatable
     public function contacts()
     {
         return $this->hasMany(Contact::class);
+    }
+
+    public function financials()
+    {
+        return $this->hasMany(Financial::class);
     }
 }
