@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="mx-auto max-w-2xl space-y-6" x-data="{ historyOpen: false }">
+    <div class="mx-auto max-w-2xl space-y-6" x-data="{ historyOpen: false, completedOpen: false }">
 
         <!-- Header -->
         <section class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-2xl shadow-indigo-950/30 backdrop-blur">
@@ -21,17 +21,27 @@
             </div>
         </section>
 
+        @if(session('success'))
+            <div class="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 text-sm text-emerald-100">
+                {{ session('success') }}
+            </div>
+        @endif
+
         <!-- Add Appointment -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
             <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Add appointment</p>
 
-            <form method="POST" action="{{ route('appointments.store') }}" class="mt-4 flex flex-col gap-3 sm:flex-row">
+            <form method="POST" action="{{ route('appointments.store') }}" class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-5">
                 @csrf
+                <input type="date" name="date"
+                    class="rounded-2xl border border-slate-700 bg-slate-800/80 px-3 py-2.5 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
                 <input type="time" name="time"
                     class="rounded-2xl border border-slate-700 bg-slate-800/80 px-3 py-2.5 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
                 <input type="text" name="title" placeholder="Appointment..."
-                    class="flex-1 rounded-2xl border border-slate-700 bg-slate-800/80 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
-                <button class="rounded-2xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400 transition">
+                    class="sm:col-span-2 rounded-2xl border border-slate-700 bg-slate-800/80 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                <input type="text" name="notes" placeholder="Notes (optional)..."
+                    class="sm:col-span-5 rounded-2xl border border-slate-700 bg-slate-800/80 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                <button type="submit" class="sm:col-span-5 rounded-2xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400 transition">
                     Add
                 </button>
             </form>
@@ -44,13 +54,18 @@
             <div class="mt-4 space-y-2">
                 @forelse($appointments as $appointment)
                     <div class="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-slate-800/70 p-3 transition hover:bg-slate-800">
-                        <div class="flex items-center gap-3">
-                            <span class="rounded-xl bg-indigo-500/10 px-2.5 py-1 text-xs font-medium text-indigo-300">
-                                {{ \Carbon\Carbon::parse($appointment->time)->format('H:i') }}
-                            </span>
-                            <span class="text-sm {{ $appointment->is_completed ? 'line-through text-slate-500' : 'text-slate-100' }}">
-                                {{ $appointment->title }}
-                            </span>
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-3">
+                                <span class="rounded-xl bg-indigo-500/10 px-2.5 py-1 text-xs font-medium text-indigo-300">
+                                    {{ $appointment->formatted_time }}
+                                </span>
+                                <span class="text-sm {{ $appointment->is_completed ? 'line-through text-slate-500' : 'text-slate-100' }}">
+                                    {{ $appointment->title }}
+                                </span>
+                            </div>
+                            @if($appointment->notes)
+                                <p class="mt-1 text-xs text-slate-500">{{ Str::limit($appointment->notes, 80) }}</p>
+                            @endif
                         </div>
 
                         <div class="flex items-center gap-2">
@@ -81,6 +96,32 @@
             </div>
         </section>
 
+        <!-- Completed Appointments (after ticked) -->
+        <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
+            <button @click="completedOpen = !completedOpen" class="flex w-full items-center justify-between text-left">
+                <span class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">✅ Completed Appointments</span>
+                <svg x-show="!completedOpen" class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+                <svg x-show="completedOpen" class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display:none;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                </svg>
+            </button>
+
+            <div x-show="completedOpen" x-transition class="mt-4 space-y-2" style="display:none;">
+                @forelse($completed as $appt)
+                    <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-800/50 p-3">
+                        <span class="rounded-xl bg-indigo-500/10 px-2.5 py-1 text-xs font-medium text-indigo-300">
+                            {{ \Carbon\Carbon::parse($appt->date)->format('D, d M') }} · {{ $appt->formatted_time }}
+                        </span>
+                        <span class="text-sm line-through text-slate-500">{{ $appt->title }}</span>
+                    </div>
+                @empty
+                    <p class="text-sm text-slate-500">No completed appointments yet.</p>
+                @endforelse
+            </div>
+        </section>
+
         <!-- History -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
             <button @click="historyOpen = !historyOpen" class="flex w-full items-center justify-between text-left">
@@ -101,7 +142,7 @@
                             @foreach($dayAppointments as $appt)
                                 <div class="flex items-center gap-2 text-sm">
                                     <span class="rounded-lg bg-indigo-500/10 px-2 py-0.5 text-xs font-medium text-indigo-300">
-                                        {{ \Carbon\Carbon::parse($appt->time)->format('H:i') }}
+                                        {{ $appt->formatted_time }}
                                     </span>
                                     <span class="{{ $appt->is_completed ? 'line-through text-slate-500' : 'text-slate-300' }}">{{ $appt->title }}</span>
                                 </div>
