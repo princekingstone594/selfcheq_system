@@ -43,10 +43,11 @@ class DashboardController extends Controller
             ->whereDate('started_at', $todayDate)
             ->sum('duration');
 
-        // 📓 Journal
-        $journalExists = $user->journals()
+        // 📓 Journal (today's entry — used for dashboard snip)
+        $todayJournal = $user->journals()
             ->whereDate('date', $todayDate)
-            ->exists();
+            ->first();
+        $journalExists = $todayJournal !== null;
 
         // 😊 Mood average (last 7 days)
         $moodAvg = $user->journals()
@@ -187,6 +188,7 @@ class DashboardController extends Controller
             'appointments',
             'focusMinutes',
             'journalExists',
+            'todayJournal',
             'moodAvg',
             'weeklyTasks',
             'taskChart',

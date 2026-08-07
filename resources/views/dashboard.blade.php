@@ -110,8 +110,14 @@
                 <!-- 📝 Journal (after appointments) -->
                 <div class="rounded-2xl border border-white/10 bg-slate-800/70 p-4">
                     <p class="font-medium text-white">📝 Journal</p>
-                    <p class="mt-2 text-sm text-slate-300">{{ $journalExists ? 'You have an entry for today.' : 'No entry yet today.' }}</p>
-                    <a href="{{ route('journal.index') }}" class="mt-3 inline-block text-xs font-semibold text-indigo-300 hover:text-indigo-200">{{ $journalExists ? 'View / edit entry →' : 'Write today’s entry →' }}</a>
+                    @if($todayJournal)
+                        <p class="mt-1 text-xs text-indigo-300">{{ \Carbon\Carbon::parse($todayJournal->date)->format('d M Y') }}</p>
+                        <p class="mt-1 text-sm text-slate-300 line-clamp-2">{{ $todayJournal->snip }}</p>
+                        <a href="{{ route('journal.index') }}" class="mt-2 inline-block text-xs font-semibold text-indigo-300 hover:text-indigo-200">View / edit entry →</a>
+                    @else
+                        <p class="mt-2 text-sm text-slate-400">No entry yet today.</p>
+                        <a href="{{ route('journal.index') }}" class="mt-3 inline-block text-xs font-semibold text-indigo-300 hover:text-indigo-200">Write today's entry →</a>
+                    @endif
                 </div>
 
                 <!-- 📊 Progress link -->

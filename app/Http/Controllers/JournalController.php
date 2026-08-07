@@ -40,7 +40,7 @@ class JournalController extends Controller
             'reflection' => 'nullable|string',
         ]);
 
-        Auth::user()->journals()->updateOrCreate(
+        $journal = Auth::user()->journals()->updateOrCreate(
             ['date' => now()->toDateString()],
             [
                 'content' => $request->entry,
@@ -50,6 +50,11 @@ class JournalController extends Controller
             ]
         );
 
-        return back();
+        // Inform the user whether they created or updated today's entry
+        $isNew = $journal->wasRecentlyCreated;
+
+        return back()->with('success', $isNew
+            ? 'Journal entry saved! 📝'
+            : 'Journal entry updated! You can keep editing until midnight. 🧠');
     }
 }
