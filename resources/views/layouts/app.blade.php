@@ -60,10 +60,10 @@
         <footer class="border-t {{ auth()->check() && auth()->user()->theme === 'light' ? 'border-slate-200 bg-white/80' : 'border-white/10 bg-slate-950/80' }} backdrop-blur">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
-                    <div class="flex items-center gap-2">
-                        <x-application-logo class="h-12 w-12" />
-                        <span class="text-sm font-semibold uppercase tracking-[0.25em] text-indigo-300">SelfCheq</span>
-                    </div>
+                <div class="flex items-center gap-2">
+                    <x-application-logo class="h-24 w-24" />
+                    <span class="text-sm font-semibold uppercase tracking-[0.25em] text-indigo-300">SelfCheq</span>
+                </div>
                     <p class="text-xs {{ auth()->check() && auth()->user()->theme === 'light' ? 'text-slate-500' : 'text-slate-500' }}">© 2026 SelfCheq. All rights reserved.</p>
                 </div>
             </div>
