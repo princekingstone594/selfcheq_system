@@ -53,14 +53,19 @@ class RoutineController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'date' => 'required|date',
         ]);
 
         Auth::user()->routines()->create([
             'title' => $request->title,
+            'description' => $request->description,
+            'date' => $request->date,
+            'user_id' => auth()->id(),
             'date' => now()->toDateString(),
         ]);
 
-        return back();
+        return redirect()->back()->with('success', 'Routine created!');
     }
 
     public function toggle(Routine $routine)
