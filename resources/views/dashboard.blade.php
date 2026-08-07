@@ -130,6 +130,17 @@
                     @endif
                 </div>
 
+                <!-- 🗓️ My Calendar -->
+                <div class="rounded-2xl border border-white/10 bg-slate-800/70 p-4">
+                    <p class="font-medium text-white">🗓️ My Calendar</p>
+                    @forelse($upcomingAppointments->take(2) as $a)
+                        <p class="mt-2 text-sm text-slate-300">{{ \Carbon\Carbon::parse($a->date)->format('D d M') }} · {{ $a->formatted_time }} — {{ $a->title }}</p>
+                    @empty
+                        <p class="mt-2 text-xs text-slate-500">No upcoming appointments.</p>
+                    @endforelse
+                    <a href="{{ route('calendar.index') }}" class="mt-3 inline-block text-xs font-semibold text-indigo-300 hover:text-indigo-200">See more →</a>
+                </div>
+
                 <!-- 📊 Progress link -->
                 <div class="rounded-2xl border border-indigo-400/20 bg-indigo-500/10 p-4">
                     <p class="font-medium text-white">📊 Progress</p>

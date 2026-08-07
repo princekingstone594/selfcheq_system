@@ -163,6 +163,20 @@ class DashboardController extends Controller
             ->get()
             ->groupBy('due_date');
 
+        // 🗓️ Upcoming items for dashboard calendar snippet (next 3 upcoming)
+        $upcomingAppointments = $user->appointments()
+            ->whereDate('date', '>=', $todayDate)
+            ->orderBy('date')
+            ->orderBy('time')
+            ->take(3)
+            ->get();
+
+        $upcomingTasks = $user->tasks()
+            ->whereDate('due_date', '>=', $todayDate)
+            ->orderBy('due_date')
+            ->take(3)
+            ->get();
+
         // 📊 History (last 7)
         $history = DailyStat::where('user_id', $user->id)
             ->latest('date')
@@ -220,7 +234,9 @@ class DashboardController extends Controller
             'routines',
             'devotional',
             'calendarAppointments',
-            'calendarTasks'
+            'calendarTasks',
+            'upcomingAppointments',
+            'upcomingTasks'
         ));
     }
 }
