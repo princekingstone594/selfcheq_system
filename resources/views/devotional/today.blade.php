@@ -46,39 +46,82 @@
         <!-- Prayer Plan -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
             <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Prayer Plan</p>
-            <p class="mt-2 text-sm text-slate-400">Set aside dedicated time for prayer. Create a routine to build a consistent prayer habit.</p>
+            <p class="mt-2 text-sm text-slate-400">Create prayer points with duration and reminders to build a consistent prayer habit.</p>
 
-            <div class="mt-4 space-y-3">
-                <a href="{{ route('routines.index') }}" class="flex items-center justify-between rounded-2xl border border-white/10 bg-slate-800/50 p-4 transition hover:border-indigo-400/30 hover:bg-slate-800">
-                    <div>
-                        <p class="font-medium text-white">Create Prayer Routine</p>
-                        <p class="text-xs text-slate-400">Set a daily prayer time with reminders</p>
+            <!-- Add Prayer Point Form -->
+            <form method="POST" action="{{ route('devotional.prayer.store') }}" class="mt-4 space-y-4">
+                @csrf
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-slate-300">Prayer Point</label>
+                        <textarea name="prayer_point" rows="2" required placeholder="Enter your prayer request or topic..."
+                            class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"></textarea>
                     </div>
-                    <span class="text-indigo-300">→</span>
-                </a>
 
-                <div class="rounded-2xl border border-white/10 bg-slate-800/50 p-4">
-                    <p class="font-medium text-white">Prayer Topics</p>
-                    <div class="mt-3 space-y-2 text-sm text-slate-300">
-                        <p class="flex items-center gap-2">
-                            <span class="h-2 w-2 rounded-full bg-indigo-400"></span>
-                            Gratitude - Thank God for today's blessings
-                        </p>
-                        <p class="flex items-center gap-2">
-                            <span class="h-2 w-2 rounded-full bg-purple-400"></span>
-                            Guidance - Ask for wisdom in decisions
-                        </p>
-                        <p class="flex items-center gap-2">
-                            <span class="h-2 w-2 rounded-full bg-sky-400"></span>
-                            Strength - Pray for discipline and focus
-                        </p>
-                        <p class="flex items-center gap-2">
-                            <span class="h-2 w-2 rounded-full bg-amber-400"></span>
-                            Others - Intercede for family and friends
-                        </p>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300">Days to Pray</label>
+                        <input type="number" name="days" value="1" min="1" max="365" required
+                            class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300">Reminder Time (optional)</label>
+                        <input type="time" name="reminder_time" 
+                            class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" />
                     </div>
                 </div>
-            </div>
+
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" name="reminder_enabled" id="reminder_enabled" class="h-4 w-4 rounded border-slate-700 bg-slate-800 text-indigo-500 focus:ring-indigo-500">
+                    <label for="reminder_enabled" class="text-sm text-slate-300">Enable daily reminder</label>
+                </div>
+
+                <button type="submit" class="rounded-2xl bg-indigo-500 px-6 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400 transition">
+                    Add Prayer Point
+                </button>
+            </form>
+
+            <!-- Active Prayer Plans -->
+            @if($prayerPlans->count() > 0)
+                <div class="mt-6 space-y-3">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Active Prayer Points</p>
+                    @foreach($prayerPlans as $plan)
+                        <div class="rounded-2xl border border-white/10 bg-slate-800/50 p-4">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex-1">
+                                    <p class="text-sm text-white">{{ $plan->prayer_point }}</p>
+                                    <div class="mt-2 flex flex-wrap gap-2 text-xs text-slate-400">
+                                        <span class="rounded-full bg-slate-700 px-2.5 py-1">{{ $plan->days }} day{{ $plan->days > 1 ? 's' : '' }}</span>
+                                        @if($plan->reminder_time && $plan->reminder_enabled)
+                                            <span class="rounded-full bg-indigo-500/20 px-2.5 py-1 text-indigo-300">⏰ {{ \Carbon\Carbon::parse($plan->reminder_time)->format('g:i A') }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <form method="POST" action="{{ route('devotional.prayer.complete', $plan) }}" class="inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="rounded-xl border border-emerald-400/30 bg-emerald-500/10 p-2 text-emerald-300 hover:bg-emerald-500/20 transition" title="Mark as completed">
+                                            ✓
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ route('devotional.prayer.destroy', $plan) }}" class="inline" onsubmit="return confirm('Remove this prayer point?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="rounded-xl border border-rose-400/30 bg-rose-500/10 p-2 text-rose-300 hover:bg-rose-500/20 transition" title="Remove">
+                                            ✕
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="mt-4 rounded-2xl border border-dashed border-white/10 p-6 text-center">
+                    <p class="text-sm text-slate-400">No active prayer points. Create one above to get started.</p>
+                </div>
+            @endif
         </section>
 
         <!-- Study Plan -->

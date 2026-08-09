@@ -80,6 +80,9 @@ Route::middleware('auth')->group(function () {
 
     //Devotional
     Route::get('/devotional', [DevotionalController::class, 'today'])->name('devotional.today');
+    Route::post('/devotional/prayer-plans', [DevotionalController::class, 'storePrayerPlan'])->name('devotional.prayer.store');
+    Route::patch('/devotional/prayer-plans/{prayerPlan}/complete', [DevotionalController::class, 'completePrayerPlan'])->name('devotional.prayer.complete');
+    Route::delete('/devotional/prayer-plans/{prayerPlan}', [DevotionalController::class, 'destroyPrayerPlan'])->name('devotional.prayer.destroy');
 
     Route::post('/notifications/read', function () {
         auth()->user()->unreadNotifications->markAsRead();
