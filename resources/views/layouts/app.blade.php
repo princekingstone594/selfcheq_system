@@ -38,14 +38,14 @@
 
     @stack('scripts')
 </head>
-<body class="font-sans antialiased {{ auth()->check() && auth()->user()->theme === 'light' ? 'bg-slate-100 text-slate-900' : 'bg-slate-950 text-slate-100' }}">
+<body class="font-sans antialiased {{ auth()->check() && auth()->user()->theme === 'light' ? 'bg-slate-50 text-slate-900' : 'bg-slate-950 text-slate-100' }}">
     <div class="min-h-screen {{ auth()->check() && auth()->user()->theme === 'light'
-        ? 'bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.10),_transparent_30%),linear-gradient(135deg,_#f1f5f9_0%,_#e2e8f0_100%)]'
+        ? 'bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-100'
         : 'bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.16),_transparent_30%),linear-gradient(135deg,_#020617_0%,_#0f172a_100%)]' }}">
         @include('layouts.navigation')
 
         @isset($header)
-            <header class="border-b {{ auth()->check() && auth()->user()->theme === 'light' ? 'border-slate-200 bg-white/60' : 'border-white/10 bg-white/5' }} backdrop-blur">
+            <header class="border-b {{ auth()->check() && auth()->user()->theme === 'light' ? 'border-slate-200 bg-white/90 shadow-sm' : 'border-white/10 bg-white/5' }} backdrop-blur">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     {{ $header }}
                 </div>
@@ -57,14 +57,14 @@
         </main>
 
         <!-- Footer -->
-        <footer class="border-t {{ auth()->check() && auth()->user()->theme === 'light' ? 'border-slate-200 bg-white/80' : 'border-white/10 bg-slate-950/80' }} backdrop-blur">
+        <footer class="border-t {{ auth()->check() && auth()->user()->theme === 'light' ? 'border-slate-200 bg-white' : 'border-white/10 bg-slate-950/80' }} backdrop-blur">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
                 <div class="flex items-center gap-2">
                     <x-application-logo class="h-24 w-24" />
-                    <span class="text-sm font-semibold uppercase tracking-[0.25em] text-indigo-300">SelfCheq</span>
+                    <span class="text-sm font-semibold uppercase tracking-[0.25em] {{ auth()->check() && auth()->user()->theme === 'light' ? 'text-indigo-600' : 'text-indigo-300' }}">SelfCheq</span>
                 </div>
-                    <p class="text-xs {{ auth()->check() && auth()->user()->theme === 'light' ? 'text-slate-500' : 'text-slate-500' }}">© 2026 SelfCheq. All rights reserved.</p>
+                    <p class="text-xs {{ auth()->check() && auth()->user()->theme === 'light' ? 'text-slate-500' : 'text-slate-400' }}">© 2026 SelfCheq. All rights reserved.</p>
                 </div>
             </div>
         </footer>
@@ -73,10 +73,10 @@
     <!-- Floating Coach Zoe button (fixed, follows scroll) -->
     @auth
     <a href="{{ route('coach.index') }}"
-       class="group fixed bottom-5 right-5 z-50 flex items-center gap-3 rounded-full border border-white/10 bg-indigo-600/90 p-3 pr-4 text-white shadow-2xl shadow-indigo-900/50 backdrop-blur transition hover:bg-indigo-500 hover:scale-105 sm:bottom-6 sm:right-6"
+       class="group fixed bottom-5 right-5 z-50 flex items-center gap-3 rounded-full border {{ auth()->check() && auth()->user()->theme === 'light' ? 'border-indigo-200 bg-indigo-600 shadow-lg shadow-indigo-200/50' : 'border-white/10 bg-indigo-600/90 shadow-2xl shadow-indigo-900/50' }} p-3 pr-4 text-white backdrop-blur transition hover:bg-indigo-500 hover:scale-105 sm:bottom-6 sm:right-6"
        aria-label="Chat with Coach Zoe"
        title="Coach Zoe">
-        <span class="relative flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-xl">
+        <span class="relative flex h-10 w-10 items-center justify-center rounded-full {{ auth()->check() && auth()->user()->theme === 'light' ? 'bg-indigo-500' : 'bg-white/15' }} text-xl">
             🧑‍🏫
             <!-- Pulsing ring -->
             <span class="absolute inset-0 animate-ping rounded-full bg-indigo-400/40"></span>
