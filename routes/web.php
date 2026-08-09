@@ -83,6 +83,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/devotional/prayer-plans', [DevotionalController::class, 'storePrayerPlan'])->name('devotional.prayer.store');
     Route::patch('/devotional/prayer-plans/{prayerPlan}/complete', [DevotionalController::class, 'completePrayerPlan'])->name('devotional.prayer.complete');
     Route::delete('/devotional/prayer-plans/{prayerPlan}', [DevotionalController::class, 'destroyPrayerPlan'])->name('devotional.prayer.destroy');
+    
+    Route::post('/devotional/morning-devotion', [DevotionalController::class, 'storeMorningDevotion'])->name('devotional.morning.store');
+    Route::patch('/devotional/morning-devotion/{morningDevotion}/toggle', [DevotionalController::class, 'toggleMorningDevotion'])->name('devotional.morning.toggle');
+    
+    Route::post('/devotional/fasting-plans', [DevotionalController::class, 'storeFastingPlan'])->name('devotional.fasting.store');
+    Route::patch('/devotional/fasting-plans/{fastingPlan}/start', [DevotionalController::class, 'startFastingPlan'])->name('devotional.fasting.start');
+    Route::patch('/devotional/fasting-plans/{fastingPlan}/complete', [DevotionalController::class, 'completeFastingPlan'])->name('devotional.fasting.complete');
+    Route::delete('/devotional/fasting-plans/{fastingPlan}', [DevotionalController::class, 'destroyFastingPlan'])->name('devotional.fasting.destroy');
 
     Route::post('/notifications/read', function () {
         auth()->user()->unreadNotifications->markAsRead();
