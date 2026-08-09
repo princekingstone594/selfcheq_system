@@ -14,7 +14,7 @@
                 
                 <!-- Quote -->
                 <div class="mt-4 rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 backdrop-blur-sm">
-                    <p class="text-sm italic text-emerald-100">"The art is not in making money, but in keeping it. Plan wisely, spend mindfully, and watch your wealth grow."</p>
+                    <p class="text-sm italic text-emerald-100">"Every wealth journey begins with a single step. Start today, stay consistent, and watch your dreams become reality."</p>
                 </div>
             </div>
         </section>
