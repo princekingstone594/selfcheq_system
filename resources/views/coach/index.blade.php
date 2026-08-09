@@ -83,7 +83,7 @@
                 </div>
 
                 <!-- Input -->
-                <form @submit.prevent="send()" class="flex gap-2">
+                <form @submit.prevent="send()" class="flex items-center gap-2">
                     <input type="text" x-model="input" placeholder="Type your message..."
                            class="flex-1 rounded-2xl border border-slate-700 bg-slate-800/80 px-4 py-3 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-indigo-500" />
                     
@@ -91,15 +91,20 @@
                     <button type="button" 
                             @mousedown="startListening()" @mouseup="stopListening()" @mouseleave="stopListening()"
                             @touchstart.prevent="startListening()" @touchend.prevent="stopListening()"
-                            class="rounded-2xl border border-white/10 bg-slate-800 px-4 py-2 text-slate-300 hover:text-white hover:bg-slate-700 transition"
-                            title="Long press to speak">
-                        🎤
+                            class="rounded-full border border-white/10 bg-slate-800 p-3 text-slate-300 hover:text-white hover:bg-slate-700 transition"
+                            title="Hold to speak">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
+                        </svg>
                     </button>
                     
+                    <!-- Send Button (Forward arrow icon) -->
                     <button type="submit" :disabled="sending"
-                            class="rounded-2xl bg-indigo-500 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-400 disabled:opacity-50 transition">
-                        <span x-show="!sending">Send</span>
-                        <span x-show="sending" x-cloak>Sending...</span>
+                            class="rounded-full bg-indigo-500 p-3 text-white hover:bg-indigo-400 disabled:opacity-50 transition"
+                            title="Send message">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                        </svg>
                     </button>
                 </form>
             </div>
