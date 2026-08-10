@@ -18,7 +18,16 @@
 
         <!-- Today's Verse -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Today's Verse</p>
+            <div class="flex items-center justify-between cursor-pointer" onclick="toggleSection('todayVerse')">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Today's Verse</p>
+                </div>
+                <svg id="todayVerseArrow" class="h-6 w-6 text-indigo-300 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+
+            <div id="todayVerse" class="mt-4">
             @if($devotional)
                 <div class="relative mt-4">
                     <span class="absolute -top-4 -left-2 text-6xl text-indigo-500/30 select-none">"</span>
@@ -134,8 +143,17 @@
 
         <!-- Command Your Morning -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Command Your Morning</p>
-            <p class="mt-2 text-sm text-slate-400">Set your wake-up time and start each day with a declaration of faith.</p>
+            <div class="flex items-center justify-between cursor-pointer" onclick="toggleSection('morningDevotion')">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Command Your Morning</p>
+                    <p class="mt-2 text-sm text-slate-400">Set your wake-up time and start each day with a declaration of faith.</p>
+                </div>
+                <svg id="morningDevotionArrow" class="h-6 w-6 text-indigo-300 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+
+            <div id="morningDevotion" class="mt-4">
 
             @if($morningDevotion)
                 <div class="mt-4 rounded-2xl border border-white/10 bg-slate-800/50 p-4">
@@ -236,8 +254,17 @@
 
         <!-- Fasting Plan -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Fasting Plan</p>
-            <p class="mt-2 text-sm text-slate-400">Create a fasting plan with purpose and reminders to keep you accountable.</p>
+            <div class="flex items-center justify-between cursor-pointer" onclick="toggleSection('fastingPlan')">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Fasting Plan</p>
+                    <p class="mt-2 text-sm text-slate-400">Create a fasting plan with purpose and reminders to keep you accountable.</p>
+                </div>
+                <svg id="fastingPlanArrow" class="h-6 w-6 text-indigo-300 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+
+            <div id="fastingPlan" class="mt-4">
 
             <form method="POST" action="{{ route('devotional.fasting.store') }}" class="mt-4 space-y-4">
                 @csrf
@@ -329,7 +356,17 @@
 
         <!-- Study Plan -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Study Plan</p>
+            <div class="flex items-center justify-between cursor-pointer" onclick="toggleSection('studyPlan')">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Study Plan</p>
+                    <p class="mt-2 text-sm text-slate-400">Grow in knowledge with structured Bible reading and inspirational resources.</p>
+                </div>
+                <svg id="studyPlanArrow" class="h-6 w-6 text-indigo-300 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+
+            <div id="studyPlan" class="mt-4">
             <p class="mt-2 text-sm text-slate-400">Grow in knowledge with structured Bible reading and inspirational resources.</p>
 
             <div class="mt-4 grid gap-3 sm:grid-cols-2">
@@ -375,8 +412,17 @@
 
         <!-- Instrumentals -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Instrumentals</p>
-            <p class="mt-2 text-sm text-slate-400">Soak in God's presence with these instrumental worship tracks perfect for devotion time.</p>
+            <div class="flex items-center justify-between cursor-pointer" onclick="toggleSection('instrumentals')">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Instrumentals</p>
+                    <p class="mt-2 text-sm text-slate-400">Soak in God's presence with these instrumental worship tracks perfect for devotion time.</p>
+                </div>
+                <svg id="instrumentalsArrow" class="h-6 w-6 text-indigo-300 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+
+            <div id="instrumentals" class="mt-4">
             
             <div class="mt-4 rounded-2xl border border-white/10 bg-slate-800/50 p-4">
                 <div class="space-y-3">
@@ -395,7 +441,17 @@
 
         <!-- Soaking Worship -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Soaking Worship</p>
+            <div class="flex items-center justify-between cursor-pointer" onclick="toggleSection('soakingWorship')">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Soaking Worship</p>
+                    <p class="mt-2 text-sm text-slate-400">Deepen your encounter with these soaking worship sessions from renowned worshipers.</p>
+                </div>
+                <svg id="soakingWorshipArrow" class="h-6 w-6 text-indigo-300 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+
+            <div id="soakingWorship" class="mt-4">
             <p class="mt-2 text-sm text-slate-400">Deepen your encounter with these soaking worship sessions from renowned worshipers.</p>
             
             <div class="mt-4 rounded-2xl border border-white/10 bg-slate-800/50 p-4">
@@ -468,8 +524,17 @@
 
         <!-- Sacrifices of Praise -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Sacrifices of Praise</p>
-            <p class="mt-2 text-sm text-slate-400">Enter into His presence with thanksgiving and praise.</p>
+            <div class="flex items-center justify-between cursor-pointer" onclick="toggleSection('sacrificesOfPraise')">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Sacrifices of Praise</p>
+                    <p class="mt-2 text-sm text-slate-400">Enter into His presence with thanksgiving and praise.</p>
+                </div>
+                <svg id="sacrificesOfPraiseArrow" class="h-6 w-6 text-indigo-300 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+
+            <div id="sacrificesOfPraise" class="mt-4">
             
             <div class="mt-4 rounded-2xl border border-white/10 bg-slate-800/50 p-4">
                 <div class="grid gap-2 sm:grid-cols-2">

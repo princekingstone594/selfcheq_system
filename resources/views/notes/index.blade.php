@@ -61,8 +61,10 @@
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-4">
                         <button type="button" onclick="closeEditor()" 
-                                class="rounded-xl border border-white/10 bg-slate-800 px-4 py-2 text-sm text-slate-300 hover:text-white transition">
-                            ← Back
+                                class="rounded-xl border border-white/10 bg-slate-800 p-2 text-slate-300 hover:text-white transition" title="Back">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                            </svg>
                         </button>
                         <input type="text" id="noteTitle" placeholder="Note title..." 
                                class="bg-transparent text-lg font-semibold text-white placeholder-slate-500 focus:outline-none" />
