@@ -45,10 +45,18 @@
 
         <!-- Prayer Plan -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Prayer Plan</p>
-            <p class="mt-2 text-sm text-slate-400">Create prayer points with duration and reminders to build a consistent prayer habit.</p>
+            <div class="flex items-center justify-between cursor-pointer" onclick="toggleSection('prayerPlan')">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Prayer Plan</p>
+                    <p class="mt-2 text-sm text-slate-400">Create prayer points with duration and reminders to build a consistent prayer habit.</p>
+                </div>
+                <svg id="prayerPlanArrow" class="h-6 w-6 text-indigo-300 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
 
-            <!-- Add Prayer Point Form -->
+            <div id="prayerPlan" class="mt-4">
+                <!-- Add Prayer Point Form -->
             <form method="POST" action="{{ route('devotional.prayer.store') }}" class="mt-4 space-y-4">
                 @csrf
                 <div class="grid gap-4 sm:grid-cols-2">
@@ -487,4 +495,19 @@
             </div>
         </section>
     </div>
+
+    <script>
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const arrow = document.getElementById(sectionId + 'Arrow');
+            
+            if (section.style.display === 'none') {
+                section.style.display = 'block';
+                arrow.style.transform = 'rotate(0deg)';
+            } else {
+                section.style.display = 'none';
+                arrow.style.transform = 'rotate(-90deg)';
+            }
+        }
+    </script>
 </x-app-layout>
