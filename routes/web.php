@@ -15,6 +15,7 @@ use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\FinancialController;
+use App\Http\Controllers\NoteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -103,6 +104,11 @@ Route::middleware('auth')->group(function () {
 
     // Progress
     Route::get('/progress', [ProgressController::class, 'index'])->name('progress.index');
+
+    // Notes
+    Route::get('/notes', [NoteController::class, 'index'])->name('notes.index');
+    Route::post('/notes', [NoteController::class, 'store'])->name('notes.store');
+    Route::delete('/notes/{note}', [NoteController::class, 'destroy'])->name('notes.destroy');
 
     // Financials
     Route::get('/financials', [FinancialController::class, 'index'])->name('financials.index');

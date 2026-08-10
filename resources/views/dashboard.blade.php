@@ -245,6 +245,28 @@
                         </a>
                     </div>
                 </div>
+
+                <!-- 📝 Notepad -->
+                <div class="group relative overflow-hidden rounded-2xl border border-amber-400/20 bg-gradient-to-br from-slate-800/80 to-slate-800/40 p-5 backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-amber-400/30 hover:shadow-xl hover:shadow-amber-500/10">
+                    <div class="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
+                    <div class="relative">
+                        <p class="font-semibold text-white">📝 Notepad</p>
+                        @if($recentNote)
+                            @if($recentNote->title)
+                                <p class="mt-2 text-sm font-medium text-amber-200">{{ $recentNote->title }}</p>
+                            @endif
+                            <p class="mt-1 text-xs text-slate-300 line-clamp-2">{{ $recentNote->content }}</p>
+                            <a href="{{ route('notes.index') }}" class="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-amber-300 hover:text-amber-200 transition">
+                                Open notepad <span class="group-hover:translate-x-1 transition-transform">→</span>
+                            </a>
+                        @else
+                            <p class="mt-3 text-xs text-slate-500">No notes yet.</p>
+                            <a href="{{ route('notes.index') }}" class="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-amber-300 hover:text-amber-200 transition">
+                                Create note <span class="group-hover:translate-x-1 transition-transform">→</span>
+                            </a>
+                        @endif
+                    </div>
+                </div>
             </div>
         </section>
     </div>

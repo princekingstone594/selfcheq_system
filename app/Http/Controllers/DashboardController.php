@@ -11,6 +11,7 @@ use App\Models\DailyStat;
 use App\Models\Devotional;
 use App\Models\Appointment;
 use App\Models\Task;
+use App\Models\Note;
 
 class DashboardController extends Controller
 {
@@ -213,6 +214,8 @@ class DashboardController extends Controller
 
         $financials = $user->financials()->latest()->take(5)->get();
 
+        $recentNote = $user->notes()->latest()->first();
+
         return view('dashboard', compact(
             'taskTotal',
             'taskCompleted',
@@ -239,7 +242,8 @@ class DashboardController extends Controller
             'calendarTasks',
             'upcomingAppointments',
             'upcomingTasks',
-            'financials'
+            'financials',
+            'recentNote'
         ));
     }
 }
