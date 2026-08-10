@@ -13,6 +13,11 @@ class CalendarController extends Controller
         $user = Auth::user();
         $view = $request->input('view', 'week');
         
+        $prevMonth = null;
+        $nextMonth = null;
+        $prevWeek = null;
+        $nextWeek = null;
+        
         if ($view === 'month') {
             // Month view
             $month = $request->input('month', now()->format('Y-m'));
