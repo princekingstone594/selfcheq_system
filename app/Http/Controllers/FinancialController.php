@@ -15,30 +15,36 @@ class FinancialController extends Controller
         $user = Auth::user();
         
         $financials = $user->financials()->latest()->get();
-        $goals = $financials->where('type', 'goal');
-        $tithings = $financials->where('type', 'tithing');
-        $expenses = $financials->where('type', 'expense');
+        
+        // Separate by type
+        $bills = $financials->where('type', 'bill');
+        $tithers = $financials->where('type', 'tithe');
         $savings = $financials->where('type', 'saving');
         
-        $totalSavings = $savings->where('is_completed', true)->sum('amount');
-        $totalExpenses = $expenses->where('is_completed', true)->sum('amount');
-        $totalTithing = $tithings->where('is_completed', true)->sum('amount');
+        // Paid vs unpaid counts
+        $paidBills = $bills->where('is_completed', true);
+        $unpaidBills = $bills->where('is_completed', false);
         
         return view('financials.index', compact(
-            'financials', 'goals', 'tithings', 'expenses', 'savings',
-            'totalSavings', 'totalExpenses', 'totalTithing'
+            'financials',
+            'bills',
+            'tithers',
+            'savings',
+            'paidBills',
+            'unpaidBills'
         ));
     }
     
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'type' => 'required|in:goal,tithing,expense,saving',
+            'type' => 'required|in:saving,tithe,bill',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'amount' => 'required|numeric|min:0',
-            'frequency' => 'nullable|in:weekly,monthly,one-time',
+            'amount' => 'nullable|numeric|min:0',
+            'frequency' => 'nullable|in:weekly,monthly,one-time,quarterly,annually',
             'due_date' => 'nullable|date',
+            'reminder_days' => 'nullable|integer|min:0',
         ]);
         
         $request->user()->financials()->create($validated);

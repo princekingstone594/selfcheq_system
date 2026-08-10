@@ -19,66 +19,229 @@
             </div>
         </section>
 
-        <!-- Quick Actions -->
-        <section class="grid gap-4 sm:grid-cols-3">
-            <a href="{{ route('financials.index') }}?filter=savings" class="group rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-5 shadow-lg transition hover:border-emerald-400/40 hover:bg-emerald-500/15">
-                <div class="flex items-center gap-3">
-                    <span class="text-2xl">💰</span>
+        <!-- Bills & Payments Section -->
+        <section class="rounded-3xl border border-rose-400/20 bg-slate-900/70 p-6 shadow-xl">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-2xl">📋</span>
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-rose-300">Bills & Payments</p>
+                    <p class="text-xs text-slate-400">Track and manage your bills</p>
+                </div>
+            </div>
+
+            <!-- Add Bill Form -->
+            <form method="POST" action="{{ route('financials.store') }}" class="mt-4 space-y-4">
+                @csrf
+                <input type="hidden" name="type" value="bill" />
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-slate-300">Bill Name</label>
+                        <input type="text" name="title" required placeholder="e.g., Rent, Electricity, Internet..." 
+                            class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-rose-500 focus:ring-1 focus:ring-rose-500" />
+                    </div>
+
                     <div>
-                        <p class="text-sm font-semibold text-emerald-300">Saving Plans</p>
-                        <p class="text-xs text-slate-400 mt-0.5">Set & track goals</p>
+                        <label class="block text-sm font-medium text-slate-300">Amount ($)</label>
+                        <input type="number" step="0.01" name="amount" placeholder="0.00" 
+                            class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-rose-500 focus:ring-1 focus:ring-rose-500" />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300">Due Date</label>
+                        <input type="date" name="due_date" required 
+                            class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white focus:border-rose-500 focus:ring-1 focus:ring-rose-500" />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300">Reminder (days before)</label>
+                        <input type="number" name="reminder_days" value="3" min="0" 
+                            class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-rose-500 focus:ring-1 focus:ring-rose-500" />
+                    </div>
+
+                    <div class="flex items-end">
+                        <button type="submit" class="w-full rounded-2xl bg-rose-500 px-6 py-2.5 text-sm font-semibold text-white hover:bg-rose-400 transition">
+                            + Add Bill
+                        </button>
                     </div>
                 </div>
-            </a>
-            
-            <a href="{{ route('financials.index') }}?filter=tithe" class="group rounded-2xl border border-amber-400/20 bg-amber-500/10 p-5 shadow-lg transition hover:border-amber-400/40 hover:bg-amber-500/15">
-                <div class="flex items-center gap-3">
-                    <span class="text-2xl">🙏</span>
-                    <div>
-                        <p class="text-sm font-semibold text-amber-300">Tithe Reminders</p>
-                        <p class="text-xs text-slate-400 mt-0.5">Honor your giving</p>
-                    </div>
+            </form>
+
+            <!-- Bills List -->
+            @if($bills->count() > 0)
+                <div class="mt-6 space-y-3">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Your Bills</p>
+                    @foreach($bills as $bill)
+                        <div class="rounded-2xl border border-white/10 bg-slate-800/50 p-4 {{ $bill->is_completed ? 'opacity-60' : '' }}">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-rose-400">📋</span>
+                                        <p class="font-semibold text-white">{{ $bill->title }}</p>
+                                    </div>
+                                    <div class="mt-2 flex flex-wrap gap-2 text-xs text-slate-400">
+                                        @if($bill->amount)
+                                            <span class="rounded-full bg-slate-700 px-3 py-1">${{ number_format($bill->amount, 2) }}</span>
+                                        @endif
+                                        @if($bill->due_date)
+                                            <span class="rounded-full bg-slate-700 px-3 py-1">Due: {{ \Carbon\Carbon::parse($bill->due_date)->format('M d, Y') }}</span>
+                                        @endif
+                                        @if($bill->reminder_days)
+                                            <span class="rounded-full bg-rose-500/20 px-3 py-1 text-rose-300">Reminder: {{ $bill->reminder_days }} days before</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <form method="POST" action="{{ route('financials.toggle', $bill) }}" class="inline">
+                                        @csrf
+                                        <button type="submit" class="rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-3 py-2 text-xs font-medium text-emerald-300 hover:bg-emerald-500/20 transition">
+                                            {{ $bill->is_completed ? '✓ Paid' : '✓ Mark Paid' }}
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ route('financials.destroy', $bill) }}" class="inline" onsubmit="return confirm('Delete this bill?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="rounded-xl border border-rose-500/20 bg-slate-800 p-2 text-rose-400 hover:text-rose-300 transition" title="Delete">
+                                            🗑️
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
-            </a>
-            
-            <a href="{{ route('financials.index') }}?filter=bills" class="group rounded-2xl border border-rose-400/20 bg-rose-500/10 p-5 shadow-lg transition hover:border-rose-400/40 hover:bg-rose-500/15">
-                <div class="flex items-center gap-3">
-                    <span class="text-2xl">📋</span>
-                    <div>
-                        <p class="text-sm font-semibold text-rose-300">Bills & Payments</p>
-                        <p class="text-xs text-slate-400 mt-0.5">Never miss a due date</p>
-                    </div>
+            @else
+                <div class="mt-4 rounded-2xl border border-dashed border-white/10 p-6 text-center">
+                    <p class="text-sm text-slate-400">No bills yet. Add your first bill above.</p>
                 </div>
-            </a>
+            @endif
         </section>
 
-        <!-- Add New Financial Plan -->
-        <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-300">Create Financial Plan</p>
-            
-            <form method="POST" action="{{ route('financials.store') }}" class="mt-4">
+        <!-- Tithe Reminders Section -->
+        <section class="rounded-3xl border border-amber-400/20 bg-slate-900/70 p-6 shadow-xl">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-2xl">🙏</span>
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-amber-300">Tithe Reminders</p>
+                    <p class="text-xs text-slate-400">Set reminders for your tithe payments</p>
+                </div>
+            </div>
+
+            <!-- Add Tithe Reminder Form -->
+            <form method="POST" action="{{ route('financials.store') }}" class="mt-4 space-y-4">
                 @csrf
+                <input type="hidden" name="type" value="tithe" />
                 <div class="grid gap-4 sm:grid-cols-2">
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-slate-300">Tithe Description (optional)</label>
+                        <input type="text" name="title" placeholder="e.g., Weekly Tithe, Monthly Offering..." 
+                            class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-amber-500 focus:ring-1 focus:ring-amber-500" />
+                    </div>
+
                     <div>
-                        <label class="block text-sm font-medium text-slate-300">Type</label>
-                        <select name="type" required class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
-                            <option value="saving">💾 Saving Plan</option>
-                            <option value="tithe">🙏 Tithe Reminder</option>
-                            <option value="bill">📋 Bill Payment</option>
-                            <option value="investment">📈 Investment</option>
+                        <label class="block text-sm font-medium text-slate-300">Payment Day</label>
+                        <select name="due_date" required class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500">
+                            <option value="">Select day of month</option>
+                            @for($i = 1; $i <= 31; $i++)
+                                <option value="{{ $i }}">{{ $i }}</option>
+                            @endfor
                         </select>
                     </div>
-                    
+
                     <div>
-                        <label class="block text-sm font-medium text-slate-300">Title</label>
-                        <input type="text" name="title" required placeholder="e.g., Emergency Fund, Rent, Tithe..." class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500" />
+                        <label class="block text-sm font-medium text-slate-300">Frequency</label>
+                        <select name="frequency" required class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white focus:border-amber-500 focus:ring-1 focus:ring-amber-500">
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
                     </div>
-                    
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-300">Reminder (days before)</label>
+                        <input type="number" name="reminder_days" value="3" min="0" max="30" 
+                            class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-amber-500 focus:ring-1 focus:ring-amber-500" />
+                    </div>
+
+                    <div class="flex items-end">
+                        <button type="submit" class="w-full rounded-2xl bg-amber-500 px-6 py-2.5 text-sm font-semibold text-white hover:bg-amber-400 transition">
+                            + Add Tithe Reminder
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Tithe Reminders List -->
+            @if($tithers->count() > 0)
+                <div class="mt-6 space-y-3">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Active Tithe Reminders</p>
+                    @foreach($tithers as $tithe)
+                        <div class="rounded-2xl border border-white/10 bg-slate-800/50 p-4 {{ $tithe->is_completed ? 'opacity-60' : '' }}">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-amber-400">🙏</span>
+                                        <p class="font-semibold text-white">{{ $tithe->title ?: 'Tithe Payment' }}</p>
+                                    </div>
+                                    <div class="mt-2 flex flex-wrap gap-2 text-xs text-slate-400">
+                                        <span class="rounded-full bg-amber-500/20 px-3 py-1 text-amber-300">Day {{ $tithe->due_date }} of month</span>
+                                        <span class="rounded-full bg-slate-700 px-3 py-1">{{ ucfirst($tithe->frequency) }}</span>
+                                        @if($tithe->reminder_days)
+                                            <span class="rounded-full bg-indigo-500/20 px-3 py-1 text-indigo-300">Reminder: {{ $tithe->reminder_days }} days before</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <form method="POST" action="{{ route('financials.toggle', $tithe) }}" class="inline">
+                                        @csrf
+                                        <button type="submit" class="rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-3 py-2 text-xs font-medium text-emerald-300 hover:bg-emerald-500/20 transition">
+                                            {{ $tithe->is_completed ? '✓ Paid' : '✓ Mark Paid' }}
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ route('financials.destroy', $tithe) }}" class="inline" onsubmit="return confirm('Delete this reminder?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="rounded-xl border border-rose-500/20 bg-slate-800 p-2 text-rose-400 hover:text-rose-300 transition" title="Delete">
+                                            🗑️
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="mt-4 rounded-2xl border border-dashed border-white/10 p-6 text-center">
+                    <p class="text-sm text-slate-400">No tithe reminders set. Add one above to stay on track with your giving.</p>
+                </div>
+            @endif
+        </section>
+
+        <!-- Savings Plan Section -->
+        <section class="rounded-3xl border border-emerald-400/20 bg-slate-900/70 p-6 shadow-xl">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-2xl">💰</span>
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-300">Saving Plans</p>
+                    <p class="text-xs text-slate-400">Set and track your savings goals</p>
+                </div>
+            </div>
+
+            <!-- Add Savings Plan Form -->
+            <form method="POST" action="{{ route('financials.store') }}" class="mt-4 space-y-4">
+                @csrf
+                <input type="hidden" name="type" value="saving" />
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-slate-300">Savings Goal Title</label>
+                        <input type="text" name="title" required placeholder="e.g., Emergency Fund, Vacation, New Car..." 
+                            class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500" />
+                    </div>
+
                     <div>
                         <label class="block text-sm font-medium text-slate-300">Target Amount ($)</label>
-                        <input type="number" step="0.01" name="amount" class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500" placeholder="0.00" />
+                        <input type="number" step="0.01" name="amount" placeholder="0.00" 
+                            class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500" />
                     </div>
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-slate-300">Frequency</label>
                         <select name="frequency" class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
@@ -89,109 +252,85 @@
                             <option value="annually">Annually</option>
                         </select>
                     </div>
-                    
+
                     <div>
-                        <label class="block text-sm font-medium text-slate-300">Due Date</label>
-                        <input type="date" name="due_date" class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500" />
+                        <label class="block text-sm font-medium text-slate-300">Target Date</label>
+                        <input type="date" name="due_date" 
+                            class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500" />
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-slate-300">Reminder (days before)</label>
-                        <input type="number" name="reminder_days" value="3" min="0" class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500" />
+                        <input type="number" name="reminder_days" value="3" min="0" 
+                            class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500" />
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-slate-300">Notes</label>
+                        <textarea name="description" rows="2" placeholder="Add any additional notes..." 
+                            class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"></textarea>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <button type="submit" class="w-full rounded-2xl bg-emerald-500 px-6 py-2.5 text-sm font-semibold text-white hover:bg-emerald-400 transition">
+                            + Create Savings Plan
+                        </button>
                     </div>
                 </div>
-                
-                <div class="mt-4">
-                    <label class="block text-sm font-medium text-slate-300">Notes</label>
-                    <textarea name="description" rows="2" placeholder="Add any additional notes..." class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"></textarea>
-                </div>
-                
-                <button type="submit" class="mt-4 rounded-2xl bg-emerald-500 px-6 py-2.5 text-sm font-semibold text-white hover:bg-emerald-400 transition">
-                    Create Plan
-                </button>
             </form>
-        </section>
 
-        <!-- Financial Plans List -->
-        <section class="space-y-4">
-            @php
-                $filter = request('filter');
-                $filteredFinancials = $filter ? $financials->where('type', $filter) : $financials;
-            @endphp
-
-            @if($filteredFinancials->count() > 0)
-                @foreach($filteredFinancials as $financial)
-                    <div class="rounded-2xl border border-white/10 bg-slate-900/70 p-5 shadow-lg {{ $financial->is_completed ? 'opacity-60' : '' }}">
-                        <div class="flex items-start justify-between">
-                            <div class="flex-1">
-                                <div class="flex items-center gap-2">
-                                    @if($financial->type === 'saving')
+            <!-- Savings Plans List -->
+            @if($savings->count() > 0)
+                <div class="mt-6 space-y-3">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Your Savings Plans</p>
+                    @foreach($savings as $saving)
+                        <div class="rounded-2xl border border-white/10 bg-slate-800/50 p-4 {{ $saving->is_completed ? 'opacity-60' : '' }}">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2">
                                         <span class="text-emerald-400">💰</span>
-                                        <p class="font-semibold text-white">Saving Plan: {{ $financial->title }}</p>
-                                    @elseif($financial->type === 'tithe')
-                                        <span class="text-amber-400">🙏</span>
-                                        <p class="font-semibold text-white">Tithe: {{ $financial->title }}</p>
-                                    @elseif($financial->type === 'bill')
-                                        <span class="text-rose-400">📋</span>
-                                        <p class="font-semibold text-white">Bill: {{ $financial->title }}</p>
-                                    @elseif($financial->type === 'investment')
-                                        <span class="text-sky-400">📈</span>
-                                        <p class="font-semibold text-white">Investment: {{ $financial->title }}</p>
-                                    @endif
-                                </div>
-                                
-                                @if($financial->description)
-                                    <p class="mt-1 text-sm text-slate-400">{{ $financial->description }}</p>
-                                @endif
-                                
-                                <div class="mt-3 flex flex-wrap gap-3 text-xs text-slate-400">
-                                    @if($financial->amount)
-                                        <span class="rounded-full bg-slate-800 px-3 py-1">Target: ${{ number_format($financial->amount, 2) }}</span>
-                                    @endif
-                                    @if($financial->frequency)
-                                        <span class="rounded-full bg-slate-800 px-3 py-1">{{ ucfirst($financial->frequency) }}</span>
-                                    @endif
-                                    @if($financial->due_date)
-                                        <span class="rounded-full bg-slate-800 px-3 py-1">Due: {{ \Carbon\Carbon::parse($financial->due_date)->format('M d, Y') }}</span>
-                                    @endif
-                                    @if($financial->reminder_days)
-                                        <span class="rounded-full bg-indigo-500/20 px-3 py-1 text-indigo-300">Reminder: {{ $financial->reminder_days }} days before</span>
-                                    @endif
-                                </div>
-
-                                @if($financial->type === 'bill')
-                                    <div class="mt-3">
-                                        <form method="POST" action="{{ route('financials.toggle', $financial) }}" class="inline">
-                                            @csrf
-                                            <button type="submit" class="rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-2 text-xs font-medium text-emerald-300 hover:bg-emerald-500/20 transition">
-                                                {{ $financial->is_completed ? '✓ Marked as Paid' : '✓ Mark as Paid' }}
-                                            </button>
-                                        </form>
+                                        <p class="font-semibold text-white">{{ $saving->title }}</p>
                                     </div>
-                                @endif
-                            </div>
-                            
-                            <div class="flex gap-2">
-                                <form method="POST" action="{{ route('financials.toggle', $financial) }}" class="inline">
-                                    @csrf
-                                    <button type="submit" class="rounded-xl border border-white/10 bg-slate-800 p-2 text-slate-300 hover:text-white transition" title="Toggle completion">
-                                        {{ $financial->is_completed ? '↩️' : '✅' }}
-                                    </button>
-                                </form>
-                                <form method="POST" action="{{ route('financials.destroy', $financial) }}" class="inline" onsubmit="return confirm('Delete this plan?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="rounded-xl border border-rose-500/20 bg-slate-800 p-2 text-rose-400 hover:text-rose-300 transition" title="Delete">
-                                        🗑️
-                                    </button>
-                                </form>
+                                    @if($saving->description)
+                                        <p class="mt-1 text-sm text-slate-400">{{ $saving->description }}</p>
+                                    @endif
+                                    <div class="mt-2 flex flex-wrap gap-2 text-xs text-slate-400">
+                                        @if($saving->amount)
+                                            <span class="rounded-full bg-slate-700 px-3 py-1">Target: ${{ number_format($saving->amount, 2) }}</span>
+                                        @endif
+                                        @if($saving->frequency)
+                                            <span class="rounded-full bg-slate-700 px-3 py-1">{{ ucfirst($saving->frequency) }}</span>
+                                        @endif
+                                        @if($saving->due_date)
+                                            <span class="rounded-full bg-slate-700 px-3 py-1">Due: {{ \Carbon\Carbon::parse($saving->due_date)->format('M d, Y') }}</span>
+                                        @endif
+                                        @if($saving->reminder_days)
+                                            <span class="rounded-full bg-indigo-500/20 px-3 py-1 text-indigo-300">Reminder: {{ $saving->reminder_days }} days before</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <form method="POST" action="{{ route('financials.toggle', $saving) }}" class="inline">
+                                        @csrf
+                                        <button type="submit" class="rounded-xl border border-white/10 bg-slate-800 p-2 text-slate-300 hover:text-white transition" title="Toggle completion">
+                                            {{ $saving->is_completed ? '↩️' : '✅' }}
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ route('financials.destroy', $saving) }}" class="inline" onsubmit="return confirm('Delete this plan?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="rounded-xl border border-rose-500/20 bg-slate-800 p-2 text-rose-400 hover:text-rose-300 transition" title="Delete">
+                                            🗑️
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
             @else
-                <div class="rounded-2xl border border-dashed border-white/10 p-8 text-center">
-                    <p class="text-slate-400">No financial plans yet. Start planning above.</p>
+                <div class="mt-4 rounded-2xl border border-dashed border-white/10 p-6 text-center">
+                    <p class="text-sm text-slate-400">No savings plans yet. Create one above to start building your future.</p>
                 </div>
             @endif
         </section>
