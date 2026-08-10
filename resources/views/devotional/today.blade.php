@@ -182,6 +182,50 @@
             </form>
         </section>
 
+        <!-- Join a Live Devotion Community -->
+        <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
+            <div class="flex items-center justify-between cursor-pointer" onclick="toggleSection('liveDevotion')">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Join a Live Devotion Community</p>
+                    <p class="mt-2 text-sm text-slate-400">Connect with believers worldwide through these powerful devotion communities.</p>
+                </div>
+                <svg id="liveDevotionArrow" class="h-6 w-6 text-indigo-300 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </div>
+
+            <div id="liveDevotion" class="mt-4 space-y-3">
+                <div class="rounded-2xl border border-white/10 bg-slate-800/50 p-4">
+                    <div class="space-y-3">
+                        <a href="https://www.youtube.com/results?search_query=Triump30+International+Ministries" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                            🎥 Triump30 International Ministries - Live every day 7am EAT / 6am WAT
+                        </a>
+                        <a href="https://www.youtube.com/@PastorJerryEze" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                            🎥 NSPPD (New Season Prophetic Prayer Breakfast) by Pastor Jerry Eze
+                        </a>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 mt-4">Upcoming Devotional Communities</p>
+                        <div class="grid gap-2 sm:grid-cols-2">
+                            <a href="https://www.youtube.com/results?search_query=Hallelujah+Challenge+Nathaniel+Bassey" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                                Hallelujah Challenge - Nathaniel Bassey
+                            </a>
+                            <a href="https://www.youtube.com/results?search_query=Restoring+the+Order+of+Worship+Dunsin+Oyekan" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                                Restoring the Order of Worship - Dunsin Oyekan
+                            </a>
+                            <a href="https://www.youtube.com/@Upperoom" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                                Upperoom - Dunsin Oyekan
+                            </a>
+                            <a href="https://www.youtube.com/results?search_query=Mountain+Experience+Moses+Bliss" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                                Mountain Experience - Moses Bliss
+                            </a>
+                            <a href="https://www.youtube.com/results?search_query=Qavah+Abbey+Ojomu" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                                Qavah - Abbey Ojomu
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Fasting Plan -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
             <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Fasting Plan</p>
