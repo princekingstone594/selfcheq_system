@@ -215,27 +215,35 @@
             <div id="liveDevotion" class="mt-4 space-y-3">
                 <div class="rounded-2xl border border-white/10 bg-slate-800/50 p-4">
                     <div class="space-y-3">
-                        <a href="https://www.youtube.com/results?search_query=Triump30+International+Ministries" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
-                            🎥 Triump30 International Ministries - Live every day 7am EAT / 6am WAT
+                        <a href="https://www.youtube.com/results?search_query=Triump30+International+Ministries" target="_blank" class="group flex items-center gap-3 text-sm text-indigo-300 hover:text-white transition">
+                            <span class="text-indigo-400 group-hover:text-amber-300">🎥</span>
+                            <span>Triumph30 International Ministries - by Apst Emmanuel Iren</span>
+                            <span class="text-xs text-slate-400 group-hover:text-indigo-200">· Live daily 7am EAT / 6am WAT</span>
                         </a>
-                        <a href="https://www.youtube.com/@PastorJerryEze" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
-                            🎥 NSPPD (New Season Prophetic Prayer Breakfast) by Pastor Jerry Eze
+                        <a href="https://www.youtube.com/@PastorJerryEze" target="_blank" class="group flex items-center gap-3 text-sm text-indigo-300 hover:text-white transition">
+                            <span class="text-indigo-400 group-hover:text-amber-300">🎥</span>
+                            <span>NSPPD (New Season Prophetic Prayer Breakfast) by Pastor Jerry Eze</span>
                         </a>
-                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 mt-4">Upcoming Devotional Communities</p>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 mt-4 mb-2">Upcoming Devotional Communities</p>
                         <div class="grid gap-2 sm:grid-cols-2">
-                            <a href="https://www.youtube.com/results?search_query=Hallelujah+Challenge+Nathaniel+Bassey" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                            <a href="https://www.youtube.com/results?search_query=Hallelijah+Challenge+Nathaniel+Bassey" target="_blank" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
+                                <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 group-hover:bg-amber-300"></span>
                                 Hallelujah Challenge - Nathaniel Bassey
                             </a>
-                            <a href="https://www.youtube.com/results?search_query=Restoring+the+Order+of+Worship+Dunsin+Oyekan" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                            <a href="https://www.youtube.com/results?search_query=Restoring+the+Order+of+Worship+Dunsin+Oyekan" target="_blank" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
+                                <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 group-hover:bg-amber-300"></span>
                                 Restoring the Order of Worship - Dunsin Oyekan
                             </a>
-                            <a href="https://www.youtube.com/@Upperoom" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                            <a href="https://www.youtube.com/@Upperoom" target="_blank" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
+                                <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 group-hover:bg-amber-300"></span>
                                 Upperoom - Dunsin Oyekan
                             </a>
-                            <a href="https://www.youtube.com/results?search_query=Mountain+Experience+Moses+Bliss" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                            <a href="https://www.youtube.com/results?search_query=Mountain+Experience+Moses+Bliss" target="_blank" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
+                                <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 group-hover:bg-amber-300"></span>
                                 Mountain Experience - Moses Bliss
                             </a>
-                            <a href="https://www.youtube.com/results?search_query=Qavah+Abbey+Ojomu" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                            <a href="https://www.youtube.com/results?search_query=Qavah+Abbey+Ojomu" target="_blank" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
+                                <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 group-hover:bg-amber-300"></span>
                                 Qavah - Abbey Ojomu
                             </a>
                         </div>

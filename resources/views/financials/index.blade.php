@@ -21,14 +21,20 @@
 
         <!-- Bills & Payments Section -->
         <section class="rounded-3xl border border-rose-400/20 bg-slate-900/70 p-6 shadow-xl">
-            <div class="flex items-center gap-3 mb-4">
-                <span class="text-2xl">📋</span>
-                <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-rose-300">Bills & Payments</p>
-                    <p class="text-xs text-slate-400">Track and manage your bills</p>
+            <div class="flex items-center justify-between cursor-pointer" onclick="toggleFinSection('billsContent')">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-2xl">📋</span>
+                    <div>
+                        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-rose-300">Bills & Payments</p>
+                        <p class="text-xs text-slate-400">Track and manage your bills</p>
+                    </div>
                 </div>
+                <svg id="billsContentArrow" class="h-6 w-6 text-rose-300 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
             </div>
 
+            <div id="billsContent" class="mt-4">
             <!-- Add Bill Form -->
             <form method="POST" action="{{ route('financials.store') }}" class="mt-4 space-y-4">
                 @csrf
@@ -109,23 +115,30 @@
                         </div>
                     @endforeach
                 </div>
-            @else
+                    @else
                 <div class="mt-4 rounded-2xl border border-dashed border-white/10 p-6 text-center">
                     <p class="text-sm text-slate-400">No bills yet. Add your first bill above.</p>
                 </div>
             @endif
+        </div>
         </section>
 
         <!-- Tithe Reminders Section -->
         <section class="rounded-3xl border border-amber-400/20 bg-slate-900/70 p-6 shadow-xl">
-            <div class="flex items-center gap-3 mb-4">
-                <span class="text-2xl">🙏</span>
-                <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-amber-300">Tithe Reminders</p>
-                    <p class="text-xs text-slate-400">Set reminders for your tithe payments</p>
+            <div class="flex items-center justify-between cursor-pointer" onclick="toggleFinSection('titheContent')">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-2xl">🙏</span>
+                    <div>
+                        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-amber-300">Tithe Reminders</p>
+                        <p class="text-xs text-slate-400">Set reminders for your tithe payments</p>
+                    </div>
                 </div>
+                <svg id="titheContentArrow" class="h-6 w-6 text-amber-300 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
             </div>
 
+            <div id="titheContent" class="mt-4">
             <!-- Add Tithe Reminder Form -->
             <form method="POST" action="{{ route('financials.store') }}" class="mt-4 space-y-4">
                 @csrf
@@ -213,18 +226,25 @@
                     <p class="text-sm text-slate-400">No tithe reminders set. Add one above to stay on track with your giving.</p>
                 </div>
             @endif
+            </div>
         </section>
 
         <!-- Savings Plan Section -->
         <section class="rounded-3xl border border-emerald-400/20 bg-slate-900/70 p-6 shadow-xl">
-            <div class="flex items-center gap-3 mb-4">
-                <span class="text-2xl">💰</span>
-                <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-300">Saving Plans</p>
-                    <p class="text-xs text-slate-400">Set and track your savings goals</p>
+            <div class="flex items-center justify-between cursor-pointer" onclick="toggleFinSection('savingsContent')">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-2xl">💰</span>
+                    <div>
+                        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-300">Saving Plans</p>
+                        <p class="text-xs text-slate-400">Set and track your savings goals</p>
+                    </div>
                 </div>
+                <svg id="savingsContentArrow" class="h-6 w-6 text-emerald-300 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
             </div>
 
+            <div id="savingsContent" class="mt-4">
             <!-- Add Savings Plan Form -->
             <form method="POST" action="{{ route('financials.store') }}" class="mt-4 space-y-4">
                 @csrf
@@ -335,4 +355,32 @@
             @endif
         </section>
     </div>
+
+    <script>
+        // Hide all collapsible sections by default
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = ['billsContent', 'titheContent', 'savingsContent'];
+            sections.forEach(function(sectionId) {
+                const section = document.getElementById(sectionId);
+                const arrow = document.getElementById(sectionId + 'Arrow');
+                if (section && arrow) {
+                    section.style.display = 'none';
+                    arrow.style.transform = 'rotate(-90deg)';
+                }
+            });
+        });
+
+        function toggleFinSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const arrow = document.getElementById(sectionId + 'Arrow');
+            
+            if (section.style.display === 'none') {
+                section.style.display = 'block';
+                arrow.style.transform = 'rotate(0deg)';
+            } else {
+                section.style.display = 'none';
+                arrow.style.transform = 'rotate(-90deg)';
+            }
+        }
+    </script>
 </x-app-layout>
