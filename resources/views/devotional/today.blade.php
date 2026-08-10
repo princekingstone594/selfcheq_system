@@ -379,6 +379,41 @@
             </div>
         </section>
 
+        <!-- Join a Live Devotion Community -->
+        <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
+            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Join a Live Devotion Community</p>
+            <p class="mt-2 text-sm text-slate-400">Connect with believers worldwide through these powerful devotion communities.</p>
+            
+            <div class="mt-4 rounded-2xl border border-white/10 bg-slate-800/50 p-4">
+                <div class="space-y-3">
+                    <a href="https://www.youtube.com/results?search_query=Triump30+International+Ministries" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        🎥 Triump30 International Ministries - Live every day 7am EAT / 6am WAT
+                    </a>
+                    <a href="https://www.youtube.com/@PastorJerryEze" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        🎥 NSPPD (New Season Prophetic Prayer Breakfast) by Pastor Jerry Eze
+                    </a>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 mt-4">Upcoming Devotional Communities</p>
+                    <div class="grid gap-2 sm:grid-cols-2">
+                        <a href="https://www.youtube.com/results?search_query=Hallelujah+Challenge+Nathaniel+Bassey" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                            Hallelujah Challenge - Nathaniel Bassey
+                        </a>
+                        <a href="https://www.youtube.com/results?search_query=Restoring+the+Order+of+Worship+Dunsin+Oyekan" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                            Restoring the Order of Worship - Dunsin Oyekan
+                        </a>
+                        <a href="https://www.youtube.com/@Upperoom" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                            Upperoom - Dunsin Oyekan
+                        </a>
+                        <a href="https://www.youtube.com/results?search_query=Mountain+Experience+Moses+Bliss" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                            Mountain Experience - Moses Bliss
+                        </a>
+                        <a href="https://www.youtube.com/results?search_query=Qavah+Abbey+Ojomu" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                            Qavah - Abbey Ojomu
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Sacrifices of Praise -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
             <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Sacrifices of Praise</p>
@@ -392,17 +427,17 @@
                     <a href="https://www.youtube.com/results?search_query=Dunsin+Oyekan+praise+session" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
                         Dunsin Oyekan - Praise Session
                     </a>
-                    <a href="https://www.youtube.com/results?search_query=Theophilus+Sunday+praise+session" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
-                        Theophilus Sunday - Praise Session
+                    <a href="https://www.youtube.com/results?search_query=Bidemi+Olaoba+praise" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Bidemi Olaoba - Praise
                     </a>
-                    <a href="https://www.youtube.com/results?search_query=Minister+GUC+praise+session" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
-                        Minister GUC - Praise Session
+                    <a href="https://www.youtube.com/results?search_query=Mercy+Chinwo+praise+session" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Mercy Chinwo - Praise Session
                     </a>
-                    <a href="https://www.youtube.com/results?search_query=Abbey+Ojomu+praise+session" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
-                        Abbey Ojomu - Praise Session
+                    <a href="https://www.youtube.com/results?search_query=Essence+of+Worship" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Essence of Worship
                     </a>
-                    <a href="https://www.youtube.com/results?search_query=Ebuka+Songs+praise+session" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
-                        Ebuka Songs - Praise Session
+                    <a href="https://www.youtube.com/results?search_query=Agape+Gospel+Band" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Agape Gospel Band
                     </a>
                 </div>
             </div>
