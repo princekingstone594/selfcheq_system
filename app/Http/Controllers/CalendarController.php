@@ -11,11 +11,48 @@ class CalendarController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $week = $request->input('week', 0);  // 0 = current week
-        $start = Carbon::now()->startOfWeek()->addWeeks($week);
-        $end = $start->copy()->endOfWeek();
+        $view = $request->input('view', 'week');
+        
+        if ($view === 'month') {
+            // Month view
+            $month = $request->input('month', now()->format('Y-m'));
+            [$year, $monthNum] = explode('-', $month);
+            
+            $start = Carbon::createFromDate($year, $monthNum, 1)->startOfMonth();
+            $end = $start->copy()->endOfMonth();
+            
+            // Get the first day of the week containing the 1st
+            $calendarStart = $start->copy()->startOfWeek();
+            // Get the last day of the week containing the last day
+            $calendarEnd = $end->copy()->endOfWeek();
+            
+            $prevMonth = $start->copy()->subMonth()->format('Y-m');
+            $nextMonth = $start->copy()->addMonth()->format('Y-m');
+            
+            // Build all calendar days (including padding days)
+            $days = collect();
+            $current = $calendarStart->copy();
+            while ($current->lt($calendarEnd) || $current->eq($calendarEnd)) {
+                $days->push($current->copy());
+                $current->addDay();
+            }
+        } else {
+            // Week view
+            $week = $request->input('week', 0);
+            $start = Carbon::now()->startOfWeek()->addWeeks($week);
+            $end = $start->copy()->endOfWeek();
+            
+            $days = collect();
+            for ($i = 0; $i < 7; $i++) {
+                $day = $start->copy()->addDays($i);
+                $days->push($day);
+            }
+            
+            $prevWeek = $week - 1;
+            $nextWeek = $week + 1;
+        }
 
-        // Appointments in this week
+        // Appointments
         $appointments = $user->appointments()
             ->whereBetween('date', [$start->toDateString(), $end->toDateString()])
             ->orderBy('date')
@@ -25,7 +62,7 @@ class CalendarController extends Controller
                 return Carbon::parse($a->date)->toDateString();
             });
 
-        // Tasks in this week (future or due this week)
+        // Tasks
         $tasks = $user->tasks()
             ->whereDate('due_date', '>=', $start->toDateString())
             ->whereDate('due_date', '<=', $end->toDateString())
@@ -35,25 +72,17 @@ class CalendarController extends Controller
                 return Carbon::parse($t->due_date)->toDateString();
             });
 
-        // Build calendar days
-        $days = collect();
-        for ($i = 0; $i < 7; $i++) {
-            $day = $start->copy()->addDays($i);
-            $days->push($day);
-        }
-
-        $prevWeek = $week - 1;
-        $nextWeek = $week + 1;
-
         return view('calendar.index', compact(
             'days',
             'appointments',
             'tasks',
             'start',
             'end',
-            'week',
+            'view',
             'prevWeek',
-            'nextWeek'
+            'nextWeek',
+            'prevMonth',
+            'nextMonth'
         ));
     }
 }
