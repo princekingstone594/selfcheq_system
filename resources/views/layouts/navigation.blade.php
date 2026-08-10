@@ -93,15 +93,15 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center gap-2 px-2 py-1.5 text-sm text-slate-300 hover:text-white transition">
-                            @if(Auth::user()->profile_photo_url && file_exists(public_path('storage/' . Auth::user()->profile_photo_url)))
-                                <img src="{{ asset('storage/' . Auth::user()->profile_photo_url) }}"
-                                     alt="{{ Auth::user()->name }}"
-                                     class="h-8 w-8 rounded-full border border-white/10 object-cover" />
-                            @else
-                                <div class="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-indigo-500/20 text-xs font-semibold text-indigo-300">
-                                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) . strtoupper(substr(explode(' ', Auth::user()->name)[1] ?? Auth::user()->name, 0, 1)) }}
-                                </div>
-                            @endif
+                        @if(Auth::user()->profile_photo_url && file_exists(public_path('storage/' . Auth::user()->profile_photo_url)))
+                            <img src="{{ asset('storage/' . Auth::user()->profile_photo_url) }}"
+                                 alt="{{ Auth::user()->name }}"
+                                 class="h-8 w-8 rounded-full border border-white/10 object-cover" />
+                        @else
+                            <div class="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-indigo-500/20 text-xs font-semibold text-indigo-300">
+                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                            </div>
+                        @endif
                             <span class="hidden sm:inline">{{ explode(' ', Auth::user()->name)[0] }}</span>
 
                             <div class="ms-1">

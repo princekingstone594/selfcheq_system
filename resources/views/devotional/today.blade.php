@@ -18,16 +18,8 @@
 
         <!-- Today's Verse -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-            <div class="flex items-center justify-between cursor-pointer" onclick="toggleSection('todayVerse')">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Today's Verse</p>
-                </div>
-                <svg id="todayVerseArrow" class="h-6 w-6 text-indigo-300 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                </svg>
-            </div>
-
-            <div id="todayVerse" class="mt-4">
+            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Today's Verse</p>
+            
             @if($devotional)
                 <div class="relative mt-4">
                     <span class="absolute -top-4 -left-2 text-6xl text-indigo-500/30 select-none">"</span>
@@ -487,41 +479,6 @@
             </div>
         </section>
 
-        <!-- Join a Live Devotion Community -->
-        <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Join a Live Devotion Community</p>
-            <p class="mt-2 text-sm text-slate-400">Connect with believers worldwide through these powerful devotion communities.</p>
-            
-            <div class="mt-4 rounded-2xl border border-white/10 bg-slate-800/50 p-4">
-                <div class="space-y-3">
-                    <a href="https://www.youtube.com/results?search_query=Triump30+International+Ministries" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
-                        🎥 Triump30 International Ministries - Live every day 7am EAT / 6am WAT
-                    </a>
-                    <a href="https://www.youtube.com/@PastorJerryEze" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
-                        🎥 NSPPD (New Season Prophetic Prayer Breakfast) by Pastor Jerry Eze
-                    </a>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 mt-4">Upcoming Devotional Communities</p>
-                    <div class="grid gap-2 sm:grid-cols-2">
-                        <a href="https://www.youtube.com/results?search_query=Hallelujah+Challenge+Nathaniel+Bassey" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
-                            Hallelujah Challenge - Nathaniel Bassey
-                        </a>
-                        <a href="https://www.youtube.com/results?search_query=Restoring+the+Order+of+Worship+Dunsin+Oyekan" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
-                            Restoring the Order of Worship - Dunsin Oyekan
-                        </a>
-                        <a href="https://www.youtube.com/@Upperoom" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
-                            Upperoom - Dunsin Oyekan
-                        </a>
-                        <a href="https://www.youtube.com/results?search_query=Mountain+Experience+Moses+Bliss" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
-                            Mountain Experience - Moses Bliss
-                        </a>
-                        <a href="https://www.youtube.com/results?search_query=Qavah+Abbey+Ojomu" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
-                            Qavah - Abbey Ojomu
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- Sacrifices of Praise -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
             <div class="flex items-center justify-between cursor-pointer" onclick="toggleSection('sacrificesOfPraise')">
@@ -562,6 +519,19 @@
     </div>
 
     <script>
+        // Hide all collapsible sections by default
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = ['prayerPlan', 'morningDevotion', 'liveDevotion', 'fastingPlan', 'studyPlan', 'instrumentals', 'soakingWorship', 'sacrificesOfPraise'];
+            sections.forEach(function(sectionId) {
+                const section = document.getElementById(sectionId);
+                const arrow = document.getElementById(sectionId + 'Arrow');
+                if (section && arrow) {
+                    section.style.display = 'none';
+                    arrow.style.transform = 'rotate(-90deg)';
+                }
+            });
+        });
+
         function toggleSection(sectionId) {
             const section = document.getElementById(sectionId);
             const arrow = document.getElementById(sectionId + 'Arrow');

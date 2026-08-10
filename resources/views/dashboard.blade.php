@@ -28,7 +28,7 @@
 
                 <!-- Welcome + quote -->
                 <div class="mt-4 space-y-2">
-                    <p class="text-xl font-semibold text-white sm:text-2xl">Welcome back, {{ auth()->user()->name }} 👋</p>
+                    <p class="text-xl font-semibold text-white sm:text-2xl">Welcome back, {{ explode(' ', auth()->user()->name)[0] }} 👋</p>
                     <p class="max-w-2xl text-sm italic text-slate-300">"Discipline is the bridge between goals and accomplishment." — Jim Rohn</p>
                 </div>
 
