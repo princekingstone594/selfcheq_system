@@ -11,9 +11,20 @@
             <!-- Content -->
             <div class="relative p-6 sm:p-8 lg:p-10">
                 <!-- Profile photo -->
-                <img src="{{ auth()->user()->profile_photo_url }}"
-                     alt="{{ auth()->user()->name }}"
-                     class="absolute right-6 top-6 h-14 w-14 rounded-2xl border-2 border-white/20 object-cover shadow-xl ring-4 ring-indigo-500/20 sm:right-8 sm:top-8 sm:h-16 sm:w-16 lg:right-10 lg:top-10" />
+                @php
+                    $nameParts = explode(' ', auth()->user()->name);
+                    $initials = strtoupper(substr($nameParts[0], 0, 1)) . ($nameParts[1] ? strtoupper(substr($nameParts[1], 0, 1)) : '');
+                @endphp
+                
+                @if(auth()->user()->profile_photo_url && file_exists(public_path('storage/' . auth()->user()->profile_photo_url)))
+                    <img src="{{ asset('storage/' . auth()->user()->profile_photo_url) }}"
+                         alt="{{ auth()->user()->name }}"
+                         class="absolute right-6 top-6 h-14 w-14 rounded-2xl border-2 border-white/20 object-cover shadow-xl ring-4 ring-indigo-500/20 sm:right-8 sm:top-8 sm:h-16 sm:w-16 lg:right-10 lg:top-10" />
+                @else
+                    <div class="absolute right-6 top-6 flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-white/20 bg-indigo-500/20 text-xl font-semibold text-indigo-300 shadow-xl ring-4 ring-indigo-500/20 sm:right-8 sm:top-8 sm:h-16 sm:w-16 lg:right-10 lg:top-10">
+                        {{ $initials }}
+                    </div>
+                @endif
 
                 <!-- Brand + headline -->
                 <div class="space-y-3 pr-16 sm:pr-20">

@@ -98,8 +98,12 @@
                                  alt="{{ Auth::user()->name }}"
                                  class="h-8 w-8 rounded-full border border-white/10 object-cover" />
                         @else
+                            @php
+                                $nameParts = explode(' ', Auth::user()->name);
+                                $initials = strtoupper(substr($nameParts[0], 0, 1)) . ($nameParts[1] ? strtoupper(substr($nameParts[1], 0, 1)) : '');
+                            @endphp
                             <div class="flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-indigo-500/20 text-xs font-semibold text-indigo-300">
-                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                {{ $initials }}
                             </div>
                         @endif
                             <span class="hidden sm:inline">{{ explode(' ', Auth::user()->name)[0] }}</span>
