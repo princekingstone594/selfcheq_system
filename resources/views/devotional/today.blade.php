@@ -320,5 +320,65 @@
                 </div>
             </div>
         </section>
+
+        <!-- Worship Instrumentals -->
+        <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
+            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Worship Instrumentals</p>
+            <p class="mt-2 text-sm text-slate-400">Soak in God's presence with these instrumental worship tracks perfect for devotion time.</p>
+            
+            <div class="mt-4 rounded-2xl border border-white/10 bg-slate-800/50 p-4">
+                <p class="font-medium text-white">Piano & Strings</p>
+                <div class="mt-3 space-y-2">
+                    <a href="https://www.youtube.com/watch?v=3Bs5wJ7TnLQ" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Peaceful Piano Worship
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=5sQkG6NJv6g" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Soaking Worship Instrumentals
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=8gVfJ6Vo2yU" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Meditative Piano for Devotion
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Soaking Worship -->
+        <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
+            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Soaking Worship</p>
+            <p class="mt-2 text-sm text-slate-400">Deepen your encounter with these soaking worship sessions from renowned worshipers.</p>
+            
+            <div class="mt-4 rounded-2xl border border-white/10 bg-slate-800/50 p-4">
+                <p class="font-medium text-white">Featured Worshipers</p>
+                <div class="mt-3 grid gap-2 sm:grid-cols-2">
+                    <a href="https://www.youtube.com/results?search_query=Dunsin+Oyekan+soaking+worship" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Dunsin Oyekan
+                    </a>
+                    <a href="https://www.youtube.com/results?search_query=Nathaniel+Bassey+soaking+worship" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Nathaniel Bassey
+                    </a>
+                    <a href="https://www.youtube.com/results?search_query=Theophilus+Sunday+soaking+worship" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Theophilus Sunday
+                    </a>
+                    <a href="https://www.youtube.com/results?search_query=Minister+GUC+soaking+worship" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Minister GUC
+                    </a>
+                    <a href="https://www.youtube.com/results?search_query=Abbey+Ojomu+soaking+worship" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Abbey Ojomu
+                    </a>
+                    <a href="https://www.youtube.com/results?search_query=Ebuka+Songs+soaking+worship" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Ebuka Songs
+                    </a>
+                    <a href="https://www.youtube.com/results?search_query=Favour+Ojo+soaking+worship" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Favour Ojo
+                    </a>
+                    <a href="https://www.youtube.com/results?search_query=Grace+Odowu+soaking+worship" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Grace Odowu
+                    </a>
+                    <a href="https://www.youtube.com/results?search_query=Victor+Thompson+soaking+worship" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Victor Thompson
+                    </a>
+                </div>
+            </div>
+        </section>
     </div>
 </x-app-layout>
