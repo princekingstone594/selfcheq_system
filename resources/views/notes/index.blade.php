@@ -56,32 +56,141 @@
 
         <!-- Note Editor (Full screen overlay) -->
         <section id="noteEditor" class="hidden fixed inset-0 bg-slate-950 z-50 flex flex-col">
-            <div class="bg-slate-900 border-b border-white/10 px-6 py-4">
-                <div class="max-w-5xl mx-auto flex items-center justify-between">
-                    <input type="text" id="noteTitle" placeholder="Note title..." 
-                           class="flex-1 bg-transparent text-lg font-semibold text-white placeholder-slate-500 focus:outline-none" />
-                    <div class="flex gap-2 ml-4">
-                        <button type="button" onclick="saveNote()" 
-                                class="rounded-2xl bg-amber-500 px-6 py-2.5 text-sm font-semibold text-white hover:bg-amber-400 transition">
-                            💾 Save
-                        </button>
+            <!-- Top Bar -->
+            <div class="bg-slate-900 border-b border-white/10 px-6 py-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
                         <button type="button" onclick="closeEditor()" 
-                                class="rounded-2xl border border-white/10 bg-slate-800 px-4 py-2.5 text-sm text-slate-300 hover:text-white transition">
-                            Cancel
+                                class="rounded-xl border border-white/10 bg-slate-800 px-4 py-2 text-sm text-slate-300 hover:text-white transition">
+                            ← Back
                         </button>
+                        <input type="text" id="noteTitle" placeholder="Note title..." 
+                               class="bg-transparent text-lg font-semibold text-white placeholder-slate-500 focus:outline-none" />
                     </div>
+                    <button type="button" onclick="toggleSettings()" 
+                            class="rounded-xl border border-white/10 bg-slate-800 p-2 text-slate-300 hover:text-white transition" title="Settings">
+                        ⚙️
+                    </button>
                 </div>
             </div>
-            
+
+            <!-- Settings Dropdown (hidden by default) -->
+            <div id="settingsDropdown" class="hidden absolute top-16 right-6 bg-slate-800 border border-white/10 rounded-2xl shadow-2xl p-2 z-10">
+                <button type="button" onclick="saveNote()" 
+                        class="w-full text-left px-4 py-2 text-sm text-white hover:bg-white/5 rounded-xl transition">
+                    💾 Save Note
+                </button>
+                <button type="button" onclick="editNoteFromSettings()" 
+                        class="w-full text-left px-4 py-2 text-sm text-white hover:bg-white/5 rounded-xl transition">
+                    ✏️ Edit Note
+                </button>
+            </div>
+
+            <!-- Working Area -->
             <div class="flex-1 overflow-y-auto p-6">
                 <div class="max-w-5xl mx-auto">
                     <textarea id="noteContent" placeholder="Start typing your note here..." 
-                              class="w-full h-full min-h-[calc(100vh-200px)] rounded-2xl border border-slate-700 bg-slate-800 px-6 py-4 text-base text-white placeholder-slate-500 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 resize-none"></textarea>
+                              class="w-full h-full min-h-[calc(100vh-150px)] rounded-2xl border border-slate-700 bg-slate-800 px-6 py-4 text-base text-white placeholder-slate-500 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 resize-none"></textarea>
                 </div>
             </div>
         </section>
     </div>
 </x-app-layout>
+
+<script>
+let currentEditId = null;
+
+function showEditor() {
+    currentEditId = null;
+    document.getElementById('noteTitle').value = '';
+    document.getElementById('noteContent').value = '';
+    document.getElementById('noteEditor').classList.remove('hidden');
+    document.getElementById('noteTitle').focus();
+}
+
+function closeEditor() {
+    document.getElementById('noteEditor').classList.add('hidden');
+    currentEditId = null;
+}
+
+function toggleSettings() {
+    const dropdown = document.getElementById('settingsDropdown');
+    dropdown.classList.toggle('hidden');
+}
+
+function saveNote() {
+    const title = document.getElementById('noteTitle').value;
+    const content = document.getElementById('noteContent').value;
+    
+    if (!content.trim()) {
+        alert('Please enter some content for your note.');
+        return;
+    }
+    
+    const url = currentEditId ? `/notes/${currentEditId}` : '{{ route('notes.store') }}';
+    
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = url;
+    
+    const csrf = document.createElement('input');
+    csrf.type = 'hidden';
+    csrf.name = '_token';
+    csrf.value = '{{ csrf_token() }}';
+    form.appendChild(csrf);
+    
+    if (currentEditId) {
+        const methodInput = document.createElement('input');
+        methodInput.type = 'hidden';
+        methodInput.name = '_method';
+        methodInput.value = 'PUT';
+        form.appendChild(methodInput);
+    }
+    
+    const titleInput = document.createElement('input');
+    titleInput.type = 'hidden';
+    titleInput.name = 'title';
+    titleInput.value = title;
+    form.appendChild(titleInput);
+    
+    const contentInput = document.createElement('input');
+    contentInput.type = 'hidden';
+    contentInput.name = 'content';
+    contentInput.value = content;
+    form.appendChild(contentInput);
+    
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function editNote(id, title, content) {
+    currentEditId = id;
+    document.getElementById('noteTitle').value = title;
+    document.getElementById('noteContent').value = content;
+    document.getElementById('noteEditor').classList.remove('hidden');
+    document.getElementById('noteTitle').focus();
+}
+
+function editNoteFromSettings() {
+    // If we're editing an existing note, this will trigger the save
+    if (currentEditId) {
+        saveNote();
+    } else {
+        // For new notes, just close settings dropdown
+        document.getElementById('settingsDropdown').classList.add('hidden');
+    }
+}
+
+// Close settings dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const settingsDropdown = document.getElementById('settingsDropdown');
+    const settingsButton = event.target.closest('button[onclick="toggleSettings()"]');
+    
+    if (!settingsDropdown.contains(event.target) && !settingsButton) {
+        settingsDropdown.classList.add('hidden');
+    }
+});
+</script>
 
 <script>
 let currentEditId = null;
