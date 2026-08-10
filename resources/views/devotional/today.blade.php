@@ -321,22 +321,21 @@
             </div>
         </section>
 
-        <!-- Worship Instrumentals -->
+        <!-- Instrumentals -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Worship Instrumentals</p>
+            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Instrumentals</p>
             <p class="mt-2 text-sm text-slate-400">Soak in God's presence with these instrumental worship tracks perfect for devotion time.</p>
             
             <div class="mt-4 rounded-2xl border border-white/10 bg-slate-800/50 p-4">
-                <p class="font-medium text-white">Piano & Strings</p>
-                <div class="mt-3 space-y-2">
-                    <a href="https://www.youtube.com/watch?v=3Bs5wJ7TnLQ" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
-                        Peaceful Piano Worship
-                    </a>
+                <div class="space-y-3">
                     <a href="https://www.youtube.com/watch?v=5sQkG6NJv6g" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
-                        Soaking Worship Instrumentals
+                        🎹 Soaking Worship Instrumentals
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=3Bs5wJ7TnLQ" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        🎹 Peaceful Piano Worship
                     </a>
                     <a href="https://www.youtube.com/watch?v=8gVfJ6Vo2yU" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
-                        Meditative Piano for Devotion
+                        🎹 Meditative Piano for Devotion
                     </a>
                 </div>
             </div>
@@ -348,8 +347,7 @@
             <p class="mt-2 text-sm text-slate-400">Deepen your encounter with these soaking worship sessions from renowned worshipers.</p>
             
             <div class="mt-4 rounded-2xl border border-white/10 bg-slate-800/50 p-4">
-                <p class="font-medium text-white">Featured Worshipers</p>
-                <div class="mt-3 grid gap-2 sm:grid-cols-2">
+                <div class="grid gap-2 sm:grid-cols-2">
                     <a href="https://www.youtube.com/results?search_query=Dunsin+Oyekan+soaking+worship" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
                         Dunsin Oyekan
                     </a>
@@ -376,6 +374,35 @@
                     </a>
                     <a href="https://www.youtube.com/results?search_query=Victor+Thompson+soaking+worship" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
                         Victor Thompson
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sacrifices of Praise -->
+        <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
+            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Sacrifices of Praise</p>
+            <p class="mt-2 text-sm text-slate-400">Enter into His presence with thanksgiving and praise.</p>
+            
+            <div class="mt-4 rounded-2xl border border-white/10 bg-slate-800/50 p-4">
+                <div class="grid gap-2 sm:grid-cols-2">
+                    <a href="https://www.youtube.com/results?search_query=Nathaniel+Bassey+praise+session" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Nathaniel Bassey - Praise Session
+                    </a>
+                    <a href="https://www.youtube.com/results?search_query=Dunsin+Oyekan+praise+session" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Dunsin Oyekan - Praise Session
+                    </a>
+                    <a href="https://www.youtube.com/results?search_query=Theophilus+Sunday+praise+session" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Theophilus Sunday - Praise Session
+                    </a>
+                    <a href="https://www.youtube.com/results?search_query=Minister+GUC+praise+session" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Minister GUC - Praise Session
+                    </a>
+                    <a href="https://www.youtube.com/results?search_query=Abbey+Ojomu+praise+session" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Abbey Ojomu - Praise Session
+                    </a>
+                    <a href="https://www.youtube.com/results?search_query=Ebuka+Songs+praise+session" target="_blank" class="block text-sm text-indigo-300 hover:text-indigo-200 transition">
+                        Ebuka Songs - Praise Session
                     </a>
                 </div>
             </div>
