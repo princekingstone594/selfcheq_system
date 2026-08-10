@@ -69,10 +69,10 @@
                      x-data="{ now: new Date() }"
                      x-init="setInterval(() => now = new Date(), 1000)">
                     <div class="rounded-xl border border-white/10 bg-slate-950/70 px-3 py-2 text-right backdrop-blur-md sm:rounded-2xl sm:px-5 sm:py-3 lg:rounded-2xl">
-                        <p class="text-lg font-bold tracking-wider text-white sm:text-2xl lg:text-3xl"
+                        <p class="text-sm font-bold tracking-wider text-white sm:text-lg lg:text-xl xl:text-3xl"
                            x-text="now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })">
                         </p>
-                        <p class="mt-0.5 text-[10px] font-medium text-slate-300 sm:mt-1 sm:text-xs lg:text-sm"
+                        <p class="mt-0.5 text-[8px] font-medium text-slate-300 sm:mt-1 sm:text-[10px] lg:text-xs xl:text-sm"
                            x-text="now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })">
                         </p>
                     </div>
