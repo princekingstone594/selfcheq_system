@@ -50,15 +50,29 @@
     
     {{-- Smooth Page Transitions --}}
     <style>
-        #page-content {
-            opacity: 0;
-            animation: fadeInPage 0.3s ease-in-out forwards;
+        * {
+            -webkit-tap-highlight-color: transparent;
         }
         
-        @keyframes fadeInPage {
+        #page-content {
+            opacity: 1;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        
+        .page-transitioning #page-content {
+            opacity: 0;
+            transform: translateY(-5px);
+            transition: opacity 0.08s ease-in-out, transform 0.08s ease-in-out;
+        }
+        
+        .smooth-redirect #page-content {
+            animation: smoothFadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes smoothFadeIn {
             from {
                 opacity: 0;
-                transform: translateY(8px);
+                transform: translateY(5px);
             }
             to {
                 opacity: 1;
@@ -66,27 +80,15 @@
             }
         }
         
-        .page-transitioning #page-content {
-            animation: fadeOutPage 0.15s ease-in-out forwards;
-        }
-        
-        @keyframes fadeOutPage {
-            to {
-                opacity: 0;
-                transform: translateY(-4px);
-            }
+        /* Prevent flash during page loads */
+        html.splash-skip #splash-screen {
+            display: none !important;
         }
     </style>
     
     <script>
         // Smooth page transitions for all internal links and form submissions
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if this is a smooth redirect from a command
-            @if(session('selfcheq_smooth_redirect'))
-                sessionStorage.setItem('selfcheq_redirecting', 'true');
-                sessionStorage.setItem('selfcheq_smooth_transition', 'true');
-            @endif
-            
             const content = document.getElementById('page-content') || document.querySelector('main');
             if (!content) return;
             
@@ -95,20 +97,19 @@
                 content.id = 'page-content';
             }
             
-            // Handle smooth transitions from server-side redirects
-            const isSmoothRedirect = sessionStorage.getItem('selfcheq_smooth_transition');
-            if (isSmoothRedirect) {
+            // Check for smooth redirect from server
+            const hasSmoothRedirect = sessionStorage.getItem('selfcheq_smooth_transition');
+            if (hasSmoothRedirect) {
                 sessionStorage.removeItem('selfcheq_smooth_transition');
-                content.style.opacity = '0';
-                content.style.transform = 'translateY(-4px)';
-                
-                // Trigger reflow
-                content.offsetHeight;
-                
-                // Animate in
-                content.style.transition = 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out';
-                content.style.opacity = '1';
-                content.style.transform = 'translateY(0)';
+                document.documentElement.classList.add('splash-skip');
+                content.classList.add('smooth-redirect');
+            }
+            
+            // Check for redirect flag from splash screen
+            const isRedirecting = sessionStorage.getItem('selfcheq_redirecting');
+            if (isRedirecting) {
+                sessionStorage.removeItem('selfcheq_redirecting');
+                document.documentElement.classList.add('splash-skip');
             }
             
             // Intercept all internal link clicks
@@ -127,36 +128,35 @@
                         return;
                     }
                     
-                    // Mark as redirecting for splash screen skip
+                    // Mark as redirecting
                     sessionStorage.setItem('selfcheq_redirecting', 'true');
                     
-                    // Add transition class
+                    // Add transition class for smooth fade out
                     document.documentElement.classList.add('page-transitioning');
                     
-                    // Allow animation to complete before navigation
-                    setTimeout(() => {
-                        window.location.href = href;
-                    }, 150);
+                    // Navigate immediately for faster loading
+                    window.location.href = href;
                     
                     e.preventDefault();
                 });
             });
             
-            // Intercept all form submissions
+            // Intercept all form submissions for smooth transitions
             document.querySelectorAll('form').forEach(form => {
                 form.addEventListener('submit', function(e) {
-                    // Mark as redirecting for splash screen skip
+                    // Mark as redirecting to skip splash screen
                     sessionStorage.setItem('selfcheq_redirecting', 'true');
                     
-                    // Add transition class
+                    // Add transition class for smooth fade out
                     document.documentElement.classList.add('page-transitioning');
                     
-                    // Allow animation to complete, then let form submit naturally
+                    // Remove transitioning class quickly for faster loading
                     setTimeout(() => {
                         document.documentElement.classList.remove('page-transitioning');
-                    }, 150);
+                    }, 80);
                     
                     // Don't prevent submission - let it proceed naturally
+                    // The server will redirect and the next page will handle smooth fade in
                 });
             });
         });
