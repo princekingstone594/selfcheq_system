@@ -120,6 +120,7 @@
                                 <div class="flex gap-2">
                                     <form method="POST" action="{{ route('financials.toggle', $bill) }}" class="inline">
                                         @csrf
+                                        @method('PATCH')
                                         <button type="submit" class="rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-3 py-2 text-xs font-medium text-emerald-300 hover:bg-emerald-500/20 transition">
                                             {{ $bill->is_completed ? '✓ Paid' : '✓ Mark Paid' }}
                                         </button>
@@ -156,6 +157,7 @@
                             <div class="mt-2">
                                 <form method="POST" action="{{ route('financials.toggle', $bill) }}" class="inline">
                                     @csrf
+                                    @method('PATCH')
                                     <button type="submit" class="rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-3 py-2 text-xs font-medium text-emerald-300 hover:bg-emerald-500/20 transition">
                                         ↩️ Unmark
                                     </button>
@@ -265,6 +267,7 @@
                                 <div class="flex gap-2">
                                     <form method="POST" action="{{ route('financials.toggle', $tithe) }}" class="inline">
                                         @csrf
+                                        @method('PATCH')
                                         <button type="submit" class="rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-3 py-2 text-xs font-medium text-emerald-300 hover:bg-emerald-500/20 transition">
                                             {{ $tithe->is_completed ? '✓ Paid' : '✓ Mark Paid' }}
                                         </button>
@@ -298,6 +301,7 @@
                             <div class="mt-2">
                                 <form method="POST" action="{{ route('financials.toggle', $tithe) }}" class="inline">
                                     @csrf
+                                    @method('PATCH')
                                     <button type="submit" class="rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-3 py-2 text-xs font-medium text-emerald-300 hover:bg-emerald-500/20 transition">
                                         ↩️ Unmark
                                     </button>
@@ -426,6 +430,7 @@
                                 <div class="flex gap-2">
                                     <form method="POST" action="{{ route('financials.toggle', $saving) }}" class="inline">
                                         @csrf
+                                        @method('PATCH')
                                         <button type="submit" class="rounded-xl border border-white/10 bg-slate-800 p-2 text-slate-300 hover:text-white transition" title="Toggle completion">
                                             {{ $saving->is_completed ? '↩️' : '✅' }}
                                         </button>
@@ -457,6 +462,7 @@
                             <div class="mt-2">
                                 <form method="POST" action="{{ route('financials.toggle', $saving) }}" class="inline">
                                     @csrf
+                                    @method('PATCH')
                                     <button type="submit" class="rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-3 py-2 text-xs font-medium text-emerald-300 hover:bg-emerald-500/20 transition">
                                         ↩️ Unmark
                                     </button>

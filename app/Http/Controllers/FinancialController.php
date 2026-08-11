@@ -56,10 +56,22 @@ class FinancialController extends Controller
             $validated['is_recurring'] = true;
 
             // Convert day-of-month to actual date (next occurrence of that day)
-            $dayOfMonth = $validated['due_date'] ?? 10;
-            $nextOccurrence = Carbon::now()->day($dayOfMonth);
+            $dayOfMonth = (int)($validated['due_date'] ?? 10);
+            $now = Carbon::now();
+
+            // Build the date for this month's chosen day, clamped to month-end if needed
+            $nextOccurrence = $now->copy()->startOfMonth()->addDays(min($dayOfMonth, $now->daysInMonth) - 1);
+            if ($dayOfMonth > $now->daysInMonth) {
+                $nextOccurrence = $nextOccurrence->endOfMonth();
+            }
+
+            // If it's already past, roll forward to next month (and re-clamp)
             if ($nextOccurrence->isPast()) {
-                $nextOccurrence = $nextOccurrence->addMonth();
+                $nextMonth = $now->copy()->addMonth()->startOfMonth();
+                $nextOccurrence = $nextMonth->addDays(min($dayOfMonth, $nextMonth->daysInMonth) - 1);
+                if ($dayOfMonth > $nextMonth->daysInMonth) {
+                    $nextOccurrence = $nextMonth->endOfMonth();
+                }
             }
             $validated['due_date'] = $nextOccurrence->toDateString();
 
@@ -112,6 +124,11 @@ class FinancialController extends Controller
                 'reminder_days' => 'nullable|integer|min:0',
                 'is_recurring' => 'boolean',
             ]);
+
+            // If the bill frequency implies recurrence, treat it as recurring
+            if (in_array($validated['frequency'] ?? null, ['weekly', 'monthly', 'quarterly', 'annually'])) {
+                $validated['is_recurring'] = true;
+            }
 
             $financial = $request->user()->financials()->create($validated);
 
@@ -251,7 +268,10 @@ class FinancialController extends Controller
 
     public function toggle(Financial $financial): RedirectResponse
     {
-        $this->authorize('update', $financial);
+        if ($financial->user_id !== Auth::id()) {
+            abort(403);
+        }
+
         $financial->update(['is_completed' => !$financial->is_completed]);
 
         return back()->with('status', 'financial-updated');
@@ -259,7 +279,9 @@ class FinancialController extends Controller
 
     public function destroy(Financial $financial): RedirectResponse
     {
-        $this->authorize('delete', $financial);
+        if ($financial->user_id !== Auth::id()) {
+            abort(403);
+        }
 
         // Clean up associated tasks
         Task::where('reference_id', $financial->id)

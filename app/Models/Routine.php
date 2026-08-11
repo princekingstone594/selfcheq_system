@@ -63,17 +63,25 @@ class Routine extends Model
 
     /**
      * Whether this routine should appear on the given date based on its frequency.
+     *
+     * Daily-templated routines (weekday/weekend/daily) recur every matching day.
+     * Calendar-based recurring routines (weekly/monthly/quarterly/annually) are
+     * materialized by the RoutineController's carry-forward logic, so they are
+     * NOT copied here day-over-day.
      */
     public function isActiveOn(string $date): bool
     {
         $dayOfWeek = Carbon::parse($date)->dayOfWeek; // 0 = Sunday, 6 = Saturday
 
         return match ($this->frequency) {
-            'weekday'  => in_array($dayOfWeek, [1, 2, 3, 4, 5]),  // Mon-Fri
-            'weekend'  => in_array($dayOfWeek, [0, 6]),            // Sun-Sat
-            'daily'    => true,
-            'once'     => false,
-            default    => true, // weekly/monthly/quarterly/annually handled by carry-forward logic
+            'weekday'        => in_array($dayOfWeek, [1, 2, 3, 4, 5]),  // Mon-Fri
+            'weekend'        => in_array($dayOfWeek, [0, 6]),            // Sun-Sat
+            'daily'          => true,
+            'weekly'         => false, // handled by carry-forward / calendar projection
+            'monthly'        => false,
+            'quarterly'      => false,
+            'annually'       => false,
+            default          => false,
         };
     }
 

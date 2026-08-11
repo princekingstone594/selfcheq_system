@@ -210,46 +210,65 @@
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
             <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Up next</p>
 
+            @php
+                // Merge all items into a single sorted list
+                $upcoming = collect();
+
+                foreach ($appointments->flatten() as $appt) {
+                    $upcoming->push((object) [
+                        'sort_date' => $appt->date . ' ' . ($appt->time ?? '00:00'),
+                        'type' => 'appointment',
+                        'title' => $appt->title,
+                        'date' => $appt->date,
+                        'time' => $appt->time,
+                        'is_completed' => $appt->is_completed,
+                    ]);
+                }
+
+                foreach ($routines->flatten() as $routine) {
+                    $upcoming->push((object) [
+                        'sort_date' => \Carbon\Carbon::parse($routine->date)->format('Y-m-d') . ' 00:00',
+                        'type' => 'routine',
+                        'title' => $routine->title,
+                        'date' => $routine->date,
+                        'time' => null,
+                        'is_completed' => $routine->is_completed,
+                    ]);
+                }
+
+                foreach ($tasks->flatten() as $task) {
+                    $upcoming->push((object) [
+                        'sort_date' => \Carbon\Carbon::parse($task->due_date)->format('Y-m-d') . ' 00:00',
+                        'type' => 'task',
+                        'title' => $task->title,
+                        'date' => $task->due_date,
+                        'time' => null,
+                        'is_completed' => $task->is_completed,
+                    ]);
+                }
+
+                $upcoming = $upcoming->sortBy('sort_date')->take(15);
+            @endphp
+
             <div class="mt-4 space-y-3">
-                @forelse($appointments->flatten()->sortBy(function ($a) {
-                        return $a->date . ' ' . $a->time;
-                    }) as $appt)
+                @forelse($upcoming as $item)
                     <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-800/50 p-3">
-                        <span class="rounded-xl bg-indigo-500/10 px-2.5 py-1 text-xs font-medium text-indigo-300">
-                            {{ \Carbon\Carbon::parse($appt->date)->format('D d') }} · {{ $appt->formatted_time }}
+                        <span class="rounded-xl px-2.5 py-1 text-xs font-medium {{ $item->type === 'appointment' ? 'bg-indigo-500/10 text-indigo-300' : ($item->type === 'routine' ? 'bg-purple-500/10 text-purple-300' : 'bg-slate-700/50 text-slate-300') }}">
+                            {{ \Carbon\Carbon::parse($item->date)->format('D d') }}
+                            @if($item->time)
+                                · {{ \Carbon\Carbon::parse($item->time)->format('g:i a') }}
+                            @endif
                         </span>
-                        <span class="text-sm {{ $appt->is_completed ? 'line-through text-slate-500' : 'text-slate-300' }}">
-                            {{ $appt->title }}
+                        <span class="text-sm {{ $item->is_completed ? 'line-through text-slate-500' : 'text-slate-300' }}">
+                            @if($item->type === 'routine') 🔁 @endif
+                            @if($item->type === 'appointment') 🗓️ @endif
+                            {{ $item->title }}
                         </span>
                     </div>
                 @empty
-                    @forelse($routines->flatten()->sortBy(function ($r) {
-                            return Carbon\Carbon::parse($r->date);
-                        }) as $routine)
-                        <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-800/50 p-3">
-                            <span class="rounded-xl bg-purple-500/10 px-2.5 py-1 text-xs font-medium text-purple-300">
-                                {{ \Carbon\Carbon::parse($routine->date)->format('D d') }}
-                            </span>
-                            <span class="text-sm {{ $routine->is_completed ? 'line-through text-slate-500' : 'text-slate-300' }}">
-                                🔁 {{ $routine->title }}
-                            </span>
-                        </div>
-                    @empty
-                        @forelse($tasks->flatten()->sortBy('due_date') as $task)
-                            <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-800/50 p-3">
-                                <span class="rounded-xl bg-indigo-500/10 px-2.5 py-1 text-xs font-medium text-indigo-300">
-                                    {{ \Carbon\Carbon::parse($task->due_date)->format('D d') }}
-                                </span>
-                                <span class="text-sm {{ $task->is_completed ? 'line-through text-slate-500' : 'text-slate-300' }}">
-                                    {{ $task->title }}
-                                </span>
-                            </div>
-                        @empty
-                            <div class="rounded-2xl border border-dashed border-white/10 p-6 text-center text-sm text-slate-500">
-                                No appointments, routines or tasks scheduled for this week.
-                            </div>
-                        @endforelse
-                    @endforelse
+                    <div class="rounded-2xl border border-dashed border-white/10 p-6 text-center text-sm text-slate-500">
+                        No appointments, routines or tasks scheduled for this period.
+                    </div>
                 @endforelse
             </div>
         </section>

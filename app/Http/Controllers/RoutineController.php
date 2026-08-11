@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Routine;
+use App\Models\Task;
+use App\Models\Financial;
 use Carbon\Carbon;
 
 class RoutineController extends Controller
@@ -41,58 +43,9 @@ class RoutineController extends Controller
             }
         }
 
-        // 🔄 Carry forward recurring financial routines (weekly, monthly, quarterly, annually)
-        $recurringFrequencies = ['weekly', 'monthly', 'quarterly', 'annually'];
-
-        $financialRoutines = $user->routines()
-            ->whereIn('frequency', $recurringFrequencies)
-            ->whereNotNull('reference_id')
-            ->get()
-            ->groupBy(function ($r) {
-                return $r->reference_id . ':' . ($r->reference_type ?? '');
-            });
-
-        foreach ($financialRoutines as $groupKey => $group) {
-            $latest = $group->sortByDesc('date')->first();
-            $latestDate = Carbon::parse($latest->date);
-
-            // Determine if a new instance is due today
-            $shouldCreate = false;
-            switch ($latest->frequency) {
-                case 'weekly':
-                    $shouldCreate = $latestDate->copy()->addWeek()->isPast();
-                    break;
-                case 'monthly':
-                    $shouldCreate = $latestDate->copy()->addMonth()->isPast();
-                    break;
-                case 'quarterly':
-                    $shouldCreate = $latestDate->copy()->addMonths(3)->isPast();
-                    break;
-                case 'annually':
-                    $shouldCreate = $latestDate->copy()->addYear()->isPast();
-                    break;
-            }
-
-            if ($shouldCreate) {
-                // Check if an instance for today already exists in this group
-                $existsToday = $group->contains(function ($r) use ($today) {
-                    return Carbon::parse($r->date)->toDateString() === $today;
-                });
-
-                if (!$existsToday) {
-                    $user->routines()->create([
-                        'title' => $latest->title,
-                        'description' => $latest->description,
-                        'date' => $today,
-                        'is_completed' => false,
-                        'reminder_time' => $latest->reminder_time?->format('H:i'),
-                        'frequency' => $latest->frequency,
-                        'reference_id' => $latest->reference_id,
-                        'reference_type' => $latest->reference_type,
-                    ]);
-                }
-            }
-        }
+        // 🔄 Materialize recurring financial routines (weekly, monthly, quarterly, annually)
+        // based on the financial records, not on previously-created routine instances.
+        $this->materializeFinancialRoutines($user, $today);
 
         $routines = $user->routines()
             ->whereDate('date', $today)
@@ -114,6 +67,142 @@ class RoutineController extends Controller
             ->get();
 
         return view('routines.index', compact('routines', 'history', 'templates'));
+    }
+
+    /**
+     * Materialize due recurring financial routines (and their linked tasks) for today.
+     */
+    protected function materializeFinancialRoutines($user, string $today): void
+    {
+        $frequencies = ['weekly', 'monthly', 'quarterly', 'annually'];
+
+        // Gather all active financial records that have a recurring frequency
+        $financials = Financial::where('user_id', $user->id)
+            ->whereIn('type', ['tithe', 'bill', 'saving'])
+            ->where('is_completed', false)
+            ->whereIn('frequency', $frequencies)
+            ->get();
+
+        foreach ($financials as $financial) {
+            // Find the latest materialized routine for this financial
+            $latest = $user->routines()
+                ->where('reference_id', $financial->id)
+                ->where('reference_type', $financial->type === 'tithe' ? 'tithe' : ($financial->type === 'bill' ? 'bill' : 'saving'))
+                ->orderByDesc('date')
+                ->first();
+
+            // The routine's date is reminder_days before the due date. We store the
+            // routine on its reminder date, so we need to figure out the next due
+            // occurrence based on the financial's frequency.
+            $dueDate = $latest
+                ? $this->nextOccurrenceAfter(Carbon::parse($financial->due_date), $financial->frequency, $latest->date)
+                : Carbon::parse($financial->due_date);
+
+            // If no due date is set, fall back to today
+            if (!$dueDate) {
+                $dueDate = Carbon::today();
+            }
+
+            // Compute the reminder date (routine date) from the due date
+            $reminderDate = $dueDate->copy();
+            if ($financial->reminder_days && $financial->reminder_days > 0) {
+                $reminderDate = $reminderDate->subDays($financial->reminder_days);
+            }
+
+            // Only materialize if the reminder date is today
+            if ($reminderDate->toDateString() !== $today) {
+                continue;
+            }
+
+            // Build the routine title based on type
+            $title = match ($financial->type) {
+                'tithe'  => 'Tithe Reminder: ' . ($financial->title ?: 'Tithe Payment'),
+                'bill'   => 'Bill Reminder: ' . $financial->title,
+                'saving' => 'Saving: ' . $financial->title,
+                default  => $financial->title,
+            };
+
+            // Check if a routine for today already exists (avoid duplicates)
+            $existsToday = $user->routines()
+                ->where('reference_id', $financial->id)
+                ->where('reference_type', $financial->type === 'tithe' ? 'tithe' : ($financial->type === 'bill' ? 'bill' : 'saving'))
+                ->whereDate('date', $today)
+                ->exists();
+
+            if (!$existsToday) {
+                $user->routines()->create([
+                    'title' => $title,
+                    'description' => $financial->description,
+                    'date' => $today,
+                    'is_completed' => false,
+                    'reminder_time' => '08:00:00',
+                    'frequency' => $financial->frequency,
+                    'reference_id' => $financial->id,
+                    'reference_type' => $financial->type === 'tithe' ? 'tithe' : ($financial->type === 'bill' ? 'bill' : 'saving'),
+                ]);
+            }
+
+            // Also materialize a linked Task so it shows in the Tasks section
+            $taskTitle = match ($financial->type) {
+                'tithe'  => 'Tithe Reminder: ' . ($financial->title ?: 'Tithe Payment'),
+                'bill'   => 'Bill Reminder: ' . $financial->title,
+                'saving' => 'Saving: ' . $financial->title,
+                default  => $financial->title,
+            };
+
+            $taskExistsToday = Task::where('user_id', $user->id)
+                ->where('reference_id', $financial->id)
+                ->where('type', $financial->type === 'saving' ? 'saving' : $financial->type)
+                ->whereDate('due_date', $today)
+                ->exists();
+
+            if (!$taskExistsToday) {
+                Task::create([
+                    'user_id' => $user->id,
+                    'title' => $taskTitle,
+                    'due_date' => $today,
+                    'reminder_time' => '08:00:00',
+                    'alarm_enabled' => true,
+                    'is_important' => true,
+                    'type' => $financial->type === 'saving' ? 'saving' : $financial->type,
+                    'reference_id' => $financial->id,
+                    'frequency' => $financial->frequency,
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Compute the next occurrence date of a recurring item after a given reference date.
+     */
+    protected function nextOccurrenceAfter(Carbon $dueDate, string $frequency, string $referenceDate): ?Carbon
+    {
+        $ref = Carbon::parse($referenceDate);
+        $next = $dueDate->copy();
+
+        // Advance until strictly after the reference date
+        $guard = 0;
+        while ($next->lte($ref) && $guard < 1000) {
+            switch ($frequency) {
+                case 'weekly':
+                    $next->addWeek();
+                    break;
+                case 'monthly':
+                    $next->addMonth();
+                    break;
+                case 'quarterly':
+                    $next->addMonths(3);
+                    break;
+                case 'annually':
+                    $next->addYear();
+                    break;
+                default:
+                    return $dueDate;
+            }
+            $guard++;
+        }
+
+        return $next->gt($ref) ? $next : null;
     }
 
     public function store(Request $request)
@@ -173,7 +262,7 @@ class RoutineController extends Controller
         // associated tasks and other routine instances
         if ($routine->reference_id) {
             // Clean up associated tasks for this financial
-            \App\Models\Task::where('reference_id', $routine->reference_id)
+            Task::where('reference_id', $routine->reference_id)
                 ->whereIn('type', ['tithe', 'bill', 'saving', 'saving_target'])
                 ->delete();
 
