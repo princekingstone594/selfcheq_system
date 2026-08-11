@@ -46,6 +46,10 @@
                     <option value="daily">📅 Every day</option>
                     <option value="weekday">📅 Weekdays (Mon–Fri)</option>
                     <option value="weekend">📅 Weekends (Sat–Sun)</option>
+                    <option value="weekly">📅 Weekly</option>
+                    <option value="monthly">📅 Monthly</option>
+                    <option value="quarterly">📅 Quarterly</option>
+                    <option value="annually">📅 Annually</option>
                     <option value="once">📅 Extra (just today)</option>
                 </select>
 

@@ -34,6 +34,61 @@ class RoutineController extends Controller
                         'is_completed' => false,
                         'reminder_time' => $routine->reminder_time?->format('H:i'),
                         'frequency' => $routine->frequency ?? 'daily',
+                        'reference_id' => $routine->reference_id,
+                        'reference_type' => $routine->reference_type,
+                    ]);
+                }
+            }
+        }
+
+        // 🔄 Carry forward recurring financial routines (weekly, monthly, quarterly, annually)
+        $recurringFrequencies = ['weekly', 'monthly', 'quarterly', 'annually'];
+
+        $financialRoutines = $user->routines()
+            ->whereIn('frequency', $recurringFrequencies)
+            ->whereNotNull('reference_id')
+            ->get()
+            ->groupBy(function ($r) {
+                return $r->reference_id . ':' . ($r->reference_type ?? '');
+            });
+
+        foreach ($financialRoutines as $groupKey => $group) {
+            $latest = $group->sortByDesc('date')->first();
+            $latestDate = Carbon::parse($latest->date);
+
+            // Determine if a new instance is due today
+            $shouldCreate = false;
+            switch ($latest->frequency) {
+                case 'weekly':
+                    $shouldCreate = $latestDate->copy()->addWeek()->isPast();
+                    break;
+                case 'monthly':
+                    $shouldCreate = $latestDate->copy()->addMonth()->isPast();
+                    break;
+                case 'quarterly':
+                    $shouldCreate = $latestDate->copy()->addMonths(3)->isPast();
+                    break;
+                case 'annually':
+                    $shouldCreate = $latestDate->copy()->addYear()->isPast();
+                    break;
+            }
+
+            if ($shouldCreate) {
+                // Check if an instance for today already exists in this group
+                $existsToday = $group->contains(function ($r) use ($today) {
+                    return Carbon::parse($r->date)->toDateString() === $today;
+                });
+
+                if (!$existsToday) {
+                    $user->routines()->create([
+                        'title' => $latest->title,
+                        'description' => $latest->description,
+                        'date' => $today,
+                        'is_completed' => false,
+                        'reminder_time' => $latest->reminder_time?->format('H:i'),
+                        'frequency' => $latest->frequency,
+                        'reference_id' => $latest->reference_id,
+                        'reference_type' => $latest->reference_type,
                     ]);
                 }
             }
@@ -67,14 +122,11 @@ class RoutineController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'reminder_time' => 'nullable|date_format:H:i',
-            'frequency' => 'nullable|in:weekday,weekend,daily,once',
+            'frequency' => 'nullable|in:weekday,weekend,daily,once,weekly,monthly,quarterly,annually',
         ]);
 
         $frequency = $request->frequency ?? 'daily';
 
-        // Extra (one-off) routines get today's date
-        // Template routines (weekday/weekend/daily) also get today's date initially —
-        // they'll be carried forward daily based on frequency
         $routine = Auth::user()->routines()->create([
             'title' => $request->title,
             'description' => $request->description,
@@ -117,7 +169,21 @@ class RoutineController extends Controller
             abort(403);
         }
 
-        $routine->delete();
+        // If this routine is tied to a financial, also clean up the financial's
+        // associated tasks and other routine instances
+        if ($routine->reference_id) {
+            // Clean up associated tasks for this financial
+            \App\Models\Task::where('reference_id', $routine->reference_id)
+                ->whereIn('type', ['tithe', 'bill', 'saving', 'saving_target'])
+                ->delete();
+
+            // Clean up all routine instances for this financial
+            Routine::where('reference_id', $routine->reference_id)
+                ->where('reference_type', $routine->reference_type)
+                ->delete();
+        } else {
+            $routine->delete();
+        }
 
         return back()->with('success', 'Routine removed. 🗑️');
     }

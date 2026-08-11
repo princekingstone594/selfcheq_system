@@ -15,6 +15,8 @@ class Routine extends Model
         'is_completed',
         'reminder_time',
         'frequency',
+        'reference_id',
+        'reference_type',
     ];
 
     protected $casts = [
@@ -47,10 +49,15 @@ class Routine extends Model
     public function getFrequencyLabelAttribute(): string
     {
         return match ($this->frequency) {
-            'weekday' => '📅 Weekdays (Mon-Fri)',
-            'weekend' => '📅 Weekends (Sat-Sun)',
-            'daily'   => '📅 Every day',
-            default   => '📅 Once',
+            'weekday'  => '📅 Weekdays (Mon-Fri)',
+            'weekend'  => '📅 Weekends (Sat-Sun)',
+            'daily'    => '📅 Every day',
+            'weekly'   => '📅 Every week',
+            'monthly'  => '📅 Every month',
+            'quarterly'=> '📅 Every 3 months',
+            'annually' => '📅 Every year',
+            'once'     => '📅 One-time',
+            default    => '📅 Once',
         };
     }
 
@@ -62,10 +69,30 @@ class Routine extends Model
         $dayOfWeek = Carbon::parse($date)->dayOfWeek; // 0 = Sunday, 6 = Saturday
 
         return match ($this->frequency) {
-            'weekday' => in_array($dayOfWeek, [1, 2, 3, 4, 5]),  // Mon-Fri
-            'weekend' => in_array($dayOfWeek, [0, 6]),            // Sun-Sat
-            'daily'   => true,
-            default   => true,
+            'weekday'  => in_array($dayOfWeek, [1, 2, 3, 4, 5]),  // Mon-Fri
+            'weekend'  => in_array($dayOfWeek, [0, 6]),            // Sun-Sat
+            'daily'    => true,
+            'once'     => false,
+            default    => true, // weekly/monthly/quarterly/annually handled by carry-forward logic
         };
+    }
+
+    /**
+     * Days interval for this frequency (for carry-forward recurrence).
+     */
+    public function getRecurrenceInterval(): ?int
+    {
+        return match ($this->frequency) {
+            'weekly'    => 7,
+            'monthly'   => 30,
+            'quarterly' => 90,
+            'annually'  => 365,
+            default     => null,
+        };
+    }
+
+    public function financial()
+    {
+        return $this->belongsTo(Financial::class, 'reference_id');
     }
 }

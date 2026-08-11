@@ -18,6 +18,9 @@ class Task extends Model
         'is_urgent',
         'alarm_enabled',
         'alarm_time',
+        'type',
+        'reference_id',
+        'frequency',
     ];
 
     protected $casts = [
@@ -37,5 +40,10 @@ class Task extends Model
         $time = $this->alarm_time ?? $this->reminder_time;
 
         return $time ? Carbon::parse($time)->format('g:i A') : '—';
+    }
+
+    public function financial()
+    {
+        return $this->belongsTo(Financial::class, 'reference_id');
     }
 }

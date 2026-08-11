@@ -89,6 +89,7 @@
                             $dayStr = $day->toDateString();
                             $dayAppointments = $appointments[$dayStr] ?? collect();
                             $dayTasks = $tasks[$dayStr] ?? collect();
+                            $dayRoutines = $routines[$dayStr] ?? collect();
                         @endphp
 
                         <div class="border-r border-b border-white/5 p-2 align-top text-left min-h-[100px] {{ $isPast ? 'opacity-50' : '' }}">
@@ -102,6 +103,17 @@
                                         <div class="rounded-md bg-indigo-500/10 px-1.5 py-0.5 text-xs text-indigo-200 truncate"
                                              title="{{ $appt->title }} at {{ $appt->formatted_time }}">
                                             🗓️ {{ \Carbon\Carbon::parse($appt->time)->format('g:i a') }} {{ Str::limit($appt->title, 10) }}
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+
+                            @if($dayRoutines->isNotEmpty())
+                                <div class="space-y-0.5">
+                                    @foreach($dayRoutines->take(2) as $routine)
+                                        <div class="rounded-md bg-purple-500/10 px-1.5 py-0.5 text-xs text-purple-200 truncate"
+                                             title="{{ $routine->title }}">
+                                            🔁 {{ Str::limit($routine->title, 10) }}
                                         </div>
                                     @endforeach
                                 </div>
@@ -145,6 +157,7 @@
                             $dayStr = $day->toDateString();
                             $dayAppointments = $appointments[$dayStr] ?? collect();
                             $dayTasks = $tasks[$dayStr] ?? collect();
+                            $dayRoutines = $routines[$dayStr] ?? collect();
                         @endphp
 
                         <div class="border-r border-b border-white/5 p-2 align-top text-left min-h-[120px] {{ $isPast ? 'opacity-50' : '' }}">
@@ -158,6 +171,17 @@
                                         <div class="rounded-md bg-indigo-500/10 px-1.5 py-0.5 text-xs text-indigo-200 truncate"
                                              title="{{ $appt->title }} at {{ $appt->formatted_time }}">
                                             🗓️ {{ \Carbon\Carbon::parse($appt->time)->format('g:i a') }} {{ Str::limit($appt->title, 12) }}
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+
+                            @if($dayRoutines->isNotEmpty())
+                                <div class="space-y-0.5">
+                                    @foreach($dayRoutines->take(2) as $routine)
+                                        <div class="rounded-md bg-purple-500/10 px-1.5 py-0.5 text-xs text-purple-200 truncate"
+                                             title="{{ $routine->title }}">
+                                            🔁 {{ Str::limit($routine->title, 12) }}
                                         </div>
                                     @endforeach
                                 </div>
@@ -199,19 +223,32 @@
                         </span>
                     </div>
                 @empty
-                    @forelse($tasks->flatten()->sortBy('due_date') as $task)
+                    @forelse($routines->flatten()->sortBy(function ($r) {
+                            return Carbon\Carbon::parse($r->date);
+                        }) as $routine)
                         <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-800/50 p-3">
-                            <span class="rounded-xl bg-indigo-500/10 px-2.5 py-1 text-xs font-medium text-indigo-300">
-                                {{ \Carbon\Carbon::parse($task->due_date)->format('D d') }}
+                            <span class="rounded-xl bg-purple-500/10 px-2.5 py-1 text-xs font-medium text-purple-300">
+                                {{ \Carbon\Carbon::parse($routine->date)->format('D d') }}
                             </span>
-                            <span class="text-sm {{ $task->is_completed ? 'line-through text-slate-500' : 'text-slate-300' }}">
-                                {{ $task->title }}
+                            <span class="text-sm {{ $routine->is_completed ? 'line-through text-slate-500' : 'text-slate-300' }}">
+                                🔁 {{ $routine->title }}
                             </span>
                         </div>
                     @empty
-                        <div class="rounded-2xl border border-dashed border-white/10 p-6 text-center text-sm text-slate-500">
-                            No appointments or tasks scheduled for this week.
-                        </div>
+                        @forelse($tasks->flatten()->sortBy('due_date') as $task)
+                            <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-800/50 p-3">
+                                <span class="rounded-xl bg-indigo-500/10 px-2.5 py-1 text-xs font-medium text-indigo-300">
+                                    {{ \Carbon\Carbon::parse($task->due_date)->format('D d') }}
+                                </span>
+                                <span class="text-sm {{ $task->is_completed ? 'line-through text-slate-500' : 'text-slate-300' }}">
+                                    {{ $task->title }}
+                                </span>
+                            </div>
+                        @empty
+                            <div class="rounded-2xl border border-dashed border-white/10 p-6 text-center text-sm text-slate-500">
+                                No appointments, routines or tasks scheduled for this week.
+                            </div>
+                        @endforelse
                     @endforelse
                 @endforelse
             </div>

@@ -12,28 +12,28 @@ class CalendarController extends Controller
     {
         $user = Auth::user();
         $view = $request->input('view', 'week');
-        
+
         $prevMonth = null;
         $nextMonth = null;
         $prevWeek = null;
         $nextWeek = null;
-        
+
         if ($view === 'month') {
             // Month view
             $month = $request->input('month', now()->format('Y-m'));
             [$year, $monthNum] = explode('-', $month);
-            
+
             $start = Carbon::createFromDate($year, $monthNum, 1)->startOfMonth();
             $end = $start->copy()->endOfMonth();
-            
+
             // Get the first day of the week containing the 1st
             $calendarStart = $start->copy()->startOfWeek();
             // Get the last day of the week containing the last day
             $calendarEnd = $end->copy()->endOfWeek();
-            
+
             $prevMonth = $start->copy()->subMonth()->format('Y-m');
             $nextMonth = $start->copy()->addMonth()->format('Y-m');
-            
+
             // Build all calendar days (including padding days)
             $days = collect();
             $current = $calendarStart->copy();
@@ -46,13 +46,13 @@ class CalendarController extends Controller
             $week = $request->input('week', 0);
             $start = Carbon::now()->startOfWeek()->addWeeks($week);
             $end = $start->copy()->endOfWeek();
-            
+
             $days = collect();
             for ($i = 0; $i < 7; $i++) {
                 $day = $start->copy()->addDays($i);
                 $days->push($day);
             }
-            
+
             $prevWeek = $week - 1;
             $nextWeek = $week + 1;
         }
@@ -77,10 +77,20 @@ class CalendarController extends Controller
                 return Carbon::parse($t->due_date)->toDateString();
             });
 
+        // Routines (new — financial recurring routines + daily routines for this period)
+        $routines = $user->routines()
+            ->whereDate('date', '>=', $start->toDateString())
+            ->whereDate('date', '<=', $end->toDateString())
+            ->get()
+            ->groupBy(function ($r) {
+                return Carbon::parse($r->date)->toDateString();
+            });
+
         return view('calendar.index', compact(
             'days',
             'appointments',
             'tasks',
+            'routines',
             'start',
             'end',
             'view',
