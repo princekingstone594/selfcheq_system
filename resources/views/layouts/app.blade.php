@@ -86,6 +86,7 @@
         }
     </style>
     
+    
     <script>
         // Smooth page transitions for all internal links and form submissions
         document.addEventListener('DOMContentLoaded', function() {
@@ -187,7 +188,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
                     <div class="flex items-center gap-2">
-                        <x-application-logo class="h-24 w-24" />
+                        <x-application-logo class="h-16 w-16 sm:h-20 sm:w-20" style="display: block !important; visibility: visible !important; opacity: 1 !important;" />
                         <span class="text-sm font-semibold uppercase tracking-[0.25em] {{ auth()->check() && auth()->user()->theme === 'light' ? 'text-indigo-600' : 'text-indigo-300' }}">SelfCheq</span>
                     </div>
                     <p class="text-xs {{ auth()->check() && auth()->user()->theme === 'light' ? 'text-slate-500' : 'text-slate-400' }}">© 2026 SelfCheq. All rights reserved.</p>

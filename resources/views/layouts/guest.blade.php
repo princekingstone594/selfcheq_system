@@ -18,15 +18,29 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     {{-- Smooth Page Transitions --}}
     <style>
-        #page-content {
-            opacity: 0;
-            animation: fadeInPage 0.3s ease-in-out forwards;
+        * {
+            -webkit-tap-highlight-color: transparent;
         }
         
-        @keyframes fadeInPage {
+        #page-content {
+            opacity: 1;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        
+        .page-transitioning #page-content {
+            opacity: 0;
+            transform: translateY(-5px);
+            transition: opacity 0.08s ease-in-out, transform 0.08s ease-in-out;
+        }
+        
+        .smooth-redirect #page-content {
+            animation: smoothFadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes smoothFadeIn {
             from {
                 opacity: 0;
-                transform: translateY(8px);
+                transform: translateY(5px);
             }
             to {
                 opacity: 1;
@@ -34,17 +48,30 @@
             }
         }
         
-        .page-transitioning #page-content {
-            animation: fadeOutPage 0.15s ease-in-out forwards;
+        /* Prevent flash during page loads */
+        html.splash-skip #splash-screen {
+            display: none !important;
         }
         
-        @keyframes fadeOutPage {
-            to {
-                opacity: 0;
-                transform: translateY(-4px);
+        /* PWA Mode: Hide duplicate logo in navigation */
+        @media (display-mode: standalone) {
+            .pwa-mode .nav-logo-img {
+                display: none;
             }
         }
+        
+        /* Also detect via navigator.standalone for iOS */
+        .pwa-mode .nav-logo-img {
+            display: none;
+        }
     </style>
+    
+    <script>
+        // Detect PWA standalone mode
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+            document.documentElement.classList.add('pwa-mode');
+        }
+    </script>
     
     <script>
         // Smooth page transitions for all internal links and form submissions
