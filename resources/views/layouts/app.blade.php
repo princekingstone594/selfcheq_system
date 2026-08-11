@@ -47,6 +47,120 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     @stack('scripts')
+    
+    {{-- Smooth Page Transitions --}}
+    <style>
+        #page-content {
+            opacity: 0;
+            animation: fadeInPage 0.3s ease-in-out forwards;
+        }
+        
+        @keyframes fadeInPage {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .page-transitioning #page-content {
+            animation: fadeOutPage 0.15s ease-in-out forwards;
+        }
+        
+        @keyframes fadeOutPage {
+            to {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
+        }
+    </style>
+    
+    <script>
+        // Smooth page transitions for all internal links and form submissions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if this is a smooth redirect from a command
+            @if(session('selfcheq_smooth_redirect'))
+                sessionStorage.setItem('selfcheq_redirecting', 'true');
+                sessionStorage.setItem('selfcheq_smooth_transition', 'true');
+            @endif
+            
+            const content = document.getElementById('page-content') || document.querySelector('main');
+            if (!content) return;
+            
+            // Wrap main content for transitions
+            if (!content.id) {
+                content.id = 'page-content';
+            }
+            
+            // Handle smooth transitions from server-side redirects
+            const isSmoothRedirect = sessionStorage.getItem('selfcheq_smooth_transition');
+            if (isSmoothRedirect) {
+                sessionStorage.removeItem('selfcheq_smooth_transition');
+                content.style.opacity = '0';
+                content.style.transform = 'translateY(-4px)';
+                
+                // Trigger reflow
+                content.offsetHeight;
+                
+                // Animate in
+                content.style.transition = 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out';
+                content.style.opacity = '1';
+                content.style.transform = 'translateY(0)';
+            }
+            
+            // Intercept all internal link clicks
+            document.querySelectorAll('a[href]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    
+                    // Only handle internal links (not external, anchors, or special URLs)
+                    if (!href || 
+                        href.startsWith('http') || 
+                        href.startsWith('//') || 
+                        href.startsWith('#') || 
+                        href.startsWith('mailto:') || 
+                        href.startsWith('tel:') ||
+                        href.includes('javascript:')) {
+                        return;
+                    }
+                    
+                    // Mark as redirecting for splash screen skip
+                    sessionStorage.setItem('selfcheq_redirecting', 'true');
+                    
+                    // Add transition class
+                    document.documentElement.classList.add('page-transitioning');
+                    
+                    // Allow animation to complete before navigation
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 150);
+                    
+                    e.preventDefault();
+                });
+            });
+            
+            // Intercept all form submissions
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    // Mark as redirecting for splash screen skip
+                    sessionStorage.setItem('selfcheq_redirecting', 'true');
+                    
+                    // Add transition class
+                    document.documentElement.classList.add('page-transitioning');
+                    
+                    // Allow animation to complete, then let form submit naturally
+                    setTimeout(() => {
+                        document.documentElement.classList.remove('page-transitioning');
+                    }, 150);
+                    
+                    // Don't prevent submission - let it proceed naturally
+                });
+            });
+        });
+    </script>
 </head>
 <body class="font-sans antialiased {{ auth()->check() && auth()->user()->theme === 'light' ? 'bg-slate-50 text-slate-900' : 'bg-slate-950 text-slate-100' }}">
     <x-splash-screen />
@@ -64,7 +178,7 @@
             </header>
         @endisset
 
-        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main id="page-content" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {{ $slot }}
         </main>
 

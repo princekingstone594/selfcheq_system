@@ -2,6 +2,15 @@
 <script>
     // Hide splash immediately before any content renders (prevents white flash)
     (function() {
+        // Skip splash screen during redirects to prevent flash
+        if (sessionStorage.getItem('selfcheq_redirecting')) {
+            sessionStorage.removeItem('selfcheq_redirecting');
+            if (document.getElementById('splash-screen')) {
+                document.getElementById('splash-screen').style.display = 'none';
+            }
+            return;
+        }
+        
         if (localStorage.getItem('selfcheq_splash_shown')) {
             document.documentElement.classList.add('selfcheq-splash-done');
         }
