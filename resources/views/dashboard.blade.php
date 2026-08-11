@@ -239,12 +239,9 @@
                         @if($financials->count() > 0)
                             <div class="mt-3 space-y-2">
                                 @foreach($financials->take(3) as $financial)
-                                    <div class="flex items-center justify-between text-xs {{ $financial->is_completed ? 'line-through text-slate-500' : 'text-slate-300' }}">
-                                        <span class="flex items-center gap-2">
-                                            <span class="h-1.5 w-1.5 rounded-full {{ $financial->is_completed ? 'bg-emerald-400' : 'bg-slate-500' }}"></span>
-                                            {{ $financial->title }}
-                                        </span>
-                                        <span class="font-medium text-emerald-300">${{ number_format($financial->amount, 2) }}</span>
+                                    <div class="flex items-center gap-2 text-xs {{ $financial->is_completed ? 'line-through text-slate-500' : 'text-slate-300' }}">
+                                        <span class="h-1.5 w-1.5 rounded-full {{ $financial->is_completed ? 'bg-emerald-400' : 'bg-slate-500' }}"></span>
+                                        {{ $financial->title }}
                                     </div>
                                 @endforeach
                             </div>

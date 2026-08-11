@@ -47,7 +47,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-slate-300">Amount ($)</label>
+                        <label class="block text-sm font-medium text-slate-300">Amount (Ksh)</label>
                         <input type="number" step="0.01" name="amount" placeholder="0.00"
                             class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-rose-500 focus:ring-1 focus:ring-rose-500" />
                     </div>
@@ -104,7 +104,7 @@
                                     </div>
                                     <div class="mt-2 flex flex-wrap gap-2 text-xs text-slate-400">
                                         @if($bill->amount)
-                                            <span class="rounded-full bg-slate-700 px-3 py-1">${{ number_format($bill->amount, 2) }}</span>
+                                            <span class="rounded-full bg-slate-700 px-3 py-1">Ksh {{ number_format($bill->amount, 2) }}</span>
                                         @endif
                                         @if($bill->due_date)
                                             <span class="rounded-full bg-slate-700 px-3 py-1">Due: {{ \Carbon\Carbon::parse($bill->due_date)->format('M d, Y') }}</span>
@@ -152,7 +152,7 @@
                                 @endif
                             </div>
                             @if($bill->amount)
-                                <p class="mt-1 text-xs text-slate-500">Amount: ${{ number_format($bill->amount, 2) }}</p>
+                                <p class="mt-1 text-xs text-slate-500">Amount: Ksh {{ number_format($bill->amount, 2) }}</p>
                             @endif
                             <div class="mt-2">
                                 <form method="POST" action="{{ route('financials.toggle', $bill) }}" class="inline">
@@ -348,7 +348,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-slate-300">Target Amount ($)</label>
+                        <label class="block text-sm font-medium text-slate-300">Target Amount (Ksh)</label>
                         <input type="number" step="0.01" name="amount" placeholder="0.00"
                             class="mt-1 rounded-2xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500" />
                     </div>
@@ -414,7 +414,7 @@
                                     @endif
                                     <div class="mt-2 flex flex-wrap gap-2 text-xs text-slate-400">
                                         @if($saving->amount)
-                                            <span class="rounded-full bg-slate-700 px-3 py-1">Target: ${{ number_format($saving->amount, 2) }}</span>
+                                            <span class="rounded-full bg-slate-700 px-3 py-1">Target: Ksh {{ number_format($saving->amount, 2) }}</span>
                                         @endif
                                         @if($saving->frequency)
                                             <span class="rounded-full bg-slate-700 px-3 py-1">{{ ucfirst($saving->frequency) }}</span>
@@ -457,7 +457,7 @@
                             <div class="flex items-center gap-2">
                                 <span class="text-emerald-400">💰</span>
                                 <p class="font-semibold text-white">{{ $saving->title }}</p>
-                                <span class="text-xs text-slate-500">— Target: ${{ number_format($saving->amount, 2) }}</span>
+                                <span class="text-xs text-slate-500">— Target: Ksh {{ number_format($saving->amount, 2) }}</span>
                             </div>
                             <div class="mt-2">
                                 <form method="POST" action="{{ route('financials.toggle', $saving) }}" class="inline">

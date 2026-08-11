@@ -147,6 +147,29 @@
 
             <div id="morningDevotion" class="mt-4">
 
+            <!-- Declaration Chapters -->
+            <div class="mt-4 rounded-2xl border border-white/10 bg-slate-800/50 p-4">
+                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Declaration Chapters</p>
+                <div class="mt-3 grid gap-2 sm:grid-cols-2">
+                    <a href="https://www.biblegateway.com/passage/?search=Psalms+91&version=KJV" target="_blank" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
+                        <span class="text-indigo-400 group-hover:text-amber-300">📖</span>
+                        Psalms 91
+                    </a>
+                    <a href="https://www.biblegateway.com/passage/?search=Psalms+23&version=KJV" target="_blank" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
+                        <span class="text-indigo-400 group-hover:text-amber-300">📖</span>
+                        Psalms 23
+                    </a>
+                    <a href="https://www.biblegateway.com/passage/?search=Psalms+27&version=KJV" target="_blank" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
+                        <span class="text-indigo-400 group-hover:text-amber-300">📖</span>
+                        Psalms 27
+                    </a>
+                    <a href="https://www.biblegateway.com/passage/?search=Deuteronomy+28&version=KJV" target="_blank" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
+                        <span class="text-indigo-400 group-hover:text-amber-300">📖</span>
+                        Deut 28
+                    </a>
+                </div>
+            </div>
+
             @if($morningDevotion)
                 <div class="mt-4 rounded-2xl border border-white/10 bg-slate-800/50 p-4">
                     <div class="flex items-center justify-between">
@@ -226,7 +249,7 @@
                         </a>
                         <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 mt-4 mb-2">Upcoming Devotional Communities</p>
                         <div class="grid gap-2 sm:grid-cols-2">
-                            <a href="https://www.youtube.com/results?search_query=Hallelijah+Challenge+Nathaniel+Bassey" target="_blank" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
+                            <a href="https://www.youtube.com/results?search_query=Hallelujah+Challenge+Nathaniel+Bassey" target="_blank" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
                                 <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 group-hover:bg-amber-300"></span>
                                 Hallelujah Challenge - Nathaniel Bassey
                             </a>
@@ -234,9 +257,9 @@
                                 <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 group-hover:bg-amber-300"></span>
                                 Restoring the Order of Worship - Dunsin Oyekan
                             </a>
-                            <a href="https://www.youtube.com/@Upperoom" target="_blank" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
+                            <a href="https://www.youtube.com/results?search_query=Upper+room+Dunsin+Oyekan" target="_blank" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
                                 <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 group-hover:bg-amber-300"></span>
-                                Upperoom - Dunsin Oyekan
+                                Upper room - Dunsin Oyekan
                             </a>
                             <a href="https://www.youtube.com/results?search_query=Mountain+Experience+Moses+Bliss" target="_blank" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
                                 <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 group-hover:bg-amber-300"></span>
