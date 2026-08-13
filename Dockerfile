@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install \
         pdo \
         pdo_mysql \
+        pdo_pgsql \
         mbstring \
         exif \
         pcntl \
@@ -37,7 +38,8 @@ RUN composer install \
     --no-interaction
 
 # Configure Apache to serve Laravel's public directory
-RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
+RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' \
+    /etc/apache2/sites-available/000-default.conf
 
 RUN printf '<Directory /var/www/html/public>\n\
     AllowOverride All\n\
@@ -45,11 +47,17 @@ RUN printf '<Directory /var/www/html/public>\n\
 </Directory>\n' > /etc/apache2/conf-available/laravel.conf \
     && a2enconf laravel
 
+# Make Apache listen on Render's PORT
+RUN printf 'Listen ${PORT}\n' > /etc/apache2/ports.conf \
+    && sed -i 's/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/' \
+    /etc/apache2/sites-available/000-default.conf
+
 # Laravel storage/cache permissions
 RUN chown -R www-data:www-data \
     /var/www/html/storage \
     /var/www/html/bootstrap/cache
 
-EXPOSE 80
+EXPOSE 10000
 
+# Start Apache in the foreground
 CMD ["apache2-foreground"]
