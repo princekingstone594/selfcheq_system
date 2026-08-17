@@ -17,10 +17,12 @@
                 <div class="hidden items-center space-x-1 sm:-my-px sm:ms-8 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">Dashboard</x-nav-link>
                     <x-nav-link :href="route('tasks.index')" :active="request()->routeIs('tasks.*')">Tasks</x-nav-link>
-                    <x-nav-link :href="route('routines.index')" :active="request()->routeIs('routines.*')">Routines</x-nav-link>
-                    <x-nav-link :href="route('appointments.index')" :active="request()->routeIs('appointments.*')">Appointments</x-nav-link>
-                    <x-nav-link :href="route('focus.index')" :active="request()->routeIs('focus.*')" class="hidden lg:inline-flex">Focus</x-nav-link>
+                    <x-nav-link :href="route('routines.index')" :active="request()->routeIs('routines.*')">Routine</x-nav-link>
+                    <x-nav-link :href="route('journal.index')" :active="request()->routeIs('journal.*')">Journal</x-nav-link>
+                    <x-nav-link :href="route('appointments.index')" :active="request()->routeIs('appointments.*')">Appointment</x-nav-link>
+                    <x-nav-link :href="route('financials.index')" :active="request()->routeIs('financials.*')">Financials</x-nav-link>
                     <x-nav-link :href="route('devotional.today')" :active="request()->routeIs('devotional.*')" class="hidden lg:inline-flex">Devotional</x-nav-link>
+                    <x-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*')">My Calendar</x-nav-link>
                     
                     <!-- See More Dropdown -->
                     <div x-data="{ open: false }" class="relative">
@@ -33,11 +35,11 @@
                         
                         <div x-show="open" @click.outside="open = false" x-transition class="absolute top-full left-0 mt-2 w-48 rounded-2xl border border-white/10 bg-slate-900 shadow-2xl z-50 overflow-hidden">
                             <div class="py-2">
+                                <a href="{{ route('notes.index') }}" :class="request()->routeIs('notes.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="lg:hidden block px-4 py-2.5 text-sm transition">Notepad</a>
                                 <a href="{{ route('focus.index') }}" :class="request()->routeIs('focus.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="lg:hidden block px-4 py-2.5 text-sm transition">Focus</a>
-                                <a href="{{ route('devotional.today') }}" :class="request()->routeIs('devotional.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="lg:hidden block px-4 py-2.5 text-sm transition">Devotional</a>
-                                <a href="{{ route('notes.index') }}" :class="request()->routeIs('notes.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">Notepad</a>
                                 <a href="{{ route('progress.index') }}" :class="request()->routeIs('progress.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">Progress</a>
                                 <a href="{{ route('settings.index') }}" :class="request()->routeIs('settings.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">Settings</a>
+                                <a href="{{ route('profile.edit') }}" :class="request()->routeIs('profile.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">Profile</a>
                             </div>
                         </div>
                     </div>
@@ -152,13 +154,14 @@
                 <div class="pt-2 pb-3 space-y-1 px-4">
                     <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">Dashboard</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('tasks.index')" :active="request()->routeIs('tasks.*')">Tasks</x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('routines.index')" :active="request()->routeIs('routines.*')">Routines</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('routines.index')" :active="request()->routeIs('routines.*')">Routine</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('journal.index')" :active="request()->routeIs('journal.*')">Journal</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('appointments.index')" :active="request()->routeIs('appointments.*')">Appointment</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('financials.index')" :active="request()->routeIs('financials.*')">Financials</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('devotional.today')" :active="request()->routeIs('devotional.*')">Devotional</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*')">My Calendar</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('notes.index')" :active="request()->routeIs('notes.*')">Notepad</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('focus.index')" :active="request()->routeIs('focus.*')">Focus</x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('devotional.today')" :active="request()->routeIs('devotional.*')">Devotional</x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('financials.index')" :active="request()->routeIs('financials.*')">Financials</x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*')">My Calendar</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('progress.index')" :active="request()->routeIs('progress.*')">Progress</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('settings.index')" :active="request()->routeIs('settings.*')">Settings</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.*')">Profile</x-responsive-nav-link>
