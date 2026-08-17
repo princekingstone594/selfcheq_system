@@ -18,6 +18,7 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">Dashboard</x-nav-link>
                     <x-nav-link :href="route('tasks.index')" :active="request()->routeIs('tasks.*')">Tasks</x-nav-link>
                     <x-nav-link :href="route('routines.index')" :active="request()->routeIs('routines.*')">Routines</x-nav-link>
+                    <x-nav-link :href="route('appointments.index')" :active="request()->routeIs('appointments.*')">Appointments</x-nav-link>
                     <x-nav-link :href="route('focus.index')" :active="request()->routeIs('focus.*')" class="hidden lg:inline-flex">Focus</x-nav-link>
                     <x-nav-link :href="route('devotional.today')" :active="request()->routeIs('devotional.*')" class="hidden lg:inline-flex">Devotional</x-nav-link>
                     
@@ -35,8 +36,6 @@
                                 <a href="{{ route('focus.index') }}" :class="request()->routeIs('focus.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="lg:hidden block px-4 py-2.5 text-sm transition">Focus</a>
                                 <a href="{{ route('devotional.today') }}" :class="request()->routeIs('devotional.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="lg:hidden block px-4 py-2.5 text-sm transition">Devotional</a>
                                 <a href="{{ route('notes.index') }}" :class="request()->routeIs('notes.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">Notepad</a>
-                                <a href="{{ route('financials.index') }}" :class="request()->routeIs('financials.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">Financials</a>
-                                <a href="{{ route('calendar.index') }}" :class="request()->routeIs('calendar.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">My Calendar</a>
                                 <a href="{{ route('progress.index') }}" :class="request()->routeIs('progress.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">Progress</a>
                                 <a href="{{ route('settings.index') }}" :class="request()->routeIs('settings.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">Settings</a>
                             </div>
