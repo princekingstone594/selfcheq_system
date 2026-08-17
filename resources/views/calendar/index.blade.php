@@ -101,7 +101,7 @@
                             $dayRoutines = $routines[$dayStr] ?? collect();
                         @endphp
 
-                        <div @click="openQuickAdd('{{ $dayStr }}')"
+                        <div @click="openQuickAdd('{{ $dayStr }}'"
                              class="border-r border-b border-white/5 p-2 align-top text-left min-h-[100px] cursor-pointer transition hover:bg-indigo-500/5 {{ $isPast ? 'opacity-50' : '' }}">
                             <div class="mb-1 flex items-center justify-between">
                                 <span class="text-[10px] text-slate-600 opacity-0 group-hover:opacity-100 hover:opacity-100 transition" title="Click to add">+</span>
@@ -173,7 +173,7 @@
                             $dayRoutines = $routines[$dayStr] ?? collect();
                         @endphp
 
-                        <div @click="openQuickAdd('{{ $dayStr }}')"
+                        <div @click="openQuickAdd('{{ $dayStr }}'"
                              class="border-r border-b border-white/5 p-2 align-top text-left min-h-[120px] cursor-pointer transition hover:bg-indigo-500/5 {{ $isPast ? 'opacity-50' : '' }}">
                             <div class="mb-1 flex items-center justify-between">
                                 <span class="text-[10px] text-slate-600 opacity-0 hover:opacity-100 transition" title="Click to add">+</span>
@@ -242,17 +242,6 @@
                     ]);
                 }
 
-                foreach ($routines->flatten() as $routine) {
-                    $upcoming->push((object) [
-                        'sort_date' => \Carbon\Carbon::parse($routine->date)->format('Y-m-d') . ' 00:00',
-                        'type' => 'routine',
-                        'title' => $routine->title,
-                        'date' => $routine->date,
-                        'time' => null,
-                        'is_completed' => $routine->is_completed,
-                    ]);
-                }
-
                 foreach ($tasks->flatten() as $task) {
                     $upcoming->push((object) [
                         'sort_date' => \Carbon\Carbon::parse($task->due_date)->format('Y-m-d') . ' 00:00',
@@ -270,7 +259,7 @@
             <div class="mt-4 space-y-3">
                 @forelse($upcoming as $item)
                     <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-800/50 p-3">
-                        <span class="rounded-xl px-2.5 py-1 text-xs font-medium {{ $item->type === 'appointment' ? 'bg-indigo-500/10 text-indigo-300' : ($item->type === 'routine' ? 'bg-purple-500/10 text-purple-300' : 'bg-slate-700/50 text-slate-300') }}">
+                        <span class="rounded-xl px-2.5 py-1 text-xs font-medium {{ $item->type === 'appointment' ? 'bg-indigo-500/10 text-indigo-300' : 'bg-slate-700/50 text-slate-300' }}">
                             {{ \Carbon\Carbon::parse($item->date)->format('D d') }}
                             @if($item->time)
                                 · {{ \Carbon\Carbon::parse($item->time)->format('g:i a') }}
@@ -284,7 +273,7 @@
                     </div>
                 @empty
                     <div class="rounded-2xl border border-dashed border-white/10 p-6 text-center text-sm text-slate-500">
-                        No appointments, routines or tasks scheduled for this period.
+                        No appointments, tasks scheduled for this period.
                     </div>
                 @endforelse
             </div>
