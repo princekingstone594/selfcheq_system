@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Services\GamificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Models\User;
-use App\Models\Badge;
 
 class TaskController extends Controller
 {
@@ -38,21 +38,9 @@ class TaskController extends Controller
         $completed = $tasks->where('is_completed', true)->count();
         $progress = $total > 0 ? round(($completed / $total) * 100) : 0;
 
-        // 🔥 Streak logic
+        // 🔥 Streak logic — centralized in GamificationService
         if ($total > 0 && $completed === $total) {
-
-            if ($user->last_completed_date === null) {
-                $user->streak = 1;
-
-            } elseif ($user->last_completed_date === now()->subDay()->toDateString()) {
-                $user->streak += 1;
-
-            } elseif ($user->last_completed_date !== $todayDate) {
-                $user->streak = 1;
-            }
-
-            $user->last_completed_date = $todayDate;
-            $user->save();
+            GamificationService::recordDailyActivity($user, $todayDate);
         }
 
         return view('tasks.index', compact(
@@ -105,15 +93,12 @@ class TaskController extends Controller
 
         if (!$task->is_completed) {
             // gaining xp when completing
-            $user->xp += 10;
+            GamificationService::awardXp($user, 10, 'Task completed: ' . $task->title);
+            GamificationService::recordDailyActivity($user);
         } else {
             // optional: remove xp if unchecking
-            $user->xp -= 10;
+            GamificationService::deductXp($user, 10, 'Task uncompleted: ' . $task->title);
         }
-
-        $this->updateLevel($user);
-
-        $user->save();
 
         return back()->with('success', $task->is_completed
             ? '✅ Task completed! +10 XP'
@@ -146,18 +131,5 @@ class TaskController extends Controller
         $task->delete();
 
         return back()->with('success', 'Task removed. 🗑️');
-    }
-
-    private function updateLevel($user)
-    {
-        $user->level = floor($user->xp / 100) + 1;
-
-        if ($user->xp >= 100 && !$user->badges()->where('name', 'First 100 XP')->exists()) {
-            $badge = Badge::firstOrCreate([
-                'name' => 'First 100 XP',
-                'description' => 'Awarded for reaching 100 XP.',
-            ]);
-            $user->badges()->attach($badge);
-        }
     }
 }

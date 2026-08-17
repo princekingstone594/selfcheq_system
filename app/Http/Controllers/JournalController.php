@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\GamificationService;
 use App\Models\Journal;
 
 class JournalController extends Controller
@@ -53,8 +54,13 @@ class JournalController extends Controller
         // Inform the user whether they created or updated today's entry
         $isNew = $journal->wasRecentlyCreated;
 
+        if ($isNew) {
+            GamificationService::awardXp(Auth::user(), 20, 'Journal entry created');
+            GamificationService::recordDailyActivity(Auth::user());
+        }
+
         return back()->with('success', $isNew
-            ? 'Journal entry saved! 📝'
+            ? 'Journal entry saved! 📝 +20 XP'
             : 'Journal entry updated! You can keep editing until midnight. 🧠');
     }
 }

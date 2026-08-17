@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\GamificationService;
 use App\Models\FocusSession;
 use App\Models\Task;
 use App\Models\Routine;
@@ -116,11 +117,18 @@ class FocusController extends Controller
             'duration' => 'required|integer|min:1|max:180',
         ]);
 
-        FocusSession::create([
+        $session = FocusSession::create([
             'user_id' => Auth::id(),
             'duration' => $request->duration,
             'started_at' => now(),
         ]);
+
+        $user = Auth::user();
+
+        // Award XP: 1 XP per minute, capped at 60 XP per session
+        $xp = min($request->duration, 60);
+        GamificationService::awardXp($user, $xp, "Focus session: {$request->duration} min");
+        GamificationService::recordDailyActivity($user);
 
         return back();
     }

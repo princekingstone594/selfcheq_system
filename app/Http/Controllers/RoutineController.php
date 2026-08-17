@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\GamificationService;
 use App\Models\Routine;
 use App\Models\Task;
 use App\Models\Financial;
@@ -254,6 +255,13 @@ class RoutineController extends Controller
         $routine->update([
             'is_completed' => !$routine->is_completed
         ]);
+
+        $user = Auth::user();
+
+        if ($routine->is_completed) {
+            GamificationService::awardXp($user, 15, 'Routine completed: ' . $routine->title);
+            GamificationService::recordDailyActivity($user);
+        }
 
         return back()->with('success', $routine->is_completed
             ? '✅ Routine completed — another step toward discipline!'

@@ -157,7 +157,7 @@
                     <x-responsive-nav-link :href="route('routines.index')" :active="request()->routeIs('routines.*')">Routine</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('journal.index')" :active="request()->routeIs('journal.*')">Journal</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('appointments.index')" :active="request()->routeIs('appointments.*')">Appointment</x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('financials.index)" :active="request()->routeIs('financials.*')">Financials</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('financials.index')" :active="request()->routeIs('financials.*')">Financials</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('devotional.today')" :active="request()->routeIs('devotional.*')">Devotional</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*')">My Calendar</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('notes.index')" :active="request()->routeIs('notes.*')">Notepad</x-responsive-nav-link>
