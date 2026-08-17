@@ -76,6 +76,7 @@ Route::middleware('auth')->group(function () {
 
     // Focus
     Route::get('/focus', [FocusController::class, 'index'])->name('focus.index');
+    Route::get('/focus/today', [FocusController::class, 'today'])->name('focus.today');
     Route::post('/focus/start', [FocusController::class, 'start'])->name('focus.start');
     Route::patch('/focus/{session}/stop', [FocusController::class, 'stop'])->name('focus.stop');
 
