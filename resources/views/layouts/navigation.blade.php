@@ -18,7 +18,6 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">Dashboard</x-nav-link>
                     <x-nav-link :href="route('tasks.index')" :active="request()->routeIs('tasks.*')">Tasks</x-nav-link>
                     <x-nav-link :href="route('routines.index')" :active="request()->routeIs('routines.*')">Routines</x-nav-link>
-                    <x-nav-link :href="route('appointments.index')" :active="request()->routeIs('appointments.*')">Schedule</x-nav-link>
                     <x-nav-link :href="route('focus.index')" :active="request()->routeIs('focus.*')" class="hidden lg:inline-flex">Focus</x-nav-link>
                     <x-nav-link :href="route('devotional.today')" :active="request()->routeIs('devotional.*')" class="hidden lg:inline-flex">Devotional</x-nav-link>
                     
@@ -155,7 +154,6 @@
                     <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">Dashboard</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('tasks.index')" :active="request()->routeIs('tasks.*')">Tasks</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('routines.index')" :active="request()->routeIs('routines.*')">Routines</x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('appointments.index')" :active="request()->routeIs('appointments.*')">Schedule</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('journal.index')" :active="request()->routeIs('journal.*')">Journal</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('notes.index')" :active="request()->routeIs('notes.*')">Notepad</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('focus.index')" :active="request()->routeIs('focus.*')">Focus</x-responsive-nav-link>
