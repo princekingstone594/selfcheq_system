@@ -34,8 +34,10 @@ class DashboardController extends Controller
         $routines = $user->routines()->whereDate('date', $todayDate)->get();
 
         // 🔒 Merge in permanent routines active on this day
+        // Exclude financial-linked routines (reference_id) — those are handled separately.
         $permanentRoutines = $user->routines()
             ->where('is_permanent', true)
+            ->whereNull('reference_id')
             ->get()
             ->filter(function ($routine) use ($todayDate) {
                 return $routine->isActiveOn($todayDate);

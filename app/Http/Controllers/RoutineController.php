@@ -27,8 +27,10 @@ class RoutineController extends Controller
 
         // 🎯 Permanent routines (non-negotiables) — these are the templates that
         // stay forever and appear on days matching their frequency.
+        // Exclude financial-linked routines (reference_id) — those are handled separately.
         $permanentRoutines = $user->routines()
             ->where('is_permanent', true)
+            ->whereNull('reference_id')
             ->get()
             ->filter(function ($routine) use ($today) {
                 return $routine->isActiveOn($today);
@@ -62,6 +64,7 @@ class RoutineController extends Controller
         // 🎯 All permanent routines (for management view)
         $templates = $user->routines()
             ->where('is_permanent', true)
+            ->whereNull('reference_id')
             ->get();
 
         return view('routines.index', compact('routines', 'history', 'templates'));

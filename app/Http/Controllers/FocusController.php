@@ -44,8 +44,10 @@ class FocusController extends Controller
             ->get();
 
         // 🔒 Merge in permanent routines that are active on this day
+        // Exclude financial-linked routines (reference_id) — those are handled separately.
         $permanentRoutines = $user->routines()
             ->where('is_permanent', true)
+            ->whereNull('reference_id')
             ->get()
             ->filter(function ($routine) use ($day) {
                 return $routine->isActiveOn($day->toDateString());

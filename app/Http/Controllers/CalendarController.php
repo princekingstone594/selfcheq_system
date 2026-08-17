@@ -93,8 +93,10 @@ class CalendarController extends Controller
 
         // 🔁 Project permanent routines (is_permanent = true) into the visible period
         // based on their frequency (weekday, weekend, daily, weekly, monthly, etc.)
+        // Exclude financial-linked routines (reference_id) — those are handled separately.
         $permanentRoutines = $user->routines()
             ->where('is_permanent', true)
+            ->whereNull('reference_id')
             ->get();
 
         // Materialize for each day in the visible period
