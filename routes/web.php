@@ -73,6 +73,7 @@ Route::middleware('auth')->group(function () {
 
     // Calendar
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::post('/calendar/quick-add', [CalendarController::class, 'quickAdd'])->name('calendar.quickAdd');
 
     // Focus
     Route::get('/focus', [FocusController::class, 'index'])->name('focus.index');

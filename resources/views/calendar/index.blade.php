@@ -1,5 +1,14 @@
 <x-app-layout>
-    <div class="mx-auto max-w-6xl space-y-6">
+    <div class="mx-auto max-w-6xl space-y-6" x-data="{
+        quickAddOpen: false,
+        quickAddDate: '',
+        quickAddType: 'task',
+        openQuickAdd(date) {
+            this.quickAddDate = date;
+            this.quickAddType = 'task';
+            this.quickAddOpen = true;
+        }
+    }">
 
         <!-- Header -->
         <section class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-2xl shadow-indigo-950/30 backdrop-blur">
@@ -92,9 +101,13 @@
                             $dayRoutines = $routines[$dayStr] ?? collect();
                         @endphp
 
-                        <div class="border-r border-b border-white/5 p-2 align-top text-left min-h-[100px] {{ $isPast ? 'opacity-50' : '' }}">
-                            <div class="mb-1 text-right text-xs font-semibold {{ $isToday ? 'text-indigo-400' : 'text-slate-500' }}">
-                                {{ $day->format('d') }}
+                        <div @click="openQuickAdd('{{ $dayStr }}')"
+                             class="border-r border-b border-white/5 p-2 align-top text-left min-h-[100px] cursor-pointer transition hover:bg-indigo-500/5 {{ $isPast ? 'opacity-50' : '' }}">
+                            <div class="mb-1 flex items-center justify-between">
+                                <span class="text-[10px] text-slate-600 opacity-0 group-hover:opacity-100 hover:opacity-100 transition" title="Click to add">+</span>
+                                <span class="text-xs font-semibold {{ $isToday ? 'text-indigo-400' : 'text-slate-500' }}">
+                                    {{ $day->format('d') }}
+                                </span>
                             </div>
 
                             @if($dayAppointments->isNotEmpty())
@@ -160,9 +173,13 @@
                             $dayRoutines = $routines[$dayStr] ?? collect();
                         @endphp
 
-                        <div class="border-r border-b border-white/5 p-2 align-top text-left min-h-[120px] {{ $isPast ? 'opacity-50' : '' }}">
-                            <div class="mb-1 text-right text-xs font-semibold {{ $isToday ? 'text-indigo-400' : 'text-slate-500' }}">
-                                {{ $day->format('d') }}
+                        <div @click="openQuickAdd('{{ $dayStr }}')"
+                             class="border-r border-b border-white/5 p-2 align-top text-left min-h-[120px] cursor-pointer transition hover:bg-indigo-500/5 {{ $isPast ? 'opacity-50' : '' }}">
+                            <div class="mb-1 flex items-center justify-between">
+                                <span class="text-[10px] text-slate-600 opacity-0 hover:opacity-100 transition" title="Click to add">+</span>
+                                <span class="text-xs font-semibold {{ $isToday ? 'text-indigo-400' : 'text-slate-500' }}">
+                                    {{ $day->format('d') }}
+                                </span>
                             </div>
 
                             @if($dayAppointments->isNotEmpty())
@@ -272,5 +289,112 @@
                 @endforelse
             </div>
         </section>
+
+        <!-- Quick Add Modal -->
+        <div x-show="quickAddOpen" x-cloak
+             class="fixed inset-0 z-50 flex items-center justify-center p-4"
+             @keydown.escape.window="quickAddOpen = false">
+            <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" @click="quickAddOpen = false"></div>
+
+            <div class="relative w-full max-w-md rounded-3xl border border-white/10 bg-slate-900 p-6 shadow-2xl">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Quick Add</p>
+                        <h2 class="mt-1 text-lg font-semibold text-white" x-text="'Add to ' + new Date(quickAddDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })"></h2>
+                    </div>
+                    <button @click="quickAddOpen = false" class="rounded-xl p-2 text-slate-400 hover:text-white hover:bg-white/5 transition">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Type selector -->
+                <div class="mt-4 grid grid-cols-3 gap-2">
+                    <button @click="quickAddType = 'task'"
+                            :class="quickAddType === 'task' ? 'bg-emerald-500/20 border-emerald-400/40 text-emerald-300' : 'bg-slate-800 border-white/10 text-slate-400 hover:text-white'"
+                            class="rounded-2xl border px-3 py-2 text-sm font-medium transition">
+                        ✅ Task
+                    </button>
+                    <button @click="quickAddType = 'routine'"
+                            :class="quickAddType === 'routine' ? 'bg-purple-500/20 border-purple-400/40 text-purple-300' : 'bg-slate-800 border-white/10 text-slate-400 hover:text-white'"
+                            class="rounded-2xl border px-3 py-2 text-sm font-medium transition">
+                        🔁 Routine
+                    </button>
+                    <button @click="quickAddType = 'appointment'"
+                            :class="quickAddType === 'appointment' ? 'bg-sky-500/20 border-sky-400/40 text-sky-300' : 'bg-slate-800 border-white/10 text-slate-400 hover:text-white'"
+                            class="rounded-2xl border px-3 py-2 text-sm font-medium transition">
+                        🗓️ Appointment
+                    </button>
+                </div>
+
+                <!-- Form -->
+                <form method="POST" action="{{ route('calendar.quickAdd') }}" class="mt-4 space-y-3">
+                    @csrf
+                    <input type="hidden" name="type" :value="quickAddType">
+                    <input type="hidden" name="date" :value="quickAddDate">
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400">Title</label>
+                        <input type="text" name="title" required placeholder="What needs to happen?"
+                               class="mt-1 w-full rounded-2xl border border-slate-700 bg-slate-800/80 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+
+                    <!-- Task-specific fields -->
+                    <div x-show="quickAddType === 'task'" class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400">Reminder time</label>
+                            <input type="time" name="reminder_time"
+                                   class="mt-1 w-full rounded-2xl border border-slate-700 bg-slate-800/80 px-3 py-2.5 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        <div class="flex items-end gap-2 pb-1">
+                            <label class="flex items-center gap-2 text-xs text-slate-300">
+                                <input type="checkbox" name="is_important" class="rounded border-slate-700 bg-slate-800 text-indigo-500 focus:ring-indigo-500">
+                                Important
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Routine-specific fields -->
+                    <div x-show="quickAddType === 'routine'" class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400">Frequency</label>
+                            <select name="frequency"
+                                    class="mt-1 w-full rounded-2xl border border-slate-700 bg-slate-800/80 px-3 py-2.5 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                                <option value="daily">📅 Every day</option>
+                                <option value="weekday">📅 Weekdays (Mon–Fri)</option>
+                                <option value="weekend">📅 Weekends (Sat–Sun)</option>
+                                <option value="weekly">📅 Weekly</option>
+                                <option value="monthly">📅 Monthly</option>
+                                <option value="once">📅 Extra (just this day)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400">Alarm time</label>
+                            <input type="time" name="reminder_time"
+                                   class="mt-1 w-full rounded-2xl border border-slate-700 bg-slate-800/80 px-3 py-2.5 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Appointment-specific fields -->
+                    <div x-show="quickAddType === 'appointment'">
+                        <label class="block text-xs font-medium text-slate-400">Time</label>
+                        <input type="time" name="time" required
+                               class="mt-1 w-full rounded-2xl border border-slate-700 bg-slate-800/80 px-3 py-2.5 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400">Notes (optional)</label>
+                        <textarea name="notes" rows="2" placeholder="Add any details..."
+                                  class="mt-1 w-full rounded-2xl border border-slate-700 bg-slate-800/80 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none"></textarea>
+                    </div>
+
+                    <button type="submit"
+                            class="w-full rounded-2xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400 transition">
+                        Add
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 </x-app-layout>

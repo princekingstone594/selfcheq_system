@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Task;
 use App\Models\Routine;
+use App\Models\Appointment;
 use App\Models\Financial;
 use Carbon\Carbon;
 
@@ -227,5 +229,76 @@ class CalendarController extends Controller
             'prevMonth',
             'nextMonth'
         ));
+    }
+
+    /**
+     * Quick-add a task, routine, or appointment from the calendar.
+     */
+    public function quickAdd(Request $request): RedirectResponse
+    {
+        $user = Auth::user();
+        $type = $request->input('type');
+        $date = $request->input('date', now()->toDateString());
+
+        $request->validate([
+            'type' => 'required|in:task,routine,appointment',
+            'title' => 'required|string|max:255',
+            'date' => 'required|date',
+            'time' => 'nullable',
+            'reminder_time' => 'nullable|date_format:H:i',
+            'frequency' => 'nullable|in:weekday,weekend,daily,once,weekly,monthly,quarterly,annually',
+            'notes' => 'nullable|string',
+        ]);
+
+        switch ($type) {
+            case 'task':
+                Task::create([
+                    'user_id' => $user->id,
+                    'title' => $request->title,
+                    'due_date' => Carbon::parse($date)->toDateString(),
+                    'reminder_time' => $request->reminder_time,
+                    'alarm_enabled' => $request->has('alarm_enabled'),
+                    'alarm_time' => $request->reminder_time,
+                    'is_important' => $request->has('is_important'),
+                    'is_urgent' => $request->has('is_urgent'),
+                ]);
+                $message = 'Task added for ' . Carbon::parse($date)->format('D, d M') . '! ✅';
+                break;
+
+            case 'routine':
+                $frequency = $request->frequency ?? 'daily';
+                $isPermanent = $frequency !== 'once';
+
+                Routine::create([
+                    'user_id' => $user->id,
+                    'title' => $request->title,
+                    'description' => $request->notes,
+                    'date' => Carbon::parse($date)->toDateString(),
+                    'is_completed' => false,
+                    'reminder_time' => $request->reminder_time,
+                    'frequency' => $frequency,
+                    'is_permanent' => $isPermanent,
+                ]);
+                $message = $isPermanent
+                    ? 'Permanent routine added! It will stay until you delete it. 🔒'
+                    : 'Routine added for ' . Carbon::parse($date)->format('d M') . '! 🔁';
+                break;
+
+            case 'appointment':
+                Appointment::create([
+                    'user_id' => $user->id,
+                    'title' => $request->title,
+                    'time' => $request->time,
+                    'date' => Carbon::parse($date)->toDateString(),
+                    'notes' => $request->notes,
+                ]);
+                $message = 'Appointment added to ' . Carbon::parse($date)->format('d M') . '! 🗓️';
+                break;
+
+            default:
+                abort(400);
+        }
+
+        return back()->with('success', $message);
     }
 }
