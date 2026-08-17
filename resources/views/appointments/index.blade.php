@@ -5,8 +5,8 @@
         <section class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-2xl shadow-indigo-950/30 backdrop-blur">
             <div class="flex items-start justify-between gap-4">
                 <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Schedule</p>
-                    <h1 class="mt-1 text-2xl font-semibold text-white">Today's Schedule</h1>
+                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Appointments</p>
+                    <h1 class="mt-1 text-2xl font-semibold text-white">Today's Appointments</h1>
                     <p class="mt-2 text-sm text-slate-400">Plan your appointments and keep your day aligned.</p>
                 </div>
 
