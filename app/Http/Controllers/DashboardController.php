@@ -30,8 +30,26 @@ class DashboardController extends Controller
             ? round(($taskCompleted / $taskTotal) * 100)
             : 0;
 
-        // 🔁 Routines
+        // 🔁 Routines (materialized + permanent routines active today)
         $routines = $user->routines()->whereDate('date', $todayDate)->get();
+
+        // 🔒 Merge in permanent routines active on this day
+        $permanentRoutines = $user->routines()
+            ->where('is_permanent', true)
+            ->get()
+            ->filter(function ($routine) use ($todayDate) {
+                return $routine->isActiveOn($todayDate);
+            });
+
+        $existingTitles = $routines->pluck('title')->map(fn($t) => strtolower(trim($t)))->toArray();
+        foreach ($permanentRoutines as $permanent) {
+            $key = strtolower(trim($permanent->title));
+            if (!in_array($key, $existingTitles)) {
+                $routines->push($permanent);
+                $existingTitles[] = $key;
+            }
+        }
+
         $routineCompleted = $routines->where('is_completed', true)->count();
         $routineTotal = $routines->count();
 

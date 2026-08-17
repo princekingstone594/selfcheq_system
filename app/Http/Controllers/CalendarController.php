@@ -89,6 +89,46 @@ class CalendarController extends Controller
                 return Carbon::parse($r->date)->toDateString();
             });
 
+        // 🔁 Project permanent routines (is_permanent = true) into the visible period
+        // based on their frequency (weekday, weekend, daily, weekly, monthly, etc.)
+        $permanentRoutines = $user->routines()
+            ->where('is_permanent', true)
+            ->get();
+
+        // Materialize for each day in the visible period
+        foreach ($days as $day) {
+            $dayStr = $day->toDateString();
+
+            foreach ($permanentRoutines as $permRoutine) {
+                // Check if this permanent routine is active on this day
+                if (!$permRoutine->isActiveOn($dayStr)) {
+                    continue;
+                }
+
+                // Check if a materialized routine already exists for this day+title
+                $exists = isset($routines[$dayStr])
+                    && $routines[$dayStr]->contains(function ($r) use ($permRoutine) {
+                        return strtolower(trim($r->title)) === strtolower(trim($permRoutine->title));
+                    });
+
+                if (!$exists) {
+                    if (!isset($routines[$dayStr])) {
+                        $routines[$dayStr] = collect();
+                    }
+                    $routines[$dayStr]->push((object) [
+                        'title' => $permRoutine->title,
+                        'date' => $day,
+                        'description' => $permRoutine->description,
+                        'is_completed' => false,
+                        'frequency' => $permRoutine->frequency,
+                        'reminder_time' => $permRoutine->reminder_time,
+                        'is_projected' => true,
+                        'is_permanent' => true,
+                    ]);
+                }
+            }
+        }
+
         // 🔄 Project future recurring financial routines & tasks into this period
         // so the calendar shows upcoming recurring items even if not yet materialized in the DB.
         $recurringFinancials = Financial::where('user_id', $user->id)

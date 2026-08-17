@@ -38,22 +38,33 @@ class FocusController extends Controller
             ->orderBy('reminder_time')
             ->get();
 
-        // 🔁 Routines for the day (materialized + frequency-based)
+        // 🔁 Routines for the day (materialized + permanent frequency-based)
         $routines = $user->routines()
             ->whereDate('date', $date)
             ->get();
 
-        // If no routines materialized for this date, project from frequency templates
-        if ($routines->isEmpty()) {
-            $allRoutines = $user->routines()
-                ->whereNotNull('frequency')
-                ->whereNull('reference_id')
-                ->get()
-                ->filter(function ($routine) use ($day) {
-                    return $routine->isActiveOn($day->toDateString());
-                });
-            $routines = $allRoutines->values();
+        // 🔒 Merge in permanent routines that are active on this day
+        $permanentRoutines = $user->routines()
+            ->where('is_permanent', true)
+            ->get()
+            ->filter(function ($routine) use ($day) {
+                return $routine->isActiveOn($day->toDateString());
+            });
+
+        // Avoid duplicates by title
+        $existingTitles = $routines->pluck('title')->map(fn($t) => strtolower(trim($t)))->toArray();
+        foreach ($permanentRoutines as $permanent) {
+            $key = strtolower(trim($permanent->title));
+            if (!in_array($key, $existingTitles)) {
+                $routines->push($permanent);
+                $existingTitles[] = $key;
+            }
         }
+
+        // Sort routines by reminder time
+        $routines = $routines->sortBy(function ($r) {
+            return $r->reminder_time ? \Carbon\Carbon::parse($r->reminder_time)->format('H:i') : '99:99';
+        })->values();
 
         // ⏰ Appointments for the day
         $appointments = $user->appointments()
@@ -61,10 +72,9 @@ class FocusController extends Controller
             ->orderBy('time')
             ->get();
 
-        // 💰 Financial reminders for the day (due today or reminder today)
+        // 💰 Financial reminders for the day (due on this date)
         $financials = $user->financials()
             ->whereDate('due_date', $date)
-            ->where('is_completed', false)
             ->get();
 
         // 🧠 Focus sessions for the day

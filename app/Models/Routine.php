@@ -17,12 +17,14 @@ class Routine extends Model
         'frequency',
         'reference_id',
         'reference_type',
+        'is_permanent',
     ];
 
     protected $casts = [
         'date' => 'date',
         'is_completed' => 'boolean',
         'reminder_time' => 'datetime',
+        'is_permanent' => 'boolean',
     ];
 
     /**
@@ -63,11 +65,7 @@ class Routine extends Model
 
     /**
      * Whether this routine should appear on the given date based on its frequency.
-     *
-     * Daily-templated routines (weekday/weekend/daily) recur every matching day.
-     * Calendar-based recurring routines (weekly/monthly/quarterly/annually) are
-     * materialized by the RoutineController's carry-forward logic, so they are
-     * NOT copied here day-over-day.
+     * Permanent routines recur based on their frequency setting.
      */
     public function isActiveOn(string $date): bool
     {
@@ -77,10 +75,11 @@ class Routine extends Model
             'weekday'        => in_array($dayOfWeek, [1, 2, 3, 4, 5]),  // Mon-Fri
             'weekend'        => in_array($dayOfWeek, [0, 6]),            // Sun-Sat
             'daily'          => true,
-            'weekly'         => false, // handled by carry-forward / calendar projection
-            'monthly'        => false,
-            'quarterly'      => false,
-            'annually'       => false,
+            'weekly'         => true, // permanent weekly routines appear every day they're set
+            'monthly'        => true,
+            'quarterly'      => true,
+            'annually'       => true,
+            'once'           => Carbon::parse($this->date)->toDateString() === $date,
             default          => false,
         };
     }

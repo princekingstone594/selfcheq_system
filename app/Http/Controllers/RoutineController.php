@@ -16,40 +16,38 @@ class RoutineController extends Controller
         $user = Auth::user();
         $today = now()->toDateString();
 
-        // If no routines today → copy from yesterday (respecting frequency)
-        $exists = $user->routines()->whereDate('date', $today)->exists();
-
-        if (!$exists) {
-            $yesterday = now()->subDay()->toDateString();
-
-            $yesterdayRoutines = $user->routines()
-                ->whereDate('date', $yesterday)
-                ->get();
-
-            foreach ($yesterdayRoutines as $routine) {
-                // Only carry over if the routine's frequency is active today
-                if ($routine->isActiveOn($today)) {
-                    $user->routines()->create([
-                        'title' => $routine->title,
-                        'description' => $routine->description,
-                        'date' => $today,
-                        'is_completed' => false,
-                        'reminder_time' => $routine->reminder_time?->format('H:i'),
-                        'frequency' => $routine->frequency ?? 'daily',
-                        'reference_id' => $routine->reference_id,
-                        'reference_type' => $routine->reference_type,
-                    ]);
-                }
-            }
-        }
-
         // 🔄 Materialize recurring financial routines (weekly, monthly, quarterly, annually)
         // based on the financial records, not on previously-created routine instances.
         $this->materializeFinancialRoutines($user, $today);
 
+        // Get today's materialized routines
         $routines = $user->routines()
             ->whereDate('date', $today)
             ->get();
+
+        // 🎯 Permanent routines (non-negotiables) — these are the templates that
+        // stay forever and appear on days matching their frequency.
+        $permanentRoutines = $user->routines()
+            ->where('is_permanent', true)
+            ->get()
+            ->filter(function ($routine) use ($today) {
+                return $routine->isActiveOn($today);
+            });
+
+        // Merge permanent routines into today's list (avoid duplicates)
+        $existingTitles = $routines->pluck('title')->map(fn($t) => strtolower(trim($t)))->toArray();
+        foreach ($permanentRoutines as $permanent) {
+            $key = strtolower(trim($permanent->title));
+            if (!in_array($key, $existingTitles)) {
+                $routines->push($permanent);
+                $existingTitles[] = $key;
+            }
+        }
+
+        // Sort by reminder time
+        $routines = $routines->sortBy(function ($r) {
+            return $r->reminder_time ? Carbon::parse($r->reminder_time)->format('H:i') : '99:99';
+        })->values();
 
         // 📜 History (past routines, excluding today, grouped by date)
         $history = $user->routines()
@@ -61,9 +59,9 @@ class RoutineController extends Controller
                 return Carbon::parse($r->date)->format('Y-m-d');
             });
 
-        // 🎯 Templates (routines with frequency set, stored as date=null templates)
+        // 🎯 All permanent routines (for management view)
         $templates = $user->routines()
-            ->whereNull('date')
+            ->where('is_permanent', true)
             ->get();
 
         return view('routines.index', compact('routines', 'history', 'templates'));
@@ -216,6 +214,10 @@ class RoutineController extends Controller
 
         $frequency = $request->frequency ?? 'daily';
 
+        // Permanent routines are non-negotiables — they stay forever unless deleted.
+        // 'once' routines are one-time extras and are NOT permanent.
+        $isPermanent = $frequency !== 'once';
+
         $routine = Auth::user()->routines()->create([
             'title' => $request->title,
             'description' => $request->description,
@@ -224,6 +226,7 @@ class RoutineController extends Controller
             'is_completed' => false,
             'reminder_time' => $request->reminder_time,
             'frequency' => $frequency,
+            'is_permanent' => $isPermanent,
         ]);
 
         $timeMsg = $routine->reminder_time
@@ -232,7 +235,9 @@ class RoutineController extends Controller
 
         $msg = $routine->frequency === 'once'
             ? "Extra routine added!{$timeMsg}"
-            : "Routine created with alarm!{$timeMsg}";
+            : ($isPermanent
+                ? "Permanent routine created! It will stay until you delete it.{$timeMsg}"
+                : "Routine created with alarm!{$timeMsg}");
 
         return redirect()->back()->with('success', $msg);
     }
