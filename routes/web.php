@@ -18,6 +18,7 @@ use App\Http\Controllers\FinancialController;
 use App\Http\Controllers\HabitController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\WeeklyReviewController;
+use App\Http\Controllers\BibleChapterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -111,6 +112,10 @@ Route::middleware('auth')->group(function () {
 
     // Weekly Review
     Route::get('/weekly-review', [WeeklyReviewController::class, 'index'])->name('weekly-review.index');
+
+    // Bible Chapters
+    Route::get('/bible-chapter/{reference}', [BibleChapterController::class, 'show'])->name('bible-chapter.show');
+    Route::get('/bible-chapters', [BibleChapterController::class, 'availableReferences'])->name('bible-chapters.available');
 
     // Notes
     Route::get('/notes', [NoteController::class, 'index'])->name('notes.index');
