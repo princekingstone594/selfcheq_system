@@ -12,7 +12,7 @@ class AiCoachService
     {
         $apiKey = config('services.openai.key');
 
-        // ✅ Prevent crash if no API key
+        // Prevent crash if no API key
         if (!$apiKey) {
             $this->client = null;
             return;
@@ -26,7 +26,7 @@ class AiCoachService
      */
     public function generate($data)
     {
-        // ✅ fallback if no AI configured
+        // Fallback if no AI configured
         if (!$this->client) {
             return "Stay consistent. Small daily wins build discipline 💪";
         }
@@ -54,6 +54,115 @@ class AiCoachService
         } catch (\Exception $e) {
             return "Stay disciplined. You're building momentum 💪";
         }
+    }
+
+    /**
+     * Generate weekly insights for the Weekly Review page.
+     *
+     * @param array $history  Array of daily stat snapshots (7 days)
+     * @param string $mode    Coach mode (strict, calm, aggressive)
+     * @return string
+     */
+    public function generateWeeklyInsights(array $history, string $mode = 'strict'): string
+    {
+        if (!$this->client) {
+            return $this->fallbackWeeklyInsights($history);
+        }
+
+        try {
+            $historyText = '';
+            foreach ($history as $day) {
+                $historyText .= "
+Date: {$day['date']}
+Score: {$day['score']}
+Tasks: {$day['tasks_completed']}/{$day['tasks_total']}
+Focus: {$day['focus']} min
+Journaled: " . (!empty($day['journaled']) ? 'yes' : 'no') . "
+Mood: " . ($day['mood'] ?? 'n/a') . "
+";
+            }
+
+            $prompt = "Here is the user's weekly history (past 7 days):
+$historyText
+
+Instructions:
+- Summarize their week in 2–3 short paragraphs
+- Highlight their biggest win and improvement area
+- Point out any mood/focus patterns you detect
+- End with one clear action to start the new week strong";
+
+            $response = $this->client->chat()->create([
+                'model' => 'gpt-4o-mini',
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => $this->getPersonality($mode) . ' You are a weekly review coach. Provide thoughtful, encouraging analysis.',
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => $prompt
+                    ],
+                ],
+            ]);
+
+            return $response->choices[0]->message->content ?? $this->fallbackWeeklyInsights($history);
+
+        } catch (\Exception $e) {
+            return $this->fallbackWeeklyInsights($history);
+        }
+    }
+
+    /**
+     * Heuristic fallback for weekly insights when AI is unavailable.
+     */
+    protected function fallbackWeeklyInsights(array $history): string
+    {
+        if (empty($history)) {
+            return "Not enough data yet. Keep using SelfCheq daily and we'll build your first weekly review soon! 🌱";
+        }
+
+        $avgScore = collect($history)->avg('score');
+        $totalTasks = collect($history)->sum('tasks_completed');
+        $totalTasksPossible = collect($history)->sum('tasks_total');
+        $totalFocus = collect($history)->sum('focus');
+        $journaledDays = collect($history)->where('journaled', true)->count();
+
+        $bestDay = collect($history)->sortByDesc('score')->first();
+        $moodEntries = collect($history)->filter(fn($h) => $h['mood'] !== null);
+        $avgMood = $moodEntries->isNotEmpty() ? $moodEntries->avg('mood') : null;
+
+        $insights = "This week your average discipline score was " . round($avgScore) . "/100. ";
+        $insights .= "You completed {$totalTasks} of {$totalTasksPossible} tasks and focused for {$totalFocus} minutes total. ";
+        $insights .= "You journaled on {$journaledDays} of 7 days";
+
+        if ($bestDay) {
+            $insights .= ". Your best day was {$bestDay['date']} with a score of {$bestDay['score']}/100";
+        }
+
+        if ($avgMood !== null) {
+            $insights .= ". Average mood this week was " . round($avgMood, 1) . "/5";
+        }
+
+        $insights .= ". ";
+
+        // Detect patterns
+        $lowFocusDays = collect($history)->filter(fn($h) => ($h['focus'] ?? 0) < 20)->count();
+        if ($lowFocusDays > 0) {
+            $insights .= "You had {$lowFocusDays} day(s) with less than 20 minutes of focus. Try scheduling a 25-minute focus block tomorrow. ";
+        }
+
+        $lowJournalDays = collect($history)->where('journaled', false)->count();
+        if ($lowJournalDays > 2) {
+            $insights .= "You missed journaling on {$lowJournalDays} days. Journaling boosts self-awareness — try adding it to your morning routine. ";
+        }
+
+        if ($lowFocusDays === 0 && $lowJournalDays <= 2) {
+            $insights .= "You're building solid habits! Keep stacking wins and your scores will keep climbing. ";
+        }
+
+        $insights .= "Action: Pick your single most important task for tomorrow and complete it first thing — this will set the tone for the whole day. 💪";
+
+        return $insights;
     }
 
     /**

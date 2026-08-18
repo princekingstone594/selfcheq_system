@@ -136,4 +136,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Habit::class);
     }
+
+    public function dailyStats()
+    {
+        return $this->hasMany(DailyStat::class);
+    }
 }

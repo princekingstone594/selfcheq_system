@@ -17,6 +17,7 @@ use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\FinancialController;
 use App\Http\Controllers\HabitController;
 use App\Http\Controllers\NoteController;
+use App\Http\Controllers\WeeklyReviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -107,6 +108,9 @@ Route::middleware('auth')->group(function () {
 
     // Progress
     Route::get('/progress', [ProgressController::class, 'index'])->name('progress.index');
+
+    // Weekly Review
+    Route::get('/weekly-review', [WeeklyReviewController::class, 'index'])->name('weekly-review.index');
 
     // Notes
     Route::get('/notes', [NoteController::class, 'index'])->name('notes.index');

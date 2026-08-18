@@ -13,6 +13,12 @@ class DailyStat extends Model
        'tasks_completed',
        'tasks_total',
        'focus_minutes',
+       'mood',
        'journaled',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
