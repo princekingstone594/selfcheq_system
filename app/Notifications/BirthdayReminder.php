@@ -38,9 +38,16 @@ class BirthdayReminder extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
+            ->subject("🎂 Birthday Reminder: {$this->contact->name}")
+            ->line("Today is <strong>{$this->contact->name}</strong>'s birthday!")
+            ->line($this->contact->relationship
+                ? "Relationship: {$this->contact->relationship}"
+                : '')
+            ->line($this->contact->birthday
+                ? "Born: " . \Carbon\Carbon::parse($this->contact->birthday)->format('M j, Y')
+                : '')
+            ->action('View Contacts', url('/contacts'))
+            ->line('Wishing them a wonderful day! 🎉');
     }
 
     /**
@@ -51,15 +58,21 @@ class BirthdayReminder extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'contact_id' => $this->contact->id,
+            'name' => $this->contact->name,
+            'relationship' => $this->contact->relationship,
+            'birthday' => $this->contact->birthday,
+            'type' => 'birthday_reminder',
         ];
     }
 
     public function toDatabase(object $notifiable): DatabaseMessage
     {
         return new DatabaseMessage([
-            'message' => "Today is {$this->contact->name}'s birthday!",
             'contact_id' => $this->contact->id,
+            'name' => $this->contact->name,
+            'message' => "Today is {$this->contact->name}'s birthday!",
+            'type' => 'birthday_reminder',
         ]);
     }
 }

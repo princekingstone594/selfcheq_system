@@ -30,6 +30,27 @@ class GamificationService
     const STREAK_MILESTONES = [3, 7, 14, 30, 60, 100];
 
     /**
+     * Badge icon map for known badge names.
+     */
+    const BADGE_ICONS = [
+        '🔥 First Day' => '🎯',
+        '🔥 Three Day Streak' => '🔥',
+        '🔥🔥 Seven Day Streak' => '🔥🔥',
+        '🔥🔥🔥 Two Week Streak' => '🔥🔥🔥',
+        '🔥🔥🔥🔥 Month Streak' => '🔥🔥🔥🔥',
+        '🔥🔥🔥🔥🔥 Two Month Streak' => '🔥🔥🔥🔥🔥',
+        '🔥🔥🔥🔥🔥🔥 Century Streak' => '🔥🔥🔥🔥🔥🔥',
+        'Getting Started' => '🌱',
+        'First 100 XP' => '💎',
+        'Dedicated' => '🛡️',
+        'Master' => '⚡',
+        'Legend' => '👑',
+        'First Task Completed' => '✅',
+        'Financial Discipline Week' => '💰',
+        '1000 XP Earned' => '💰',
+    ];
+
+    /**
      * Award XP to a user and handle level-ups and badges.
      */
     public static function awardXp(User $user, int $amount, string $reason = null): void
@@ -97,9 +118,14 @@ class GamificationService
      */
     public static function awardBadge(User $user, string $badgeName, string $description = null): void
     {
+        $icon = self::BADGE_ICONS[$badgeName] ?? '🏅';
+
         $badge = Badge::firstOrCreate(
             ['name' => $badgeName],
-            ['description' => $description ?? "Awarded for {$badgeName}"]
+            [
+                'description' => $description ?? "Awarded for {$badgeName}",
+                'icon' => $icon,
+            ]
         );
 
         if (!$user->badges()->where('badge_id', $badge->id)->exists()) {

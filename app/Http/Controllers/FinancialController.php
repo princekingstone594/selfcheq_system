@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Financial;
 use App\Models\Task;
 use App\Models\Routine;
+use App\Services\GamificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -273,6 +274,13 @@ class FinancialController extends Controller
         }
 
         $financial->update(['is_completed' => !$financial->is_completed]);
+
+        $user = Auth::user();
+
+        if ($financial->is_completed) {
+            GamificationService::awardXp($user, 25, 'Financial goal completed: ' . $financial->title);
+            GamificationService::recordDailyActivity($user);
+        }
 
         return back()->with('status', 'financial-updated');
     }

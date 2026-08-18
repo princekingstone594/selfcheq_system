@@ -35,6 +35,7 @@ class SendTaskReminders extends Command
                 ->get();
 
             foreach ($tasks as $task) {
+                $user->notify(new \App\Notifications\TaskDeadlineReminder($task));
                 \Log::info("⏰ Task alarm: {$task->title} for user {$user->name}");
             }
 
@@ -47,6 +48,7 @@ class SendTaskReminders extends Command
             foreach ($routines as $routine) {
                 if ($routine->reminder_time &&
                     Carbon::parse($routine->reminder_time)->format('H:i') === $now) {
+                    $user->notify(new \App\Notifications\TaskDeadlineReminder($routine));
                     \Log::info("⏰ Routine alarm: {$routine->title} for user {$user->name}");
                 }
             }

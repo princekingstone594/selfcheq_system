@@ -214,12 +214,28 @@
     {{-- Browser Notifications for alarms & reminders --}}
     <script>
         const showReminder = (reminder) => {
-            const icon = reminder.type === 'routine' ? '⏰' : '🔔';
-            const label = reminder.type === 'routine' ? 'Routine' : 'Task';
-            new Notification(`${icon} ${label} Reminder`, {
+            const icon = reminder.type === 'routine' ? '⏰' : reminder.type === 'birthday_reminder' ? '🎂' : '🔔';
+            const label = reminder.type === 'routine' ? 'Routine' : reminder.type === 'birthday_reminder' ? 'Birthday' : 'Task';
+            const title = `${icon} ${label} Reminder`;
+
+            const notification = new Notification(title, {
                 body: reminder.title,
-                icon: '/icon-192.png'
+                icon: '/icon-192.png',
+                tag: reminder.notification_id || 'selfcheq-' + reminder.type,
             });
+
+            // Mark database notification as read when clicked
+            if (reminder.notification_id) {
+                notification.onclick = () => {
+                    fetch(`/api/notifications/${reminder.notification_id}/read`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Content-Type': 'application/json',
+                        },
+                    }).catch(() => {});
+                };
+            }
         };
 
         const checkReminders = async () => {
@@ -227,11 +243,21 @@
                 const response = await fetch('/api/reminders');
                 if (!response.ok) return;
                 const reminders = await response.json();
-                reminders.forEach(showReminder);
+
+                // Only show new reminders (track by notification_id or title+type)
+                reminders.forEach(reminder => {
+                    const key = reminder.notification_id || (reminder.type + ':' + reminder.title);
+                    if (!shownReminders.has(key)) {
+                        shownReminders.add(key);
+                        showReminder(reminder);
+                    }
+                });
             } catch (e) {
                 // Silently ignore network errors
             }
         };
+
+        const shownReminders = new Set();
 
         if ('Notification' in window) {
             Notification.requestPermission().then(permission => {

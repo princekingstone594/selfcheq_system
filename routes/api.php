@@ -55,5 +55,30 @@ Route::get('/reminders', function () {
         }
     }
 
+    // 📬 Unread database notifications
+    $unreadNotifications = $user->unreadNotifications;
+    foreach ($unreadNotifications as $notification) {
+        $data = $notification->data;
+        $reminders[] = [
+            'type' => $data['type'] ?? 'notification',
+            'title' => $data['message'] ?? ($data['title'] ?? 'New notification'),
+            'notification_id' => $notification->id,
+        ];
+    }
+
     return response()->json($reminders);
+});
+
+// ✅ Mark a notification as read
+Route::post('/notifications/{notification}/read', function ($notification) {
+    if (!Auth::check()) {
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
+
+    $userNotification = Auth::user()->notifications()->where('id', $notification)->first();
+    if ($userNotification) {
+        $userNotification->markAsRead();
+    }
+
+    return response()->json(['success' => true]);
 });

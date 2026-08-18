@@ -28,6 +28,7 @@
                 <p class="mt-2 text-3xl font-semibold text-white">
                     {{ auth()->user()->level ?? 1 }}
                 </p>
+                <p class="text-xs text-slate-400">XP: {{ auth()->user()->xp ?? 0 }}</p>
             </div>
 
             <div class="rounded-2xl border border-white/10 bg-slate-900/70 p-5 shadow-lg">
@@ -36,30 +37,30 @@
                     {{ $focusMinutes ?? 0 }} mins
                 </p>
             </div>
-        </section>
+            </section>
 
-        <!-- Simple Stats -->
-        <section class="grid gap-4 sm:grid-cols-2">
-            <div class="rounded-2xl border border-white/10 bg-slate-900/70 p-5 shadow-lg">
-                <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">This Week</p>
-                <p class="mt-3 text-2xl font-bold text-white">{{ array_sum($taskChart ?? []) }}</p>
-                <p class="text-xs text-slate-400">tasks completed</p>
-                <div class="mt-3 h-2 rounded-full bg-slate-800 overflow-hidden">
-                    <div class="h-full rounded-full bg-indigo-500 transition-all" style="width: {{ $taskTotal > 0 ? min(100, (array_sum($taskChart ?? []) / max(1, $taskTotal)) * 100) : 0 }}%"></div>
+            <!-- Simple Stats -->
+            <section class="grid gap-4 sm:grid-cols-2">
+                <div class="rounded-2xl border border-white/10 bg-slate-900/70 p-5 shadow-lg">
+                    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">This Week</p>
+                    <p class="mt-3 text-2xl font-bold text-white">{{ array_sum($taskChart ?? []) }}</p>
+                    <p class="text-xs text-slate-400">tasks completed</p>
+                    <div class="mt-3 h-2 rounded-full bg-slate-800 overflow-hidden">
+                        <div class="h-full rounded-full bg-indigo-500 transition-all" style="width: {{ $taskTotal > 0 ? min(100, (array_sum($taskChart ?? []) / max(1, $taskTotal)) * 100) : 0 }}%"></div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="rounded-2xl border border-white/10 bg-slate-900/70 p-5 shadow-lg">
-                <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Mood Trend</p>
-                <p class="mt-3 text-2xl font-bold text-white">{{ $moodAvg ? round($moodAvg, 1) : 'N/A' }}/5</p>
-                <p class="text-xs text-slate-400">average mood</p>
-                <div class="mt-3 flex gap-1">
-                    @for($i = 1; $i <= 5; $i++)
-                        <div class="flex-1 h-2 rounded-full {{ $i <= ($moodAvg ?? 0) ? 'bg-emerald-500' : 'bg-slate-800' }}"></div>
-                    @endfor
+                <div class="rounded-2xl border border-white/10 bg-slate-900/70 p-5 shadow-lg">
+                    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Mood Trend</p>
+                    <p class="mt-3 text-2xl font-bold text-white">{{ $moodAvg ? round($moodAvg, 1) : 'N/A' }}/5</p>
+                    <p class="text-xs text-slate-400">average mood</p>
+                    <div class="mt-3 flex gap-1">
+                        @for($i = 1; $i <= 5; $i++)
+                            <div class="flex-1 h-2 rounded-full {{ $i <= ($moodAvg ?? 0) ? 'bg-emerald-500' : 'bg-slate-800' }}"></div>
+                        @endfor
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
         <!-- Nudges & rewards -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
@@ -82,10 +83,20 @@
                 <div class="rounded-2xl border border-white/10 bg-slate-800/70 p-3">
                     <p class="font-medium text-white">Badges</p>
 
-                    @forelse(auth()->user()->badges ?? [] as $badge)
-                        <p class="mt-2">• {{ $badge->name }}</p>
+                    @php
+                        $badges = auth()->user()->badges ?? collect();
+                    @endphp
+
+                    @forelse($badges as $badge)
+                        <div class="mt-2 flex items-center gap-3">
+                            <span class="text-2xl">{{ $badge->icon ?? '🏅' }}</span>
+                            <div>
+                                <p class="font-medium text-white">{{ $badge->name }}</p>
+                                <p class="text-xs text-slate-400">{{ $badge->description ?? '' }}</p>
+                            </div>
+                        </div>
                     @empty
-                        <p class="mt-2 text-slate-400">No badges yet</p>
+                        <p class="mt-2 text-slate-400">No badges yet — complete tasks to earn them! 🏅</p>
                     @endforelse
                 </div>
 

@@ -32,6 +32,12 @@ class User extends Authenticatable
         'notifications_enabled',
         'contacts_enabled',
         'reminders_enabled',
+        'xp',
+        'level',
+        'streak',
+        'last_completed_date',
+        'coach_mode',
+        'settings',
     ];
 
     /**
@@ -56,6 +62,8 @@ class User extends Authenticatable
             'password' => 'hashed',
             'onboarding_complete' => 'boolean',
             'birthday' => 'date',
+            'last_completed_date' => 'date',
+            'settings' => 'array',
         ];
     }
 
