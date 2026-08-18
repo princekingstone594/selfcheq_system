@@ -15,6 +15,7 @@ use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\FinancialController;
+use App\Http\Controllers\HabitController;
 use App\Http\Controllers\NoteController;
 
 /*
@@ -86,10 +87,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/devotional/prayer-plans', [DevotionalController::class, 'storePrayerPlan'])->name('devotional.prayer.store');
     Route::patch('/devotional/prayer-plans/{prayerPlan}/complete', [DevotionalController::class, 'completePrayerPlan'])->name('devotional.prayer.complete');
     Route::delete('/devotional/prayer-plans/{prayerPlan}', [DevotionalController::class, 'destroyPrayerPlan'])->name('devotional.prayer.destroy');
-    
+
     Route::post('/devotional/morning-devotion', [DevotionalController::class, 'storeMorningDevotion'])->name('devotional.morning.store');
     Route::patch('/devotional/morning-devotion/{morningDevotion}/toggle', [DevotionalController::class, 'toggleMorningDevotion'])->name('devotional.morning.toggle');
-    
+
     Route::post('/devotional/fasting-plans', [DevotionalController::class, 'storeFastingPlan'])->name('devotional.fasting.store');
     Route::patch('/devotional/fasting-plans/{fastingPlan}/start', [DevotionalController::class, 'startFastingPlan'])->name('devotional.fasting.start');
     Route::patch('/devotional/fasting-plans/{fastingPlan}/complete', [DevotionalController::class, 'completeFastingPlan'])->name('devotional.fasting.complete');
@@ -117,6 +118,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/financials', [FinancialController::class, 'store'])->name('financials.store');
     Route::patch('/financials/{financial}/toggle', [FinancialController::class, 'toggle'])->name('financials.toggle');
     Route::delete('/financials/{financial}', [FinancialController::class, 'destroy'])->name('financials.destroy');
+
+    // Habits
+    Route::get('/habits', [HabitController::class, 'index'])->name('habits.index');
+    Route::post('/habits', [HabitController::class, 'store'])->name('habits.store');
+    Route::patch('/habits/{habit}/toggle', [HabitController::class, 'toggle'])->name('habits.toggle');
+    Route::delete('/habits/{habit}', [HabitController::class, 'destroy'])->name('habits.destroy');
 
     // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
