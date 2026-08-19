@@ -150,20 +150,21 @@
             <!-- Declaration Chapters -->
             <div class="mt-4 rounded-2xl border border-white/10 bg-slate-800/50 p-4">
                 <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Declaration Chapters</p>
+                <p class="text-xs text-slate-500 mt-1">Read the full chapter inside the app with personalized first-person declarations</p>
                 <div class="mt-3 grid gap-2 sm:grid-cols-2">
-                    <a href="https://www.biblegateway.com/passage/?search=Psalms+91&version=KJV" target="_blank" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
+                    <a href="{{ route('bible-chapter.show', 'Psalms 91') }}" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
                         <span class="text-indigo-400 group-hover:text-amber-300">📖</span>
                         Psalms 91
                     </a>
-                    <a href="https://www.biblegateway.com/passage/?search=Psalms+23&version=KJV" target="_blank" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
+                    <a href="{{ route('bible-chapter.show', 'Psalms 23') }}" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
                         <span class="text-indigo-400 group-hover:text-amber-300">📖</span>
                         Psalms 23
                     </a>
-                    <a href="https://www.biblegateway.com/passage/?search=Psalms+27&version=KJV" target="_blank" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
+                    <a href="{{ route('bible-chapter.show', 'Psalms 27') }}" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
                         <span class="text-indigo-400 group-hover:text-amber-300">📖</span>
                         Psalms 27
                     </a>
-                    <a href="https://www.biblegateway.com/passage/?search=Deuteronomy+28&version=KJV" target="_blank" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
+                    <a href="{{ route('bible-chapter.show', 'Deuteronomy 28') }}" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
                         <span class="text-indigo-400 group-hover:text-amber-300">📖</span>
                         Deut 28
                     </a>
