@@ -39,9 +39,15 @@ class BibleChapter extends Model
      * declarations into a first-person "I" confession.
      *
      * Rules:
-     *   "He that" / "he that"  → "I"
+     *   "He that" / "he that"  → "I that"
+     *   "He who" /  "he who"    → "I who"
      *   "He shall" / "he shall" → "I shall"  (when the subject is the believer)
-     *   "He is" / "he is"      → "I am"      (when the subject is the believer)
+     *   "He is" / "he is"       → "I am"     (when the subject is the believer)
+     *
+     * The relative pronoun ("that"/"who") is preserved so the
+     * declaration reads naturally:
+     *   "He that dwelleth…" → "I that dwelleth…"
+     *   "He who dwelleth…"  → "I who dwelleth…"
      */
     public function personalize(): ?string
     {
@@ -51,13 +57,11 @@ class BibleChapter extends Model
 
         $text = $this->content;
 
-        // Apply common transformations for declaration-style chapters
-        $text = preg_replace('/\bHe that\b/i', 'I', $text);
-        $text = preg_replace('/\bhe that\b/i', 'I', $text);
+        // Preserve the relative pronoun so it reads as a personal declaration
+        $text = preg_replace('/\bHe that\b/i', 'I that', $text);
+        $text = preg_replace('/\bHe who\b/i', 'I who', $text);
         $text = preg_replace('/\bHe shall\b/i', 'I shall', $text);
-        $text = preg_replace('/\bhe shall\b/i', 'I shall', $text);
         $text = preg_replace('/\bHe is\b/i', 'I am', $text);
-        $text = preg_replace('/\bhe is\b/i', 'I am', $text);
 
         return $text;
     }

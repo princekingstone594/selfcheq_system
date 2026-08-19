@@ -25,7 +25,7 @@
             </div>
 
             @if($declarationText)
-                <div class="mt-6 rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 mt-4" style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);">
+                <div class="mt-6 rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 mt-4">
                     <p class="text-sm font-medium text-emerald-400 uppercase tracking-widest mb-2">Personalized Declaration</p>
                     <p class="italic text-emerald-300 leading-relaxed">{{ $declarationText }}</p>
                     <p class="text-xs text-emerald-400 mt-2">First-person confession for daily declaration practice</p>
@@ -35,7 +35,7 @@
             @if($wakeUpTime)
                 <div class="mt-6 rounded-2xl border border-white/10 bg-slate-800/50 p-4">
                     <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300 mb-2">Your Morning Routine</p>
-                    <p class="text-lg font-semibold text-indigo-300">{{ \Carbon\Carbon::parse($wakeUp_time)->format('g:i A') }}</p>
+                    <p class="text-lg font-semibold text-indigo-300">{{ \Carbon\Carbon::parse($wakeUpTime)->format('g:i A') }}</p>
                 </div>
             @endif
         </section>
@@ -49,7 +49,7 @@
                        class="rounded-xl border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-indigo-300 hover:text-white transition hover:bg-white/5 group">
                         {{ $ref }}
                         @if($label !== $ref)
-                            <span class="ml-2 text-xs opacity-60">(\(label\))</span>
+                            <span class="ml-2 text-xs opacity-60">({{ $label }})</span>
                         @endif
                     </a>
                 @endforeach
