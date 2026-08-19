@@ -39,6 +39,8 @@
                                 <a href="{{ route('focus.index') }}" :class="request()->routeIs('focus.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">Focus</a>
                                 <a href="{{ route('progress.index') }}" :class="request()->routeIs('progress.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">Progress</a>
                                 <a href="{{ route('weekly-review.index') }}" :class="request()->routeIs('weekly-review.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">Weekly Review</a>
+                                <a href="{{ route('export.index') }}" :class="request()->routeIs('export.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">Export Data</a>
+                                <a href="{{ route('goals.index') }}" :class="request()->routeIs('goals.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">Goals</a>
                                 <a href="{{ route('settings.index') }}" :class="request()->routeIs('settings.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">Settings</a>
                                 <a href="{{ route('bible-chapters.available') }}" :class="request()->routeIs('bible-chapters.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">Bible Chapters</a>
                                 <a href="{{ route('profile.edit') }}" :class="request()->routeIs('profile.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">Profile</a>
@@ -166,6 +168,8 @@
                     <x-responsive-nav-link :href="route('focus.index')" :active="request()->routeIs('focus.*')">Focus</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('progress.index')" :active="request()->routeIs('progress.*')">Progress</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('weekly-review.index')" :active="request()->routeIs('weekly-review.*')">Weekly Review</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('export.index')" :active="request()->routeIs('export.*')">Export Data</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('goals.index')" :active="request()->routeIs('goals.*')">Goals</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('settings.index')" :active="request()->routeIs('settings.*')">Settings</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('bible-chapters.available')" :active="request()->routeIs('bible-chapters.*')">Bible Chapters</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.*')">Profile</x-responsive-nav-link>

@@ -3,10 +3,40 @@
         quickAddOpen: false,
         quickAddDate: '',
         quickAddType: 'task',
+        dragItem: null,
         openQuickAdd(date) {
             this.quickAddDate = date;
             this.quickAddType = 'task';
             this.quickAddOpen = true;
+        },
+        startDrag(type, id, title) {
+            this.dragItem = { type, id, title };
+        },
+        onDrop(date) {
+            if (!this.dragItem) return;
+            const item = this.dragItem;
+            this.dragItem = null;
+
+            // Send move request
+            fetch('{{ route('calendar.move') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    type: item.type,
+                    id: item.id,
+                    date: date
+                })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                }
+            })
+            .catch(() => {});
         }
     }">
 
@@ -173,7 +203,9 @@
                             $dayRoutines = $routines[$dayStr] ?? collect();
                         @endphp
 
-                        <div @click="openQuickAdd('{{ $dayStr }}'"
+                        <div @click="openQuickAdd('{{ $dayStr }}')"
+                             @drop.prevent="onDrop('{{ $dayStr }}')"
+                             @dragover.prevent
                              class="border-r border-b border-white/5 p-2 align-top text-left min-h-[120px] cursor-pointer transition hover:bg-indigo-500/5 {{ $isPast ? 'opacity-50' : '' }}">
                             <div class="mb-1 flex items-center justify-between">
                                 <span class="text-[10px] text-slate-600 opacity-0 hover:opacity-100 transition" title="Click to add">+</span>
@@ -185,7 +217,10 @@
                             @if($dayAppointments->isNotEmpty())
                                 <div class="space-y-0.5">
                                     @foreach($dayAppointments->take(3) as $appt)
-                                        <div class="rounded-md bg-indigo-500/10 px-1.5 py-0.5 text-xs text-indigo-200 truncate"
+                                        <div draggable="true"
+                                             @dragstart.stop="startDrag('appointment', {{ $appt->id }}, '{{ $appt->title }}')"
+                                             @click.stop
+                                             class="rounded-md bg-indigo-500/10 px-1.5 py-0.5 text-xs text-indigo-200 truncate cursor-grab active:cursor-grabbing"
                                              title="{{ $appt->title }} at {{ $appt->formatted_time }}">
                                             🗓️ {{ \Carbon\Carbon::parse($appt->time)->format('g:i a') }} {{ Str::limit($appt->title, 12) }}
                                         </div>
@@ -196,7 +231,10 @@
                             @if($dayRoutines->isNotEmpty())
                                 <div class="space-y-0.5">
                                     @foreach($dayRoutines->take(2) as $routine)
-                                        <div class="rounded-md bg-purple-500/10 px-1.5 py-0.5 text-xs text-purple-200 truncate"
+                                        <div draggable="true"
+                                             @dragstart.stop="startDrag('routine', {{ $routine->id ?? 0 }}, '{{ $routine->title }}')"
+                                             @click.stop
+                                             class="rounded-md bg-purple-500/10 px-1.5 py-0.5 text-xs text-purple-200 truncate cursor-grab active:cursor-grabbing"
                                              title="{{ $routine->title }}">
                                             🔁 {{ Str::limit($routine->title, 12) }}
                                         </div>
@@ -207,7 +245,10 @@
                             @if($dayTasks->isNotEmpty())
                                 <div class="mt-1 space-y-0.5">
                                     @foreach($dayTasks->take(2) as $task)
-                                        <div class="rounded-md bg-slate-700/50 px-1.5 py-0.5 text-xs text-slate-300 truncate"
+                                        <div draggable="true"
+                                             @dragstart.stop="startDrag('task', {{ $task->id ?? 0 }}, '{{ $task->title }}')"
+                                             @click.stop
+                                             class="rounded-md bg-slate-700/50 px-1.5 py-0.5 text-xs text-slate-300 truncate cursor-grab active:cursor-grabbing"
                                              title="{{ $task->title }}">
                                             ✅ {{ Str::limit($task->title, 12) }}
                                         </div>

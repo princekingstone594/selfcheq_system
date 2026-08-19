@@ -2,9 +2,18 @@
     <div class="space-y-6">
         <!-- Header -->
         <section class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-2xl shadow-indigo-950/30 backdrop-blur sm:p-8">
-            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Progress</p>
-            <h1 class="mt-1 text-2xl font-semibold text-white">Your discipline journey at a glance</h1>
-            <p class="mt-2 text-sm text-slate-400">Track your scores, streaks, mood and momentum over time.</p>
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Progress</p>
+                    <h1 class="mt-1 text-2xl font-semibold text-white">Your discipline journey at a glance</h1>
+                    <p class="mt-2 text-sm text-slate-400">Track your scores, streaks, mood and momentum over time.</p>
+                </div>
+                <button onclick="shareProgress()"
+                        class="shrink-0 rounded-2xl border border-white/10 bg-slate-800/80 px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white hover:border-indigo-400/30 transition"
+                        title="Share your progress">
+                    📤 Share
+                </button>
+            </div>
         </section>
 
         <!-- Stat cards -->
@@ -115,4 +124,32 @@
         </section>
 
     </div>
+
+    <script>
+    function shareProgress() {
+        const streak = {{ auth()->user()->streak ?? 0 }};
+        const level = {{ auth()->user()->level ?? 1 }};
+        const xp = {{ auth()->user()->xp ?? 0 }};
+        const score = {{ $disciplineScore ?? 0 }};
+
+        const text = `🔥 I'm on a ${streak}-day discipline streak on SelfCheq! Level ${level} (${xp} XP) with a ${score}/100 discipline score today. Building better habits every day! 💪`;
+
+        // Try native share API first
+        if (navigator.share) {
+            navigator.share({
+                title: 'My SelfCheq Progress',
+                text: text,
+                url: window.location.origin
+            }).catch(() => {});
+        } else {
+            // Fallback: copy to clipboard
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Progress copied to clipboard! 📋');
+            }).catch(() => {
+                // Last resort: open a share URL
+                window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text), '_blank');
+            });
+        }
+    }
+    </script>
 </x-app-layout>

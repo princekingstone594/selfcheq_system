@@ -141,4 +141,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(DailyStat::class);
     }
+
+    public function goals()
+    {
+        return $this->hasMany(Goal::class);
+    }
 }

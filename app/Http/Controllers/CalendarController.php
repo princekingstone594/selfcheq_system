@@ -234,6 +234,47 @@ class CalendarController extends Controller
     }
 
     /**
+     * Move an item to a different date (drag & drop).
+     */
+    public function move(Request $request)
+    {
+        $user = Auth::user();
+        $request->validate([
+            'type' => 'required|in:task,routine,appointment',
+            'id' => 'required|integer',
+            'date' => 'required|date',
+        ]);
+
+        $date = Carbon::parse($request->date)->toDateString();
+
+        try {
+            switch ($request->type) {
+                case 'task':
+                    $task = Task::where('id', $request->id)->where('user_id', $user->id)->firstOrFail();
+                    $task->update(['due_date' => $date]);
+                    break;
+
+                case 'routine':
+                    $routine = Routine::where('id', $request->id)->where('user_id', $user->id)->firstOrFail();
+                    $routine->update(['date' => $date]);
+                    break;
+
+                case 'appointment':
+                    $appointment = Appointment::where('id', $request->id)->where('user_id', $user->id)->firstOrFail();
+                    $appointment->update(['date' => $date]);
+                    break;
+
+                default:
+                    return response()->json(['success' => false, 'message' => 'Invalid type'], 400);
+            }
+
+            return response()->json(['success' => true, 'message' => 'Item moved to ' . Carbon::parse($date)->format('D, d M')]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to move item'], 500);
+        }
+    }
+
+    /**
      * Quick-add a task, routine, or appointment from the calendar.
      */
     public function quickAdd(Request $request): RedirectResponse

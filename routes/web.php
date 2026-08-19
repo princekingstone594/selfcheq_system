@@ -19,6 +19,8 @@ use App\Http\Controllers\HabitController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\WeeklyReviewController;
 use App\Http\Controllers\BibleChapterController;
+use App\Http\Controllers\ExportController;
+use App\Http\Controllers\GoalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,6 +79,7 @@ Route::middleware('auth')->group(function () {
     // Calendar
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
     Route::post('/calendar/quick-add', [CalendarController::class, 'quickAdd'])->name('calendar.quickAdd');
+    Route::post('/calendar/move', [CalendarController::class, 'move'])->name('calendar.move');
 
     // Focus
     Route::get('/focus', [FocusController::class, 'index'])->name('focus.index');
@@ -112,6 +115,17 @@ Route::middleware('auth')->group(function () {
 
     // Weekly Review
     Route::get('/weekly-review', [WeeklyReviewController::class, 'index'])->name('weekly-review.index');
+
+    // Data Export
+    Route::get('/export', [ExportController::class, 'index'])->name('export.index');
+    Route::get('/export/json', [ExportController::class, 'exportJson'])->name('export.json');
+    Route::get('/export/text', [ExportController::class, 'exportText'])->name('export.text');
+
+    // Goals
+    Route::get('/goals', [GoalController::class, 'index'])->name('goals.index');
+    Route::post('/goals', [GoalController::class, 'store'])->name('goals.store');
+    Route::patch('/goals/{goal}/update-score', [GoalController::class, 'updateScore'])->name('goals.update-score');
+    Route::delete('/goals/{goal}', [GoalController::class, 'destroy'])->name('goals.destroy');
 
     // Bible Chapters
     Route::get('/bible-chapter/{reference}', [BibleChapterController::class, 'show'])->name('bible-chapter.show');
