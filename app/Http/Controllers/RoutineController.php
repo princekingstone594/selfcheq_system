@@ -29,9 +29,13 @@ class RoutineController extends Controller
         // 🎯 Permanent routines (non-negotiables) — these are the templates that
         // stay forever and appear on days matching their frequency.
         // Exclude financial-linked routines (reference_id) — those are handled separately.
+        // Include morning_devotion linked routines (wake-up time from Devotional).
         $permanentRoutines = $user->routines()
             ->where('is_permanent', true)
-            ->whereNull('reference_id')
+            ->where(function ($q) {
+                $q->whereNull('reference_id')
+                  ->orWhere('reference_type', 'morning_devotion');
+            })
             ->get()
             ->filter(function ($routine) use ($today) {
                 return $routine->isActiveOn($today);
@@ -65,7 +69,10 @@ class RoutineController extends Controller
         // 🎯 All permanent routines (for management view)
         $templates = $user->routines()
             ->where('is_permanent', true)
-            ->whereNull('reference_id')
+            ->where(function ($q) {
+                $q->whereNull('reference_id')
+                  ->orWhere('reference_type', 'morning_devotion');
+            })
             ->get();
 
         return view('routines.index', compact('routines', 'history', 'templates'));
@@ -272,6 +279,18 @@ class RoutineController extends Controller
     {
         if ($routine->user_id !== Auth::id()) {
             abort(403);
+        }
+
+        // If this routine is tied to a morning devotion, deactivate the devotion
+        // and remove the linked routine (keeps the wake-up setting, just pauses it).
+        if ($routine->reference_type === 'morning_devotion') {
+            \App\Models\MorningDevotion::where('id', $routine->reference_id)
+                ->where('user_id', $routine->user_id)
+                ->update(['is_active' => false]);
+
+            $routine->delete();
+
+            return back()->with('success', 'Wake-up routine removed. Morning devotion paused. 🌅');
         }
 
         // If this routine is tied to a financial, also clean up the financial's

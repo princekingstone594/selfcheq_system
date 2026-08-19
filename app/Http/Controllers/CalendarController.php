@@ -96,7 +96,10 @@ class CalendarController extends Controller
         // Exclude financial-linked routines (reference_id) — those are handled separately.
         $permanentRoutines = $user->routines()
             ->where('is_permanent', true)
-            ->whereNull('reference_id')
+            ->where(function ($q) {
+                $q->whereNull('reference_id')
+                  ->orWhere('reference_type', 'morning_devotion');
+            })
             ->get();
 
         // Materialize for each day in the visible period

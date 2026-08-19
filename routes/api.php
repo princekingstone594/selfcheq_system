@@ -55,6 +55,21 @@ Route::get('/reminders', function () {
         }
     }
 
+    // 🌅 Also check the morning devotion wake-up time (linked routine is permanent daily)
+    $morningRoutine = \App\Models\Routine::where('user_id', $user->id)
+        ->where('reference_type', 'morning_devotion')
+        ->where('is_permanent', true)
+        ->where('is_completed', false)
+        ->first();
+
+    if ($morningRoutine && $morningRoutine->reminder_time &&
+        Carbon::parse($morningRoutine->reminder_time)->format('H:i') === $now) {
+        $reminders[] = [
+            'type' => 'routine',
+            'title' => $morningRoutine->title,
+        ];
+    }
+
     // 📬 Unread database notifications
     $unreadNotifications = $user->unreadNotifications;
     foreach ($unreadNotifications as $notification) {

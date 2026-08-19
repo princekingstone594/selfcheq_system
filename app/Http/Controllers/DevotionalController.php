@@ -82,12 +82,42 @@ class DevotionalController extends Controller
         $validated['user_id'] = Auth::id();
         $validated['alarm_enabled'] = $request->has('alarm_enabled');
 
-        MorningDevotion::updateOrCreate(
+        $morningDevotion = MorningDevotion::updateOrCreate(
             ['user_id' => Auth::id()],
             $validated
         );
 
-        return redirect()->route('devotional.today')->with('success', 'Morning devotion updated successfully.');
+        // 🔗 Sync the wake-up time to a daily Routine so it shows in the calendar
+        // and the user doesn't have to create a separate "Wake Up" routine manually.
+        $routine = \App\Models\Routine::updateOrCreate(
+            [
+                'user_id' => Auth::id(),
+                'reference_id' => $morningDevotion->id,
+                'reference_type' => 'morning_devotion',
+            ],
+            [
+                'title' => '🌅 Wake Up & Morning Devotion',
+                'description' => $morningDevotion->declaration 
+                    ? "Morning declaration: \"{$morningDevotion->declaration}\""
+                    : 'Wake up and start the day with your morning devotion.',
+                'date' => now()->toDateString(),
+                'is_completed' => false,
+                'reminder_time' => $morningDevotion->wake_up_time,
+                'frequency' => 'daily',
+                'is_permanent' => true,
+            ]
+        );
+
+        // If alarm is disabled, we still keep the routine but note it in the description
+        if (!$morningDevotion->alarm_enabled) {
+            $routine->update([
+                'description' => ($morningDevotion->declaration 
+                    ? "Morning declaration: \"{$morningDevotion->declaration}\"" 
+                    : 'Wake up and start the day with your morning devotion.') . ' (Alarm off)',
+            ]);
+        }
+
+        return redirect()->route('devotional.today')->with('success', 'Morning devotion updated successfully. Your wake-up routine is synced to your calendar! 🌅');
     }
 
     public function toggleMorningDevotion(MorningDevotion $morningDevotion)

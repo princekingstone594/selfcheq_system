@@ -79,7 +79,10 @@ class SendDailyWinsRecap extends Command
                 ->get();
             $permanentRoutines = $user->routines()
                 ->where('is_permanent', true)
-                ->whereNull('reference_id')
+                ->where(function ($q) {
+                    $q->whereNull('reference_id')
+                      ->orWhere('reference_type', 'morning_devotion');
+                })
                 ->get()
                 ->filter(fn($r) => $r->isActiveOn($todayDate));
 

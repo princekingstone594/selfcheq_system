@@ -46,9 +46,13 @@ class FocusController extends Controller
 
         // 🔒 Merge in permanent routines that are active on this day
         // Exclude financial-linked routines (reference_id) — those are handled separately.
+        // Include morning_devotion linked routines (wake-up time from Devotional).
         $permanentRoutines = $user->routines()
             ->where('is_permanent', true)
-            ->whereNull('reference_id')
+            ->where(function ($q) {
+                $q->whereNull('reference_id')
+                  ->orWhere('reference_type', 'morning_devotion');
+            })
             ->get()
             ->filter(function ($routine) use ($day) {
                 return $routine->isActiveOn($day->toDateString());
