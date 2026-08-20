@@ -1,16 +1,6 @@
 <x-app-layout>
 <div class="mx-auto max-w-3xl space-y-8" x-data="personalizeChapter">
 
-    <!-- Back Button -->
-    <div class="flex items-center justify-between">
-        <a href="{{ route('devotional.today') }}" class="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-slate-800/70 px-4 py-2.5 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/5 transition">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-            </svg>
-            Back to Devotional
-        </a>
-    </div>
-
     <!-- Header -->
     <section class="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-indigo-900/40 via-slate-900 to-purple-900/30 p-8 shadow-2xl shadow-indigo-950/30 backdrop-blur-xl sm:p-10">
         <div class="absolute inset-0 overflow-hidden">
