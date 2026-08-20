@@ -53,6 +53,15 @@
             <!-- RIGHT SIDE -->
             <div class="hidden sm:flex sm:items-center sm:ms-6 gap-4">
 
+                <!-- ← BACK BUTTON (for nested routes) -->
+                @if(request()->routeIs('bible-chapter.*'))
+                    <a href="{{ route('devotional.today') }}" class="flex items-center justify-center h-10 w-10 rounded-2xl border border-white/10 bg-slate-800/70 text-indigo-300 hover:text-white hover:bg-white/5 transition" title="Back to Devotional">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </a>
+                @endif
+
                 <!-- 🔔 NOTIFICATIONS -->
                 <div class="relative">
                     <button @click="notifOpen = !notifOpen" class="relative text-xl hover:text-indigo-300 transition">
@@ -139,8 +148,15 @@
                 </x-dropdown>
             </div>
 
-            <!-- MOBILE MENU BUTTON -->
-            <div class="-me-2 flex items-center sm:hidden">
+            <!-- MOBILE MENU BUTTON + BACK BUTTON -->
+            <div class="-me-2 flex items-center gap-1 sm:hidden">
+                @if(request()->routeIs('bible-chapter.*'))
+                    <a href="{{ route('devotional.today') }}" class="flex items-center justify-center h-9 w-9 rounded-xl border border-white/10 bg-slate-800/70 text-indigo-300 hover:text-white hover:bg-white/5 transition" title="Back to Devotional">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </a>
+                @endif
                 <button @click="open = ! open" @click.outside="open = false" class="p-2 text-slate-300 hover:text-white transition">
                     <svg x-show="!open" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>

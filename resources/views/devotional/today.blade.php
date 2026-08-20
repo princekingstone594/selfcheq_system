@@ -183,6 +183,34 @@
                 </div>
             </div>
 
+            <!-- Affirmation Verses -->
+            <div class="mt-4 rounded-2xl border border-white/10 bg-slate-800/50 p-4">
+                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Affirmation Verses</p>
+                <p class="text-xs text-slate-500 mt-1">Meditate on these powerful affirmations as you declare victory over your day.</p>
+                <div class="mt-3 grid gap-2 sm:grid-cols-2">
+                    <div class="rounded-xl border border-white/10 bg-slate-800/50 p-3">
+                        <p class="text-xs font-semibold text-indigo-300 uppercase tracking-widest">Romans 8:28</p>
+                        <p class="mt-1 text-xs leading-relaxed text-slate-400 italic">"All things work together for good to them that love God."</p>
+                    </div>
+                    <div class="rounded-xl border border-white/10 bg-slate-800/50 p-3">
+                        <p class="text-xs font-semibold text-indigo-300 uppercase tracking-widest">1 John 5:4</p>
+                        <p class="mt-1 text-xs leading-relaxed text-slate-400 italic">"This is the victory that overcometh the world, even our faith."</p>
+                    </div>
+                    <div class="rounded-xl border border-white/10 bg-slate-800/50 p-3">
+                        <p class="text-xs font-semibold text-indigo-300 uppercase tracking-widest">2 Corinthians 5:17</p>
+                        <p class="mt-1 text-xs leading-relaxed text-slate-400 italic">"Old things are passed away; behold, all things are become new."</p>
+                    </div>
+                    <div class="rounded-xl border border-white/10 bg-slate-800/50 p-3">
+                        <p class="text-xs font-semibold text-indigo-300 uppercase tracking-widest">Philippians 4:13</p>
+                        <p class="mt-1 text-xs leading-relaxed text-slate-400 italic">"I can do all things through Christ which strengtheneth me."</p>
+                    </div>
+                    <div class="rounded-xl border border-white/10 bg-slate-800/50 p-3 sm:col-span-2">
+                        <p class="text-xs font-semibold text-indigo-300 uppercase tracking-widest">Philippians 2:13</p>
+                        <p class="mt-1 text-xs leading-relaxed text-slate-400 italic">"It is God which worketh in you both to will and to do of his good pleasure."</p>
+                    </div>
+                </div>
+            </div>
+
             @if($morningDevotion)
                 <div class="mt-4 rounded-2xl border border-white/10 bg-slate-800/50 p-4">
                     <div class="flex items-center justify-between">

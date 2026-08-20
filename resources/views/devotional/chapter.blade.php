@@ -42,26 +42,19 @@
         </div>
     </section>
 
-    <!-- AI Personalized Result -->
-    <div x-show="personalized" x-cloak class="rounded-3xl border border-emerald-500/30 bg-emerald-500/5 p-6 sm:p-8">
-        <div class="flex items-center justify-between mb-4">
-            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-400">✨ Your Personalized Declaration</p>
-            <button @click="personalized = null" class="text-slate-400 hover:text-white text-sm">✕ Close</button>
-        </div>
-        <p x-text="personalized" class="font-serif text-lg leading-loose text-emerald-100"></p>
-    </div>
-
-    <!-- Error message -->
-    <div x-show="error" x-cloak class="rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-rose-300">
-        <p x-text="error"></p>
-    </div>
-
     <!-- Chapter Content -->
     <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-8 shadow-xl sm:p-10">
         <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Scripture Passage</p>
         
         <div class="mt-6">
-            <p class="font-serif text-xl leading-loose text-slate-100">{{ $chapter->content }}</p>
+            <!-- Original passage (hidden when personalized) -->
+            <p x-show="!personalized" class="font-serif text-xl leading-loose text-slate-100">{{ $chapter->content }}</p>
+            <!-- Personalized passage (shown in its place after clicking) -->
+            <div x-show="personalized" x-cloak>
+                <p class="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-400 mb-3">✨ Your Personalized Declaration</p>
+                <p x-text="personalized" class="font-serif text-xl leading-loose text-emerald-200"></p>
+                <button @click="personalized = null" class="mt-4 text-sm text-slate-400 hover:text-white transition">← Restore Original</button>
+            </div>
         </div>
 
         @if($declarationText)
@@ -78,20 +71,6 @@
                 <p class="text-lg font-semibold text-indigo-300">{{ \Carbon\Carbon::parse($wakeUpTime)->format('g:i A') }}</p>
             </div>
         @endif
-    </section>
-
-    <!-- Affirmation Verses -->
-    <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-8 shadow-xl">
-        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Affirmation Verses</p>
-        <p class="mt-2 text-sm text-slate-400">Meditate on these powerful affirmations as you declare victory over your day.</p>
-        <div class="mt-6 grid gap-4 sm:grid-cols-2">
-            @foreach($affirmations as $ref => $verse)
-                <div class="rounded-2xl border border-white/10 bg-slate-800/50 p-5 transition hover:border-indigo-500/30 hover:bg-slate-800">
-                    <p class="text-xs font-semibold text-indigo-300 uppercase tracking-widest">{{ $ref }}</p>
-                    <p class="mt-2 text-sm leading-relaxed text-slate-300 italic">"{{ $verse }}"</p>
-                </div>
-            @endforeach
-        </div>
     </section>
 
     <!-- Chapter Navigation -->
