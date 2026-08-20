@@ -141,33 +141,28 @@
                 </button>
             </div>
 
-            <div class="p-6">
-                <div class="rounded-2xl border border-white/10 bg-gradient-to-br from-indigo-900/40 via-slate-900 to-purple-900/30 p-6">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            @if(Auth::user()->profile_photo_url && file_exists(public_path('storage/' . Auth::user()->profile_photo_url)))
-                                <img src="{{ asset('storage/' . Auth::user()->profile_photo_url) }}" alt="{{ Auth::user()->name }}" class="h-12 w-12 rounded-full border-2 border-indigo-400/50 object-cover" />
-                            @else
-                                @php
-                                    $nameParts = explode(' ', Auth::user()->name);
-                                    $initials = strtoupper(substr($nameParts[0], 0, 1)) . ($nameParts[1] ? strtoupper(substr($nameParts[1], 0, 1)) : '');
-                                @endphp
-                                <div class="flex h-12 w-12 items-center justify-center rounded-full border-2 border-indigo-400/50 bg-indigo-500/20 text-lg font-bold text-indigo-300">
-                                    {{ $initials }}
-                                </div>
-                            @endif
-                            <div>
-                                <p class="font-semibold text-white">{{ Auth::user()->name }}</p>
-                                <p class="text-xs text-slate-400">SelfCheq Discipline Report</p>
-                            </div>
+            <!-- Shareable post preview -->
+            <div id="sharePostPreview" class="p-6">
+                <div class="rounded-2xl border border-white/10 bg-gradient-to-br from-indigo-900/40 via-slate-900 to-purple-900/30 p-8 flex flex-col items-center text-center">
+                    <!-- Profile pic - central & larger -->
+                    @if(Auth::user()->profile_photo_url && file_exists(public_path('storage/' . Auth::user()->profile_photo_url)))
+                        <img src="{{ asset('storage/' . Auth::user()->profile_photo_url) }}" alt="{{ Auth::user()->name }}" class="h-24 w-24 rounded-full border-4 border-indigo-400/60 object-cover shadow-lg shadow-indigo-500/20" />
+                    @else
+                        @php
+                            $nameParts = explode(' ', Auth::user()->name);
+                            $initials = strtoupper(substr($nameParts[0], 0, 1)) . ($nameParts[1] ? strtoupper(substr($nameParts[1], 0, 1)) : '');
+                        @endphp
+                        <div class="flex h-24 w-24 items-center justify-center rounded-full border-4 border-indigo-400/60 bg-indigo-500/20 text-3xl font-bold text-indigo-300 shadow-lg shadow-indigo-500/20">
+                            {{ $initials }}
                         </div>
-                        <div class="flex items-center gap-2">
-                            <x-application-logo class="h-8 w-8" style="display: block !important; visibility: visible !important; opacity: 1 !important;" />
-                            <span class="text-xs font-bold uppercase tracking-[0.2em] text-indigo-300">SelfCheq</span>
-                        </div>
-                    </div>
+                    @endif
 
-                    <div class="mt-6 grid grid-cols-3 gap-3">
+                    <!-- Name below profile pic -->
+                    <p class="mt-4 text-lg font-semibold text-white">{{ Auth::user()->name }}</p>
+                    <p class="text-xs text-slate-400">SelfCheq Discipline Report</p>
+
+                    <!-- Stats grid -->
+                    <div class="mt-6 w-full grid grid-cols-3 gap-3">
                         <div class="rounded-xl border border-white/10 bg-slate-800/50 p-3 text-center">
                             <p class="text-2xl font-bold text-white">{{ auth()->user()->streak ?? 0 }}</p>
                             <p class="text-[10px] uppercase tracking-widest text-slate-400">Day Streak</p>
@@ -182,7 +177,14 @@
                         </div>
                     </div>
 
+                    <!-- Quote -->
                     <p class="mt-4 text-center text-xs italic text-slate-400">"Building better habits, one day at a time."</p>
+
+                    <!-- SelfCheq branding below stats & quote -->
+                    <div class="mt-6 flex flex-col items-center gap-1">
+                        <x-application-logo class="h-10 w-10" style="display: block !important; visibility: visible !important; opacity: 1 !important;" />
+                        <span class="text-sm font-bold uppercase tracking-[0.25em] text-indigo-300">SelfCheq</span>
+                    </div>
                 </div>
             </div>
 
@@ -197,6 +199,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script>
     function openShareModal() {
         document.getElementById('shareModal').classList.remove('hidden');
@@ -219,29 +222,44 @@
     }
 
     function shareProgress() {
-        const text = getShareText();
+        // Convert the post preview to an image blob
+        const preview = document.getElementById('sharePostPreview');
+        const canvas = document.createElement('canvas');
+        canvas.width = preview.offsetWidth * 2;
+        canvas.height = preview.offsetHeight * 2;
 
-        if (navigator.share) {
-            navigator.share({
-                title: 'My SelfCheq Progress',
-                text: text,
-                url: window.location.origin
-            }).catch(() => {});
-        } else {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Progress copied to clipboard!');
-            }).catch(() => {
-                window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text), '_blank');
-            });
-        }
-    }
+        const img = new Image();
+        const dataUrl = canvas.toDataURL('image/png');
 
-    function copyShareText() {
-        const text = getShareText();
-        navigator.clipboard.writeText(text).then(() => {
-            alert('Share text copied to clipboard!');
-        }).catch(() => {
-            window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text), '_blank');
+        html2canvas(preview, { scale: 2, backgroundColor: null }).then(canvasEl => {
+            canvasEl.toBlob(blob => {
+                const file = new File([blob], 'selfcheq-progress.png', { type: 'image/png' });
+
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    navigator.share({
+                        files: [file],
+                        title: 'My SelfCheq Progress',
+                        text: 'SelfCheq Discipline Report'
+                    }).catch(() => {
+                        // Fallback: download the image
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'selfcheq-progress.png';
+                        a.click();
+                        URL.revokeObjectURL(url);
+                    });
+                } else {
+                    // Fallback: download image
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'selfcheq-progress.png';
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    alert('Post image downloaded! You can share it anywhere.');
+                }
+            }, 'image/png');
         });
     }
     </script>
