@@ -130,6 +130,7 @@ Route::middleware('auth')->group(function () {
     // Bible Chapters
     Route::get('/bible-chapter/{reference}', [BibleChapterController::class, 'show'])->name('bible-chapter.show');
     Route::get('/bible-chapters', [BibleChapterController::class, 'availableReferences'])->name('bible-chapters.available');
+    Route::post('/bible-chapter/personalize', [BibleChapterController::class, 'personalize'])->name('bible-chapter.personalize');
 
     // Notes
     Route::get('/notes', [NoteController::class, 'index'])->name('notes.index');

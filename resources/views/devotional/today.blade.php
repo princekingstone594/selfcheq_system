@@ -168,6 +168,18 @@
                         <span class="text-indigo-400 group-hover:text-amber-300">📖</span>
                         Deut 28
                     </a>
+                    <a href="{{ route('bible-chapter.show', 'Psalms 121') }}" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
+                        <span class="text-indigo-400 group-hover:text-amber-300">📖</span>
+                        Psalms 121
+                    </a>
+                    <a href="{{ route('bible-chapter.show', 'Psalms 118') }}" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
+                        <span class="text-indigo-400 group-hover:text-amber-300">📖</span>
+                        Psalms 118
+                    </a>
+                    <a href="{{ route('bible-chapter.show', 'Isaiah 61') }}" class="group flex items-center gap-2 text-sm text-indigo-300 hover:text-white transition">
+                        <span class="text-indigo-400 group-hover:text-amber-300">📖</span>
+                        Isaiah 61
+                    </a>
                 </div>
             </div>
 
