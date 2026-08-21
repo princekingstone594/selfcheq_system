@@ -46,6 +46,49 @@
     {{-- Alpine JS --}}
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
+    {{-- Confetti for celebrations --}}
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.7.0/dist/confetti.browser.min.js"></script>
+
+    {{-- Shared Micro-Interactions --}}
+    <script>
+        window.celebrate = function(message) {
+            const duration = 2 * 1000;
+            const end = Date.now() + duration;
+            (function frame() {
+                window.requestAnimationFrame(frame);
+                confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0, y: 0.7 }, zIndex: 9999 });
+                confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1, y: 0.7 }, zIndex: 9999 });
+                if (Date.now() > end) return;
+            })();
+            if (message) {
+                window.dispatchEvent(new CustomEvent('selfcheq:celebrate', { detail: { message } }));
+            }
+        };
+        window.addEventListener('selfcheq:celebrate', (e) => {
+            const msg = e.detail.message;
+            if (!msg) return;
+            let existing = document.querySelector('#selfcheq-toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.id = 'selfcheq-toast';
+            toast.className = 'fixed bottom-24 left-1/2 -translate-x-1/2 rounded-xl border border-indigo-400/30 bg-indigo-500/90 px-5 py-2.5 text-xs font-semibold text-white shadow-xl shadow-indigo-900/40 backdrop-blur';
+            toast.textContent = msg;
+            toast.style.zIndex = '9998';
+            document.body.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 2000);
+        });
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('button[type="submit"], button[data-press]');
+            if (btn && !btn.classList.contains('no-press')) {
+                btn.classList.add('active-button');
+                setTimeout(() => btn.classList.remove('active-button'), 150);
+            }
+        });
+    </script>
+    <style>
+        .active-button { transform: scale(0.96); transition: transform 0.15s ease; }
+    </style>
+
     @stack('scripts')
     
     {{-- Smooth Page Transitions --}}
