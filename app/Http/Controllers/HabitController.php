@@ -85,13 +85,17 @@ class HabitController extends Controller
         $user = Auth::user();
         $today = Carbon::today()->toDateString();
 
+        // Capture streak BEFORE the toggle for milestone detection
+        $habitStreakBefore = $habit->currentStreak();
+        $userOldStreak = $user->streak;
+
         // Check if the user already completed this habit today
         $existingCompletion = HabitCompletion::where('habit_id', $habit->id)
             ->whereDate('date', $today)
             ->first();
 
         if ($existingCompletion) {
-            // Uncomplete
+        // Uncomplete
             $existingCompletion->delete();
             if ($existingCompletion->value >= ($habit->target_value ?? 1)) {
                 GamificationService::deductXp($user, $habit->xp_reward, 'Habit uncompleted: ' . $habit->title);
@@ -108,7 +112,6 @@ class HabitController extends Controller
             // Award XP if the target is met
             if (1 >= ($habit->target_value ?? 1)) {
                 GamificationService::awardXp($user, $habit->xp_reward, 'Habit completed: ' . $habit->title);
-                GamificationService::recordDailyActivity($user);
             }
 
             // Check for streak milestone badges
@@ -126,9 +129,33 @@ class HabitController extends Controller
             }
         }
 
-        return back()->with('success', $existingCompletion
-            ? '✅ Habit marked incomplete'
-            : '✅ Habit completed! +' . $habit->xp_reward . ' XP');
+        // 🎉 Detect streak milestone for celebration toast
+        $celebration = null;
+
+        // Check if this completion triggered a habit streak milestone
+        $habitStreakAfter = $habit->currentStreak();
+        $milestones = [3, 7, 14, 30, 60];
+        foreach ($milestones as $milestone) {
+            if ($habitStreakBefore < $milestone && $habitStreakAfter >= $milestone) {
+                $celebration = $milestone . '🔥 ' . $milestone . '-day streak! Keep going 🔥';
+                break;
+            }
+        }
+
+        // Also celebrate overall user streak increases
+        if (!$existingCompletion && 1 >= ($habit->target_value ?? 1)) {
+            GamificationService::recordDailyActivity($user);
+            $userNewStreak = $user->fresh()->streak;
+            if ($userNewStreak > $userOldStreak && !$celebration) {
+                $celebration = '🔥 Your streak is now ' . $userNewStreak . ' days!';
+            }
+        }
+
+        return back()
+            ->with('success', $existingCompletion
+                ? '✅ Habit marked incomplete'
+                : '✅ Habit completed! +' . $habit->xp_reward . ' XP')
+            ->with('celebration', $celebration);
     }
 
     public function destroy(Habit $habit)

@@ -1,4 +1,28 @@
-<nav x-data="{ open: false, notifOpen: false }" class="sticky top-0 z-50 border-b {{ auth()->user()->theme === 'light' ? 'border-slate-200 bg-white/80' : 'border-white/10 bg-slate-950/80' }} backdrop-blur">
+<nav x-data="{ open: false, notifOpen: false, unreadCount: {{ auth()->user()->unreadNotifications->count() }}, markAllRead() { fetch('/notifications/read', { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Content-Type': 'application/json' } }).catch(() => {}); } }" class="sticky top-0 z-50 border-b {{ auth()->user()->theme === 'light' ? 'border-slate-200 bg-white/80' : 'border-white/10 bg-slate-950/80' }} backdrop-blur">
+>>>>>>>
+<task_progress>
+- [x] Analyze codebase: app.blade.php, navigation, controllers, models, views
+- [x] Phase 1.1: Add CSS animations (bell bounce, check-pop, button press) to app.blade.php
+- [x] Phase 1.2: Fix notification bell — bounce class + silence-on-open in navigation.blade.php
+- [ ] Phase 1.3: Update TaskController — pass streak-change flash data
+- [ ] Phase 1.4: Update RoutineController — pass streak-change flash data
+- [ ] Phase 1.5: Update HabitController — detect streak milestones, pass flash data
+- [ ] Phase 1.6: Add check-pop + confetti triggers to tasks/index.blade.php
+- [ ] Phase 1.7: Add check-pop + confetti/milestone triggers to habits/index.blade.php
+- [ ] Phase 1.8: Add check-pop + confetti triggers to routines/index.blade.php
+- [ ] Phase 1.9: Verify syntax and lint all modified files
+>>>>>>>
+<task_progress>
+- [x] Analyze codebase: app.blade.php, navigation, controllers, models, views
+- [x] Phase 1.1: Add CSS animations (bell bounce, check-pop, button press) to app.blade.php
+- [ ], Phase 1.2: Fix notification bell — bounce class + silence-on-open in navigation.blade.php
+- [ ] Phase 1.3: Update TaskController — pass streak-change flash data
+- [ ] Phase 1.4: Update RoutineController — pass streak-change flash data
+- [ ] Phase 1.5: Update HabitController — detect streak milestones, pass flash data
+- [ ] Phase 1.6: Add check-pop + confetti triggers to tasks/index.blade.php
+- [ ] Phase 1.7: Add check-pop + confetti/milestone triggers to habits/index.blade.php
+- [ ] Phase 1.8: Add check-pop + confetti triggers to routines/index.blade.php
+- [ ] Phase 1.9: Verify syntax and lint all modified files
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -64,15 +88,15 @@
 
                 <!-- 🔔 NOTIFICATIONS -->
                 <div class="relative">
-                    <button @click="notifOpen = !notifOpen" class="relative text-xl hover:text-indigo-300 transition">
+                    <button @click="notifOpen = !notifOpen; if(notifOpen) { unreadCount = 0; markAllRead(); }" class="relative text-xl hover:text-indigo-300 transition">
                         🔔
 
-                        <!-- 🔴 Unread badge -->
-                        @if(auth()->user()->unreadNotifications->count())
-                            <span class="absolute -top-2 -right-2 bg-rose-500 text-white text-[10px] font-semibold px-1.5 rounded-full">
-                                {{ auth()->user()->unreadNotifications->count() }}
-                            </span>
-                        @endif
+                        <!-- 🔴 Unread badge (bounces when unread exist) -->
+                        <span x-show="unreadCount > 0"
+                              x-bind:class="unreadCount > 0 ? 'bell-bounce' : ''"
+                              class="absolute -top-2 -right-2 bg-rose-500 text-white text-[10px] font-semibold px-1.5 rounded-full">
+                            <span x-text="unreadCount"></span>
+                        </span>
                     </button>
 
                     <!-- Dropdown -->
@@ -102,6 +126,18 @@
                         </div>
                     </div>
                 </div>
+>>>>>>>
+<task_progress>
+- [x] Analyze codebase: app.blade.php, navigation, controllers, models, views
+- [x] Phase 1.1: Add CSS animations (bell bounce, check-pop, button press) to app.blade.php
+- [x] Phase 1.2: Fix notification bell — bounce class + silence-on-open in navigation.blade.php
+- [ ] Phase 1.3: Update TaskController — pass streak-change flash data
+- [ ] Phase 1.4: Update RoutineController — pass streak-change flash data
+- [ ] Phase 1.5: Update HabitController — detect streak milestones, pass flash data
+- [ ] Phase 1.6: Add check-pop + confetti triggers to tasks/index.blade.php
+- [ ] Phase 1.7: Add check-pop + confetti/milestone triggers to habits/index.blade.php
+- [ ] Phase 1.8: Add check-pop + confetti triggers to routines/index.blade.php
+- [ ] Phase 1.9: Verify syntax and lint all modified files
 
                 <!-- 👤 USER DROPDOWN -->
                 <x-dropdown align="right" width="48">

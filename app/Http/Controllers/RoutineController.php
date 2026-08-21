@@ -264,15 +264,24 @@ class RoutineController extends Controller
         ]);
 
         $user = Auth::user();
+        $oldStreak = $user->streak;
 
         if ($routine->is_completed) {
             GamificationService::awardXp($user, 15, 'Routine completed: ' . $routine->title);
             GamificationService::recordDailyActivity($user);
         }
 
-        return back()->with('success', $routine->is_completed
-            ? '✅ Routine completed — another step toward discipline!'
-            : '🔄 Routine marked incomplete. Keep going!');
+        $newStreak = $user->fresh()->streak;
+        $celebration = null;
+        if ($newStreak > $oldStreak) {
+            $celebration = '🔥 Streak increased to ' . $newStreak . ' days!';
+        }
+
+        return back()
+            ->with('success', $routine->is_completed
+                ? '✅ Routine completed — another step toward discipline!'
+                : '🔄 Routine marked incomplete. Keep going!')
+            ->with('celebration', $celebration);
     }
 
     public function destroy(Routine $routine)

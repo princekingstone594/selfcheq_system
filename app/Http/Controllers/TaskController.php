@@ -90,6 +90,7 @@ class TaskController extends Controller
         ]);
 
         $user = Auth::user();
+        $oldStreak = $user->streak;
 
         if (!$task->is_completed) {
             // gaining xp when completing
@@ -100,9 +101,17 @@ class TaskController extends Controller
             GamificationService::deductXp($user, 10, 'Task uncompleted: ' . $task->title);
         }
 
-        return back()->with('success', $task->is_completed
-            ? '✅ Task completed! +10 XP'
-            : '🔄 Task marked incomplete');
+        $newStreak = $user->fresh()->streak;
+        $celebration = null;
+        if ($newStreak > $oldStreak) {
+            $celebration = '🔥 Streak increased to ' . $newStreak . ' days!';
+        }
+
+        return back()
+            ->with('success', $task->is_completed
+                ? '✅ Task completed! +10 XP'
+                : '🔄 Task marked incomplete')
+            ->with('celebration', $celebration);
     }
 
     public function alarmToggle(Task $task)
