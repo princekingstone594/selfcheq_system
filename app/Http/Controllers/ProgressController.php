@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
+use App\Models\DailyStat;
 use Carbon\Carbon;
 use Illuminate\View\View;
 
@@ -95,6 +96,50 @@ class ProgressController extends Controller
             $nudges[] = "You're doing amazing today 🌟";
         }
 
+        // 🔥 Discipline heatmap — last ~13 weeks of daily scores (GitHub-style grid)
+        $heatmapStart = $today->copy()->subDays(90);
+        $statScores = DailyStat::where('user_id', $user->id)
+            ->whereDate('date', '>=', $heatmapStart->toDateString())
+            ->pluck('score', 'date');
+
+        // Grid starts on the Sunday on/before the window start so columns align to weeks
+        $gridStart = $heatmapStart->copy()->startOfWeek(Carbon::SUNDAY);
+        $heatmap = [];
+        for ($d = $gridStart->copy(); $d->lte($today); $d->addDay()) {
+            $ds = $d->toDateString();
+            $heatmap[] = [
+                'date' => $ds,
+                'day' => $d->format('M j'),
+                'score' => $statScores[$ds] ?? null,
+                'is_today' => $ds === $todayDate,
+            ];
+        }
+
+        // 📈 Weekly trend — discipline score over the last 7 days
+        $trendScores = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $ds = Carbon::now()->subDays($i)->toDateString();
+            $trendScores[] = $statScores[$ds] ?? 0;
+        }
+
+        // 🧑‍🚀 Reactive avatar state
+        //   glowing  → streak intact (activity today or yesterday)
+        //   tired    → streak broken (last activity older than yesterday)
+        //   sleepy   → early morning before any activity today
+        $lastActive = $user->last_completed_date ? Carbon::parse($user->last_completed_date) : null;
+        $doneToday = $lastActive && $lastActive->isToday();
+        $doneYesterday = $lastActive && $lastActive->isYesterday();
+
+        if ($doneToday || $doneYesterday) {
+            $avatarState = 'glowing';
+        } elseif ($lastActive && $user->streak > 0) {
+            $avatarState = 'tired';
+        } elseif ($today->hour < 11) {
+            $avatarState = 'sleepy';
+        } else {
+            $avatarState = 'idle';
+        }
+
         return view('progress.index', compact(
             'disciplineScore',
             'focusMinutes',
@@ -104,7 +149,10 @@ class ProgressController extends Controller
             'moodChart',
             'nudges',
             'birthdays',
-            'taskTotal'
+            'taskTotal',
+            'heatmap',
+            'trendScores',
+            'avatarState'
         ));
     }
 }

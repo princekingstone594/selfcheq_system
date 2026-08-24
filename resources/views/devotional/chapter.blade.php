@@ -123,4 +123,82 @@ document.addEventListener('alpine:init', () => {
     }));
 });
 </script>
+
+    {{-- 🌧 Ambient read mode --}}
+    <button id="ambientToggle" onclick="toggleAmbient()"
+            class="fixed bottom-24 left-4 z-40 inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-slate-800/90 px-3.5 py-2 text-xs font-semibold text-slate-300 shadow-lg backdrop-blur transition hover:text-white sm:bottom-6"
+            title="Ambient read mode">
+        <span id="ambientIcon">🌧</span>
+        <span id="ambientLabel">Ambient</span>
+    </button>
+
+    <script>
+        let ambientCtx = null;
+        let ambientSource = null;
+        let ambientGain = null;
+
+        function buildAmbientNoise() {
+            // Soft "rain-like" pink noise, generated locally via Web Audio
+            ambientCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const bufferSize = ambientCtx.sampleRate * 4;
+            const buffer = ambientCtx.createBuffer(1, bufferSize, ambientCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+
+            // Paul Kellet's pink noise approximation
+            let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+            for (let i = 0; i < bufferSize; i++) {
+                const white = Math.random() * 2 - 1;
+                b0 = 0.99886 * b0 + white * 0.0555179;
+                b1 = 0.99332 * b1 + white * 0.0750759;
+                b2 = 0.96900 * b2 + white * 0.1538520;
+                b3 = 0.86650 * b3 + white * 0.3104856;
+                b4 = 0.55000 * b4 + white * 0.5329522;
+                b5 = -0.7616 * b5 - white * 0.0168980;
+                data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
+                b6 = white * 0.115926;
+            }
+
+            ambientSource = ambientCtx.createBufferSource();
+            ambientSource.buffer = buffer;
+            ambientSource.loop = true;
+
+            ambientGain = ambientCtx.createGain();
+            ambientGain.gain.value = 0.04; // gentle volume
+
+            ambientSource.connect(ambientGain).connect(ambientCtx.destination);
+            ambientSource.start();
+        }
+
+        function toggleAmbient() {
+            if (!ambientCtx) {
+                buildAmbientNoise();
+                setAmbientUi(true);
+                localStorage.setItem('selfcheq_ambient', 'on');
+                return;
+            }
+
+            if (ambientCtx.state === 'running') {
+                ambientCtx.suspend();
+                setAmbientUi(false);
+                localStorage.setItem('selfcheq_ambient', 'off');
+            } else {
+                ambientCtx.resume();
+                setAmbientUi(true);
+                localStorage.setItem('selfcheq_ambient', 'on');
+            }
+        }
+
+        function setAmbientUi(on) {
+            document.getElementById('ambientIcon').textContent = on ? '🌧' : '🔇';
+            document.getElementById('ambientLabel').textContent = on ? 'Ambient on' : 'Ambient';
+            document.getElementById('ambientToggle').classList.toggle('text-indigo-300', on);
+        }
+
+        // Restore preference visually (browser policy requires one tap to start audio)
+        document.addEventListener('DOMContentLoaded', function () {
+            if (localStorage.getItem('selfcheq_ambient') === 'on') {
+                setAmbientUi(true);
+            }
+        });
+    </script>
 </x-app-layout>

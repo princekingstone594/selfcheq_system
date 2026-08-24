@@ -3,10 +3,28 @@
         <!-- Header -->
         <section class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-2xl shadow-indigo-950/30 backdrop-blur sm:p-8">
             <div class="flex items-start justify-between gap-4">
-                <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Progress</p>
-                    <h1 class="mt-1 text-2xl font-semibold text-white">Your discipline journey at a glance</h1>
-                    <p class="mt-2 text-sm text-slate-400">Track your scores, streaks, mood and momentum over time.</p>
+                <div class="flex items-start gap-4">
+                    <!-- 🧑‍🚀 Reactive avatar — reflects your streak state -->
+                    @php
+                        $avatarMeta = match($avatarState) {
+                            'glowing' => ['emoji' => '😄', 'ring' => 'ring-emerald-400/60', 'glow' => 'shadow-emerald-500/40', 'label' => 'Streak intact — keep it burning! 🔥'],
+                            'tired'   => ['emoji' => '🥱', 'ring' => 'ring-rose-400/50',  'glow' => 'shadow-rose-500/30',  'label' => 'Streak broke — today is a fresh restart'],
+                            'sleepy'  => ['emoji' => '😴', 'ring' => 'ring-indigo-400/40', 'glow' => 'shadow-indigo-500/20', 'label' => 'Early bird — your day is waiting'],
+                            default   => ['emoji' => '🙂', 'ring' => 'ring-slate-500/40',  'glow' => '',                    'label' => 'Ready when you are'],
+                        };
+                    @endphp
+                    <span title="{{ $avatarMeta['label'] }}"
+                          class="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-slate-800 text-2xl ring-4 {{ $avatarMeta['ring'] }} shadow-lg {{ $avatarMeta['glow'] }}">
+                        {{ $avatarMeta['emoji'] }}
+                        @if($avatarState === 'glowing')
+                            <span class="absolute inset-0 animate-ping rounded-2xl bg-emerald-400/10"></span>
+                        @endif
+                    </span>
+                    <div>
+                        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Progress</p>
+                        <h1 class="mt-1 text-2xl font-semibold text-white">Your discipline journey at a glance</h1>
+                        <p class="mt-2 text-sm text-slate-400">{{ $avatarMeta['label'] }}</p>
+                    </div>
                 </div>
                 <button onclick="openShareModal()"
                         class="shrink-0 inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-slate-800/80 px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white hover:border-indigo-400/30 transition"
@@ -50,6 +68,90 @@
                 </p>
             </div>
             </section>
+
+        <!-- 🔥 Discipline Heatmap -->
+        <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">🔥 Discipline Heatmap</p>
+                    <p class="mt-2 text-sm text-slate-400">Every square is a day. Tap one to revisit it.</p>
+                </div>
+                <div class="hidden items-center gap-1 text-[10px] text-slate-500 sm:flex">
+                    Less
+                    <span class="h-3 w-3 rounded-[4px] bg-slate-800"></span>
+                    <span class="h-3 w-3 rounded-[4px] bg-indigo-950"></span>
+                    <span class="h-3 w-3 rounded-[4px] bg-indigo-800"></span>
+                    <span class="h-3 w-3 rounded-[4px] bg-indigo-500"></span>
+                    <span class="h-3 w-3 rounded-[4px] bg-emerald-400"></span>
+                    More
+                </div>
+            </div>
+
+            @php
+                $levelClass = fn($score) => match(true) {
+                    $score === null => 'bg-slate-800 hover:bg-slate-700',
+                    $score <= 0     => 'bg-slate-800 hover:bg-slate-700',
+                    $score < 40     => 'bg-indigo-950 hover:bg-indigo-900',
+                    $score < 70     => 'bg-indigo-800 hover:bg-indigo-700',
+                    $score < 90     => 'bg-indigo-500 hover:bg-indigo-400',
+                    default         => 'bg-emerald-400 hover:bg-emerald-300',
+                };
+            @endphp
+
+            <div class="mt-5 overflow-x-auto pb-1">
+                <div class="grid grid-flow-col grid-rows-7 gap-1" style="width: max-content;">
+                    @foreach($heatmap as $cell)
+                        <a href="{{ route('focus.today', ['date' => $cell['date']]) }}"
+                           title="{{ $cell['day'] }} — {{ $cell['score'] !== null ? 'score '.$cell['score'] : 'no data' }}"
+                           class="h-3.5 w-3.5 rounded-[4px] transition {{ $levelClass($cell['score']) }} {{ $cell['is_today'] ? 'ring-1 ring-white/60' : '' }}">
+                            <span class="sr-only">{{ $cell['day'] }}</span>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
+        <!-- 📈 Weekly Trend -->
+        <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
+            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">📈 Weekly Trend</p>
+            <p class="mt-2 text-sm text-slate-400">Discipline score over the last 7 days.</p>
+
+            @php
+                $maxScore = 100;
+                $w = 280; $h = 90; $pad = 6;
+                $step = count($trendScores) > 1 ? ($w - 2 * $pad) / (count($trendScores) - 1) : 0;
+                $points = [];
+                foreach ($trendScores as $i => $s) {
+                    $x = $pad + $i * $step;
+                    $y = $h - $pad - ($s / $maxScore) * ($h - 2 * $pad);
+                    $points[] = [$x, $y, $s];
+                }
+                $polyline = collect($points)->map(fn($p) => round($p[0], 1).','.round($p[1], 1))->implode(' ');
+            @endphp
+
+            <div class="mt-5">
+                <svg viewBox="0 0 {{ $w }} {{ $h }}" class="h-24 w-full" preserveAspectRatio="none">
+                    <defs>
+                        <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="rgb(99 102 241)" stop-opacity="0.35"/>
+                            <stop offset="100%" stop-color="rgb(99 102 241)" stop-opacity="0"/>
+                        </linearGradient>
+                    </defs>
+                    <polygon points="{{ $pad }},{{ $h - $pad }} {{ $polyline }} {{ $w - $pad }},{{ $h - $pad }}" fill="url(#trendFill)"/>
+                    <polyline points="{{ $polyline }}" fill="none" stroke="rgb(129 140 248)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    @foreach($points as $p)
+                        <circle cx="{{ round($p[0], 1) }}" cy="{{ round($p[1], 1) }}" r="3"
+                                fill="{{ $p[2] >= 70 ? 'rgb(52 211 153)' : 'rgb(129 140 248)' }}">
+                            <title>{{ $p[2] }}/100</title>
+                        </circle>
+                    @endforeach
+                </svg>
+                <div class="mt-1 flex justify-between text-[10px] text-slate-500">
+                    <span>7d ago</span>
+                    <span>Today</span>
+                </div>
+            </div>
+        </section>
 
             <!-- Simple Stats -->
             <section class="grid gap-4 sm:grid-cols-2">
