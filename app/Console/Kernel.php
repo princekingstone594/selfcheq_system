@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('reminders:tasks')->everyMinute();
         $schedule->command('reminders:send')->dailyAt('08:00');
+        $schedule->command('nudges:send')->dailyAt('20:30');
         $schedule->command('wins:send')->dailyAt('21:00');
     }
 

@@ -199,6 +199,99 @@ Instructions:
     }
 
     /**
+     * Generate an evening "daily nudge" — one short, contextual line to carry
+     * into tomorrow. Weaves in the user's streak, today's activity and
+     * (optionally) yesterday's Evening Examen reflection.
+     *
+     * Tone: universal and reflective, not preachy.
+     *
+     * Expected $context keys:
+     *   - streak              (int)    current streak in days
+     *   - tasks_completed     (int)
+     *   - tasks_total         (int)
+     *   - focus_minutes       (int)
+     *   - journaled           (bool)
+     *   - examen_reflection   (string|null) yesterday's Examen reflection
+     *   - examen_gratitude    (string|null) yesterday's gratitude chip
+     *   - tomorrow_chapter    (string)      e.g. "Psalms 27"
+     *
+     * @return string A single-sentence nudge.
+     */
+    public function generateDailyNudge(array $context): string
+    {
+        // Heuristic fallback when AI is not configured or fails
+        $fallback = $this->fallbackDailyNudge($context);
+
+        if (!$this->client) {
+            return $fallback;
+        }
+
+        try {
+            $reflectionText = !empty($context['examen_reflection'])
+                ? "Yesterday's reflection: \"{$context['examen_reflection']}\"\n"
+                : '';
+            $gratitudeText = !empty($context['examen_gratitude'])
+                ? "Yesterday's gratitude: {$context['examen_gratitude']}\n"
+                : '';
+
+            $prompt = "
+User context:
+- Current streak: {$context['streak']} day(s)
+- Tasks today: {$context['tasks_completed']}/{$context['tasks_total']}
+- Focus: {$context['focus_minutes']} min
+- Journaled: " . (!empty($context['journaled']) ? 'yes' : 'no') . "
+{$reflectionText}{$gratitudeText}Tomorrow's declaration chapter: {$context['tomorrow_chapter']}
+
+Instructions:
+- Write ONE short sentence (max 20 words) — a nudge to carry into tomorrow
+- Reference their streak naturally if it's 3+ days
+- If a reflection was given, gently build on it; otherwise reference the chapter
+- Warm, grounded tone — a moment of reflection, never preachy
+- Return ONLY the sentence, no quotes.
+";
+
+            $response = $this->client->chat()->create([
+                'model' => 'gpt-4o-mini',
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => 'You write warm, concise daily nudges for a discipline app. '
+                            . 'Universal and reflective in tone — spiritual content is available but never forced. '
+                            . 'Always exactly one sentence.',
+                    ],
+                    ['role' => 'user', 'content' => $prompt],
+                ],
+            ]);
+
+            $nudge = trim($response->choices[0]->message->content ?? '');
+
+            return $nudge !== '' ? $nudge : $fallback;
+
+        } catch (\Exception $e) {
+            return $fallback;
+        }
+    }
+
+    /**
+     * Heuristic daily nudge when AI is unavailable.
+     */
+    protected function fallbackDailyNudge(array $context): string
+    {
+        $streak = max((int) ($context['streak'] ?? 0), 0);
+        $chapter = $context['tomorrow_chapter'] ?? 'Psalms 27';
+
+        if ($streak >= 3) {
+            return "{$streak}-day streak going strong — carry that momentum into {$chapter} tomorrow.";
+        }
+
+        if (!empty($context['examen_gratitude'])) {
+            return "Hold onto yesterday's gratitude — then start fresh with {$chapter} tomorrow.";
+        }
+
+        return "A quiet moment with {$chapter} tomorrow could set the tone for your whole day.";
+    }
+
+    /**
      * Build coaching prompt
      */
     private function buildPrompt($data)
