@@ -80,22 +80,18 @@
             </div>
 
             <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                <!-- 📖 Devotional verse -->
+                <!-- 🎯 Today's Focus -->
                 <div class="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-slate-800/80 to-slate-800/40 p-5 backdrop-blur-sm transition-all hover:scale-[1.02] hover:border-indigo-400/30 hover:shadow-xl hover:shadow-indigo-500/10">
                     <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
                     <div class="relative">
-                        <p class="font-semibold text-white">📖 Devotional</p>
-                        @if($devotional)
-                            <p class="mt-3 text-sm italic text-slate-300 line-clamp-3">{{ $devotional->content }}</p>
-                            <a href="{{ route('devotional.today') }}" class="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-indigo-300 hover:text-indigo-200 transition">
-                                See more <span class="group-hover:translate-x-1 transition-transform">→</span>
-                            </a>
-                        @else
-                            <p class="mt-3 text-sm text-slate-400">No verse for today.</p>
-                            <a href="{{ route('devotional.today') }}" class="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-indigo-300 hover:text-indigo-200 transition">
-                                Open devotional <span class="group-hover:translate-x-1 transition-transform">→</span>
-                            </a>
-                        @endif
+                        <div class="flex items-center justify-between">
+                            <p class="font-semibold text-white">🎯 Today's Focus</p>
+                            <span class="rounded-full bg-indigo-500/20 px-2.5 py-0.5 text-xs font-bold text-indigo-300">{{ $focusMinutes }} min</span>
+                        </div>
+                        <p class="mt-3 text-sm text-slate-300">Protect a quiet block of deep work to set the tone for the day.</p>
+                        <a href="{{ route('focus.today') }}" class="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-indigo-300 hover:text-indigo-200 transition">
+                            Start focus session <span class="group-hover:translate-x-1 transition-transform">→</span>
+                        </a>
                     </div>
                 </div>
 

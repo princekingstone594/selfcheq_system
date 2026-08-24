@@ -43,6 +43,7 @@
                                 <a href="{{ route('goals.index') }}" :class="request()->routeIs('goals.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">Goals</a>
                                 <a href="{{ route('settings.index') }}" :class="request()->routeIs('settings.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">Settings</a>
                                 <a href="{{ route('devotional.today') }}" :class="request()->routeIs('bible-chapter.*') || request()->routeIs('devotional.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">Declaration Chapters</a>
+                                <a href="{{ route('examen.today') }}" :class="request()->routeIs('examen.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">🌙 Evening Examen</a>
                                 <a href="{{ route('profile.edit') }}" :class="request()->routeIs('profile.*') ? 'bg-white/10 text-white' : 'text-slate-300 hover:bg-white/5 hover:text-white'" class="block px-4 py-2.5 text-sm transition">Profile</a>
                             </div>
                         </div>
@@ -188,6 +189,7 @@
                     <x-responsive-nav-link :href="route('goals.index')" :active="request()->routeIs('goals.*')">Goals</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('settings.index')" :active="request()->routeIs('settings.*')">Settings</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('devotional.today')" :active="request()->routeIs('bible-chapter.*') || request()->routeIs('devotional.*')">Declaration Chapters</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('examen.today')" :active="request()->routeIs('examen.*')">Evening Examen 🌙</x-responsive-nav-link>
                     <x-responsive-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.*')">Profile</x-responsive-nav-link>
                 </div>
             </div>

@@ -21,6 +21,7 @@ use App\Http\Controllers\WeeklyReviewController;
 use App\Http\Controllers\BibleChapterController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\GoalController;
+use App\Http\Controllers\ExamenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -75,6 +76,10 @@ Route::middleware('auth')->group(function () {
     // Journal
     Route::get('/journal', [JournalController::class, 'index'])->name('journal.index');
     Route::post('/journal', [JournalController::class, 'store'])->name('journal.store');
+
+    // Evening Examen — the evening counterpart to the morning devotional
+    Route::get('/examen', [ExamenController::class, 'today'])->name('examen.today');
+    Route::post('/examen', [ExamenController::class, 'store'])->name('examen.store');
 
     // Calendar
     Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');

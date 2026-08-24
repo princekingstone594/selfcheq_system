@@ -147,6 +147,11 @@ class User extends Authenticatable
         return $this->hasMany(Goal::class);
     }
 
+    public function examens()
+    {
+        return $this->hasMany(Examen::class);
+    }
+
     public function morningDevotion()
     {
         return $this->hasOne(MorningDevotion::class);
