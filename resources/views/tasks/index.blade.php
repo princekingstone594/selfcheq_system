@@ -55,6 +55,19 @@
             </div>
         @endif
 
+        @if(session('celebration'))
+            <div class="rounded-2xl border border-amber-400/30 bg-amber-500/10 p-4 text-sm font-semibold text-amber-100">
+                {{ session('celebration') }}
+            </div>
+            <script>
+                window.addEventListener('DOMContentLoaded', function () {
+                    if (typeof window.celebrate === 'function') {
+                        window.celebrate('{{ session('celebration') }}');
+                    }
+                });
+            </script>
+        @endif
+
         <!-- Add Task -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
             <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Add a task</p>
@@ -105,10 +118,10 @@
                     <div class="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-slate-800/70 p-3 transition hover:bg-slate-800">
 
                         <div class="flex items-center gap-3">
-                            <form method="POST" action="{{ route('tasks.toggle', $task) }}">
+                            <form method="POST" action="{{ route('tasks.toggle', $task) }}" class="toggle-task-form">
                                 @csrf
                                 @method('PATCH')
-                                <button class="text-xl transition hover:scale-110" title="{{ $task->is_completed ? 'Mark incomplete' : 'Mark complete' }}">
+                                <button type="submit" class="task-toggle-btn text-xl transition hover:scale-110" title="{{ $task->is_completed ? 'Mark incomplete' : 'Mark complete' }}">
                                     @if ($task->is_completed)
                                         ✅
                                     @else
@@ -214,4 +227,15 @@
             </div>
         </section>
     </div>
+
+    <script>
+        // ✨ Check-pop: give the completion toggle a green glow burst the moment it's clicked.
+        document.addEventListener('click', function (e) {
+            const btn = e.target.closest('.task-toggle-btn');
+            if (!btn) return;
+            btn.classList.remove('check-pop');
+            void btn.offsetWidth; // restart animation
+            btn.classList.add('check-pop');
+        });
+    </script>
 </x-app-layout>

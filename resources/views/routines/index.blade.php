@@ -27,6 +27,19 @@
             </div>
         @endif
 
+        @if(session('celebration'))
+            <div class="rounded-2xl border border-amber-400/30 bg-amber-500/10 p-4 text-sm font-semibold text-amber-100">
+                {{ session('celebration') }}
+            </div>
+            <script>
+                window.addEventListener('DOMContentLoaded', function () {
+                    if (typeof window.celebrate === 'function') {
+                        window.celebrate('{{ session('celebration') }}');
+                    }
+                });
+            </script>
+        @endif
+
         <!-- Add Routine -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
             <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Add routine</p>
@@ -90,10 +103,10 @@
                         </div>
 
                         <div class="flex items-center gap-2">
-                            <form method="POST" action="{{ route('routines.toggle', $routine) }}">
+                            <form method="POST" action="{{ route('routines.toggle', $routine) }}" class="toggle-routine-form">
                                 @csrf
                                 @method('PATCH')
-                                <button class="rounded-xl px-3 py-1.5 text-xs font-medium {{ $routine->is_completed ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' : 'bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30' }} transition">
+                                <button type="submit" class="routine-toggle-btn rounded-xl px-3 py-1.5 text-xs font-medium {{ $routine->is_completed ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' : 'bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30' }} transition">
                                     {{ $routine->is_completed ? 'Undo' : 'Done' }}
                                 </button>
                             </form>
@@ -197,4 +210,15 @@
             </div>
         </section>
     </div>
+
+    <script>
+        // ✨ Check-pop: give the routine "Done" button a green glow burst on click.
+        document.addEventListener('click', function (e) {
+            const btn = e.target.closest('.routine-toggle-btn');
+            if (!btn) return;
+            btn.classList.remove('check-pop');
+            void btn.offsetWidth; // restart animation
+            btn.classList.add('check-pop');
+        });
+    </script>
 </x-app-layout>

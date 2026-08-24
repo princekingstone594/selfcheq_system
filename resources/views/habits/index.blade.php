@@ -7,6 +7,19 @@
             <p class="mt-2 text-sm text-slate-400">Track your daily habits and earn XP for each completion. Build streaks and unlock badges!</p>
         </section>
 
+        @if(session('celebration'))
+            <div class="rounded-2xl border border-amber-400/30 bg-amber-500/10 p-4 text-sm font-semibold text-amber-100">
+                {{ session('celebration') }}
+            </div>
+            <script>
+                window.addEventListener('DOMContentLoaded', function () {
+                    if (typeof window.celebrate === 'function') {
+                        window.celebrate('{{ session('celebration') }}');
+                    }
+                });
+            </script>
+        @endif
+
         <!-- Add Habit Form -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
             <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Add a new habit</p>
@@ -70,10 +83,9 @@
                         <p class="font-medium text-white">{{ $habit->title }}</p>
                         <p class="text-xs text-slate-400">Target: {{ $habit->target_value }} {{ $habit->unit }} · Streak: {{ $streak }} 🔥</p>
                     </div>
-                    <form method="POST" action="{{ route('habits.toggle', $habit) }}">
+                    <form method="POST" action="{{ route('habits.toggle', $habit) }}" class="toggle-habit-form">
                         @csrf @method('PATCH')
-                        <button type="submit"
-                                class="{{ $completed
+                        <button type="submit" class="habit-toggle-btn {{ $completed
                                     ? 'rounded-xl bg-emerald-500/20 px-4 py-2 text-emerald-300'
                                     : 'rounded-xl bg-slate-700/50 px-4 py-2 text-slate-300 hover:bg-slate-700' }}">
                             {{ $completed ? '✅ Completed' : '○ Mark done' }}
@@ -108,4 +120,15 @@
             <p class="mt-2 text-xs text-slate-400">{{ $habits->avg(fn($h) => $h->completionRate(7)) ?? 0 }}% avg completion this week</p>
         </section>
     </div>
+
+    <script>
+        // ✨ Check-pop: give the habit completion button a green glow burst on click.
+        document.addEventListener('click', function (e) {
+            const btn = e.target.closest('.habit-toggle-btn');
+            if (!btn) return;
+            btn.classList.remove('check-pop');
+            void btn.offsetWidth; // restart animation
+            btn.classList.add('check-pop');
+        });
+    </script>
 </x-app-layout>
