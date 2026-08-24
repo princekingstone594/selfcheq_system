@@ -22,6 +22,7 @@ use App\Http\Controllers\BibleChapterController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\GoalController;
 use App\Http\Controllers\ExamenController;
+use App\Http\Controllers\RecapController;
 
 /*
 |--------------------------------------------------------------------------
@@ -120,6 +121,9 @@ Route::middleware('auth')->group(function () {
 
     // Weekly Review
     Route::get('/weekly-review', [WeeklyReviewController::class, 'index'])->name('weekly-review.index');
+
+    // 🎉 Weekly Recap Ritual (Sunday)
+    Route::get('/recap', [RecapController::class, 'index'])->name('recap.index');
 
     // Data Export
     Route::get('/export', [ExportController::class, 'index'])->name('export.index');

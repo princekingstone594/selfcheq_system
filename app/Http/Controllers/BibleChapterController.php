@@ -38,6 +38,13 @@ class BibleChapterController extends Controller
             abort(404, 'Bible chapter not found');
         }
 
+        // 📖 Track the read — powers the weekly recap's "chapters declared"
+        \App\Models\DeclarationRead::create([
+            'user_id' => auth()->id(),
+            'reference' => $chapter->reference,
+            'date' => now()->toDateString(),
+        ]);
+
         $declarationText = $chapter->getDeclarationText();
 
         $user = User::find(auth()->id());
