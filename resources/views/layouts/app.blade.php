@@ -129,18 +129,6 @@
             transform: scale(0.95);
         }
     </style>
->>>>>>>
-<task_progress>
-- [x] Analyze codebase: app.blade.php, navigation, controllers, models, views
-- [x] Phase 1.1: Add CSS animations (bell bounce, check-pop, button press) to app.blade.php
-- [ ] Phase 1.2: Fix notification bell — bounce class + silence-on-open in navigation.blade.php
-- [ ] Phase 1.3: Update TaskController — pass streak-change flash data
-- [ ] Phase 1.4: Update RoutineController — pass streak-change flash data
-- [ ] Phase 1.5: Update HabitController — detect streak milestones, pass flash data
-- [ ] Phase 1.6: Add check-pop + confetti triggers to tasks/index.blade.php
-- [ ] Phase 1.7: Add check-pop + confetti/milestone triggers to habits/index.blade.php
-- [ ] Phase 1.8: Add check-pop + confetti triggers to routines/index.blade.php
-- [ ] Phase 1.9: Verify syntax and lint all modified files
 
     @stack('scripts')
     
