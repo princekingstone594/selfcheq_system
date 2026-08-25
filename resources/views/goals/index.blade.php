@@ -10,7 +10,7 @@
                 </div>
                 <button @click="showForm = !showForm"
                         class="shrink-0 rounded-2xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400 transition">
-                    {{ showForm ? 'Close' : '+ New Goal' }}
+                    <span x-text="showForm ? 'Close' : '+ New Goal'">+ New Goal</span>
                 </button>
             </div>
         </section>

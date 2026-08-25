@@ -43,6 +43,34 @@
                     <p class="max-w-2xl text-sm italic text-slate-300">"Discipline is the bridge between goals and accomplishment." — Jim Rohn</p>
                 </div>
 
+                <!-- ⚡ Level & XP progress -->
+                @php
+                    $user = auth()->user();
+                    $xpInLevel = $user->xp % 100;
+                    $xpPercent = min(100, $xpInLevel); // 100 XP per level
+                    $xpToNext = 100 - $xpInLevel;
+                @endphp
+                <div class="mt-5 max-w-md rounded-2xl border border-indigo-400/20 bg-slate-900/60 p-4 backdrop-blur-sm">
+                    <div class="flex items-center justify-between text-xs font-semibold">
+                        <span class="flex items-center gap-1.5 text-amber-300">
+                            ⚡ Level {{ $user->level }}
+                        </span>
+                        <span class="text-slate-400">
+                            {{ $xpInLevel }}/100 XP · {{ $xpToNext }} to Level {{ $user->level + 1 }}
+                        </span>
+                    </div>
+                    <div class="mt-2 h-3 w-full overflow-hidden rounded-full bg-slate-800">
+                        <div class="relative h-full rounded-full bg-gradient-to-r from-amber-400 via-orange-400 to-pink-500 shadow-[0_0_12px_rgba(251,191,36,0.5)] transition-all duration-700 ease-out"
+                             style="width: {{ $xpPercent }}%">
+                            <span class="absolute inset-0 animate-pulse bg-white/10"></span>
+                        </div>
+                    </div>
+                    <div class="mt-2 flex items-center gap-3 text-xs text-slate-400">
+                        <span>🔥 {{ $user->streak }}-day streak</span>
+                        <span>💎 {{ $user->xp }} total XP</span>
+                    </div>
+                </div>
+
                 <!-- Today's focus button (redirects to daily summary page) -->
                 <div class="mt-6">
                     <a href="{{ route('focus.today') }}"

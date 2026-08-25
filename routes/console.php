@@ -17,6 +17,7 @@ Artisan::command('inspire', function () {
 */
 Schedule::command('reminders:tasks')->everyMinute();
 Schedule::command('reminders:send')->dailyAt('08:00');
+Schedule::command('streak:remind')->dailyAt('19:00');
 Schedule::command('nudges:send')->dailyAt('20:30');
 Schedule::command('wins:send')->dailyAt('21:00');
 Schedule::command('recap:send')->sundays()->at('19:00');
