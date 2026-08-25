@@ -10,7 +10,7 @@ class AiCoachService
 
     public function __construct()
     {
-        $apiKey = config('services.openai.key');
+        $apiKey = config('services.openai.api_key');
 
         // Prevent crash if no API key
         if (!$apiKey) {
@@ -194,7 +194,8 @@ Instructions:
             return $response->choices[0]->message->content ?? '';
 
         } catch (\Exception $e) {
-            return "Stay focused.";
+            report($e);
+            return "I'm having trouble reaching my coaching brain right now — please try again in a moment. 🧠";
         }
     }
 
