@@ -8,8 +8,23 @@ class AiCoachService
 {
     protected $client;
 
+    /** @var string Model used for chat completions */
+    protected $model = 'llama-3.3-70b-versatile';
+
     public function __construct()
     {
+        // Prefer Groq (free tier) when configured; fall back to OpenAI.
+        $groqKey = config('services.groq.api_key');
+
+        if ($groqKey) {
+            $this->client = OpenAI::factory()
+                ->withApiKey($groqKey)
+                ->withBaseUri(config('services.groq.base_uri'))
+                ->make();
+            $this->model = config('services.groq.model', 'llama-3.3-70b-versatile');
+            return;
+        }
+
         $apiKey = config('services.openai.api_key');
 
         // Prevent crash if no API key
@@ -35,7 +50,7 @@ class AiCoachService
             $prompt = $this->buildPrompt($data);
 
             $response = $this->client->chat()->create([
-                'model' => 'gpt-4o-mini',
+                'model' => $this->model,
                 'messages' => [
                     [
                         'role' => 'system',
@@ -92,7 +107,7 @@ Instructions:
 - End with one clear action to start the new week strong";
 
             $response = $this->client->chat()->create([
-                'model' => 'gpt-4o-mini',
+                'model' => $this->model,
                 'messages' => [
                     [
                         'role' => 'system',
@@ -178,7 +193,7 @@ Instructions:
             $mode = auth()->user()->coach_mode ?? 'strict';
 
             $response = $this->client->chat()->create([
-                'model' => 'gpt-4o-mini',
+                'model' => $this->model,
                 'messages' => [
                     [
                         'role' => 'system',
@@ -252,7 +267,7 @@ Instructions:
 ";
 
             $response = $this->client->chat()->create([
-                'model' => 'gpt-4o-mini',
+                'model' => $this->model,
                 'messages' => [
                     [
                         'role' => 'system',
