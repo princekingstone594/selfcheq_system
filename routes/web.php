@@ -23,6 +23,7 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\GoalController;
 use App\Http\Controllers\ExamenController;
 use App\Http\Controllers\RecapController;
+use App\Http\Controllers\FitnessController;
 
 /*
 |--------------------------------------------------------------------------
@@ -124,6 +125,11 @@ Route::middleware('auth')->group(function () {
 
     // 🎉 Weekly Recap Ritual (Sunday)
     Route::get('/recap', [RecapController::class, 'index'])->name('recap.index');
+
+    // Fitness
+    Route::get('/fitness', [FitnessController::class, 'index'])->name('fitness.index');
+    Route::post('/fitness/generate', [FitnessController::class, 'generate'])->name('fitness.generate');
+    Route::post('/fitness/toggle-day', [FitnessController::class, 'toggleDay'])->name('fitness.toggle-day');
 
     // Data Export
     Route::get('/export', [ExportController::class, 'index'])->name('export.index');

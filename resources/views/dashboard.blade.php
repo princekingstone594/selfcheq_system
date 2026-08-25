@@ -100,6 +100,48 @@
             </div>
         </section>
 
+        <!-- 🏋️ Fitness quick card -->
+        @php
+            $fitnessPlan = auth()->user()->fitnessPlans()->where('is_active', true)->latest()->first();
+            $fitnessDone = count($fitnessPlan?->completed_days ?? []);
+            $todayWorkout = $fitnessPlan['plan']['days'][now()->dayOfWeekIso - 1]['focus'] ?? null;
+        @endphp
+        <section class="relative overflow-hidden rounded-3xl border border-emerald-400/20 bg-gradient-to-br from-slate-900 via-emerald-950/20 to-slate-900 p-6 shadow-xl">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/15 text-2xl">🏋️</span>
+                    <div>
+                        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-300">Fitness</p>
+                        @if($fitnessPlan)
+                            <p class="mt-0.5 font-semibold text-white">
+                                {{ $fitnessDone }}/7 days this week
+                                @if($todayWorkout) · <span class="text-emerald-200">Today: {{ $todayWorkout }}</span>@endif
+                            </p>
+                        @else
+                            <p class="mt-0.5 text-sm text-slate-400">Get your AI weekly workout + diet plan</p>
+                        @endif
+                    </div>
+                </div>
+                @if($fitnessPlan)
+                <div class="flex items-center gap-3">
+                    <div class="h-2.5 w-32 overflow-hidden rounded-full bg-slate-800">
+                        <div class="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 transition-all duration-700"
+                             style="width: {{ round($fitnessDone / 7 * 100) }}%"></div>
+                    </div>
+                    <a href="{{ route('fitness.index') }}"
+                       class="rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-100 transition hover:bg-emerald-500/20">
+                        Open →
+                    </a>
+                </div>
+                @else
+                <a href="{{ route('fitness.index') }}"
+                   class="rounded-xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-400">
+                    Build my plan
+                </a>
+                @endif
+            </div>
+        </section>
+
         <!-- Daily Rhythm -->
         <section class="space-y-4">
             <div>
