@@ -2,7 +2,7 @@
     <div class="space-y-6">
         <!-- Header -->
         <section class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-2xl shadow-indigo-950/30 backdrop-blur sm:p-8">
-            <div class="flex items-start justify-between gap-4">
+            <div class="flex flex-col items-start gap-3">
                 <div class="flex items-start gap-4">
                     <!-- 🧑‍🚀 Reactive avatar — reflects your streak state -->
                     @php
@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <button onclick="openShareModal()"
-                        class="shrink-0 inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-slate-800/80 px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white hover:border-indigo-400/30 transition"
+                        class="w-full inline-flex items-center justify-center gap-2 rounded-2xl border border-white/10 bg-slate-800/80 px-4 py-2.5 sm:w-auto text-sm font-semibold text-slate-300 hover:text-white hover:border-indigo-400/30 transition"
                         title="Share your progress">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>

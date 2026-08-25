@@ -48,7 +48,7 @@
                         </div>
                     </label>
                 </div>
-                <button class="mt-4 rounded-2xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400 transition">
+                <button class="mt-4 w-full rounded-2xl bg-indigo-500 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-400 transition sm:w-auto">
                     Save Theme
                 </button>
             </form>
@@ -101,7 +101,7 @@
                            {{ auth()->user()->reminders_enabled ? 'checked' : '' }}>
                 </label>
 
-                <button class="rounded-2xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400 transition">
+                <button class="w-full rounded-2xl bg-indigo-500 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-400 transition sm:w-auto">
                     Save Permissions
                 </button>
             </form>

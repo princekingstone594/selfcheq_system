@@ -2,14 +2,14 @@
     <div class="mx-auto max-w-3xl space-y-6" x-data="{ showForm: false }">
         <!-- Header -->
         <section class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-2xl shadow-indigo-950/30 backdrop-blur sm:p-8">
-            <div class="flex items-start justify-between gap-4">
+            <div class="flex flex-col items-start gap-3">
                 <div>
                     <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Goals</p>
                     <h1 class="mt-1 text-2xl font-semibold text-white">Set your discipline milestones</h1>
                     <p class="mt-2 text-sm text-slate-400">Create multi-week goals with target discipline scores and track your progress.</p>
                 </div>
                 <button @click="showForm = !showForm"
-                        class="shrink-0 rounded-2xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400 transition">
+                        class="shrink-0 w-full rounded-2xl bg-indigo-500 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-400 transition sm:w-auto">
                     <span x-text="showForm ? 'Close' : '+ New Goal'">+ New Goal</span>
                 </button>
             </div>
@@ -66,7 +66,7 @@
                                class="mt-1 w-full rounded-2xl border border-slate-700 bg-slate-800/80 px-3 py-2.5 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 focus:outline-none">
                     </div>
                 </div>
-                <button type="submit" class="w-full rounded-2xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400 transition">
+                <button type="submit" class="w-full w-full rounded-2xl bg-indigo-500 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-400 transition sm:w-auto">
                     Create Goal
                 </button>
             </form>

@@ -11,7 +11,7 @@
             <div class="flex items-center justify-between">
                 <p class="text-sm font-semibold uppercase tracking-[0.3em] text-amber-300">Your Notes</p>
                 <button onclick="showEditor()" 
-                        class="rounded-2xl bg-amber-500 px-6 py-2.5 text-sm font-semibold text-white hover:bg-amber-400 transition">
+                        class="w-full rounded-2xl bg-amber-500 px-6 py-3 text-sm font-semibold text-white hover:bg-amber-400 transition sm:w-auto">
                     + Create New Note
                 </button>
             </div>

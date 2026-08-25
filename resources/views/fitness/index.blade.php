@@ -5,11 +5,11 @@
             <div class="absolute inset-0 overflow-hidden">
                 <div class="absolute -top-20 -right-20 h-56 w-56 rounded-full bg-emerald-500/15 blur-3xl"></div>
             </div>
-            <div class="relative flex items-start justify-between gap-4">
+            <div class="relative flex flex-col items-start gap-3">
                 <div>
                     <p class="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-300">Fitness</p>
                     <h1 class="mt-1 text-2xl font-bold text-white sm:text-3xl">Train. Eat. Repeat. 🏋️</h1>
-                    <p class="mt-2 text-sm text-slate-300">Your AI-personalized weekly workout plan and nutrition guidance.</p>
+                    <p class="mt-2 text-sm leading-relaxed text-slate-300">Your AI-personalized weekly workout plan and nutrition guidance.</p>
                     @if($plan)
                         <span class="mt-2 inline-flex items-center gap-1 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-200">
                             {{ ucfirst(str_replace('_',' ',$plan->goal)) }} · {{ ucfirst($plan->level) }} · Week of {{ $plan->week_start->format('M j') }}
@@ -17,8 +17,8 @@
                     @endif
                 </div>
                 <button @click="setupOpen = !setupOpen"
-                        class="shrink-0 rounded-2xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-2.5 text-sm font-semibold text-emerald-100 hover:bg-emerald-500/20 transition">
-                    <span x-text="setupOpen ? 'Close' : ($plan ? 'Regenerate' : 'Get My Plan')"></span>
+                        class="w-full rounded-2xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-sm font-semibold text-emerald-100 hover:bg-emerald-500/20 transition sm:w-auto sm:px-6 active:scale-[0.98]">
+                    <span x-text="setupOpen ? '✕ Close' : ($plan ? '🔄 Regenerate' : '🚀 Get My Plan')"></span>
                 </button>
             </div>
         </section>
@@ -157,17 +157,15 @@
 
         <!-- 📋 My Fitness Entries -->
         <section x-data="{ addOpen: false }" class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <span class="text-2xl">📋</span>
-                    <div>
-                        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">My fitness entries</p>
-                        <p class="text-sm text-slate-400">Your own nutrition, workout & gym plans — link them to tasks or routines</p>
-                    </div>
-                </div>
+            <!-- Mobile-first: title, then text, then full-width button -->
+            <div class="flex flex-col items-start gap-3">
+                <p class="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">
+                    <span class="text-xl">📋</span> My fitness entries
+                </p>
+                <p class="text-sm leading-relaxed text-slate-400">Your own nutrition, workout & gym plans — link them to tasks or routines</p>
                 <button @click="addOpen = !addOpen"
-                        class="shrink-0 rounded-2xl bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-400 transition">
-                    <span x-text="addOpen ? 'Close' : '+ Add Entry'">+ Add Entry</span>
+                        class="w-full rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-400 transition sm:w-auto sm:px-6">
+                    <span x-text="addOpen ? '✕ Close' : '+ Add Entry'">+ Add Entry</span>
                 </button>
             </div>
 
@@ -175,26 +173,30 @@
             <form x-show="addOpen" x-cloak x-transition method="POST" action="{{ route('fitness.entries.store') }}"
                   class="mt-5 space-y-4 rounded-2xl border border-white/10 bg-slate-800/50 p-5">
                 @csrf
-                <!-- Type selector -->
-                <div class="grid grid-cols-3 gap-2">
-                    @foreach(['nutrition' => '🥗 Nutrition', 'workout' => '💪 Workout', 'gym' => '🏋️ Gym'] as $value => $label)
-                        <label class="cursor-pointer">
-                            <input type="radio" name="type" value="{{ $value }}" class="peer sr-only" {{ $value === 'nutrition' ? 'checked' : '' }}>
-                            <span class="block rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-center text-xs font-semibold text-slate-400 transition peer-checked:border-emerald-400 peer-checked:bg-emerald-500/15 peer-checked:text-emerald-200">
-                                {{ $label }}
-                            </span>
-                        </label>
-                    @endforeach
+                <!-- Type selector — equal-size tap targets -->
+                <div>
+                    <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-400">Type *</label>
+                    <div class="grid grid-cols-3 gap-2 items-stretch">
+                        @foreach(['nutrition' => ['🥗','Nutrition'], 'workout' => ['💪','Workout'], 'gym' => ['🏋️','Gym']] as $value => [$ico, $name])
+                            <label class="cursor-pointer">
+                                <input type="radio" name="type" value="{{ $value }}" class="peer sr-only" {{ $value === 'nutrition' ? 'checked' : '' }}>
+                                <span class="flex h-[68px] w-full flex-col items-center justify-center gap-1 rounded-xl border border-slate-700 bg-slate-900 px-1 py-2 text-center transition peer-checked:border-emerald-400 peer-checked:bg-emerald-500/15 active:scale-[0.98]">
+                                    <span class="text-lg leading-none">{{ $ico }}</span>
+                                    <span class="text-xs font-semibold leading-none text-slate-400 peer-checked:text-emerald-200">{{ $name }}</span>
+                                </span>
+                            </label>
+                        @endforeach
+                    </div>
                 </div>
 
-                <div class="grid gap-4 sm:grid-cols-2">
-                    <div class="sm:col-span-2">
+                <div class="grid gap-4">
+                    <div>
                         <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-400">Title *</label>
-                        <input type="text" name="title" required maxlength="255" placeholder="e.g. High-protein cutting day / Push Day A / Leg Day at gym"
+                        <input type="text" name="title" required maxlength="255" placeholder="e.g. Push Day A, Leg Day at gym"
                                class="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500" />
                     </div>
 
-                    <div class="sm:col-span-2">
+                    <div>
                         <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-400">Details</label>
                         <textarea name="details" rows="3" placeholder="Meals & macros, exercise list with sets/reps, gym schedule…"
                                   class="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"></textarea>
@@ -222,7 +224,7 @@
                         </select>
                     </div>
 
-                    <div class="sm:col-span-2">
+                    <div>
                         <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-400">Link to Routine (optional)</label>
                         <select name="linked_routine_id"
                                 class="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-sm text-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500">
@@ -236,8 +238,8 @@
                 </div>
 
                 <button type="submit"
-                        class="w-full rounded-2xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-400 transition">
-                    Save Entry
+                        class="w-full rounded-2xl bg-emerald-500 px-5 py-3.5 text-sm font-semibold text-white hover:bg-emerald-400 active:scale-[0.98] transition">
+                    ✓ Save Entry
                 </button>
             </form>
 

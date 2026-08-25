@@ -48,7 +48,7 @@
 
         <!-- Header -->
         <section class="overflow-hidden rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-2xl shadow-indigo-950/30 backdrop-blur">
-            <div class="flex items-start justify-between gap-4">
+            <div class="flex flex-col items-start gap-3">
                 <div>
                     <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Reflection</p>
                     <h1 class="mt-1 text-2xl font-semibold text-white">Daily Journal</h1>
@@ -56,7 +56,7 @@
                 </div>
 
                 <!-- History button -->
-                <button @click="historyOpen = !historyOpen" class="inline-flex shrink-0 items-center gap-2 rounded-2xl border border-white/10 bg-slate-800/80 px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white hover:border-indigo-400/30 transition">
+                <button @click="historyOpen = !historyOpen" class="inline-flex w-full items-center justify-center gap-2 rounded-2xl sm:w-auto sm:justify-start border border-white/10 bg-slate-800/80 px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white hover:border-indigo-400/30 transition">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -144,7 +144,7 @@
                 </div>
 
                 <!-- Submit -->
-                <button class="w-full rounded-2xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400 transition">
+                <button class="w-full w-full rounded-2xl bg-indigo-500 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-400 transition sm:w-auto">
                     Save Journal
                 </button>
             </form>

@@ -8,13 +8,13 @@
                 <div class="absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-purple-500/15 blur-3xl"></div>
             </div>
 
-            <div class="relative flex items-start justify-between gap-4">
+            <div class="relative flex flex-col items-start gap-3">
                 <div>
                     <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">🌙 Evening</p>
                     <h1 class="mt-2 text-3xl font-bold text-white sm:text-4xl">Evening Examen</h1>
                     <p class="mt-2 text-slate-300">A two-minute ritual to close today and release what you don't need to carry.</p>
                 </div>
-                <button @click="historyOpen = !historyOpen" class="inline-flex shrink-0 items-center gap-2 rounded-2xl border border-white/10 bg-slate-800/80 px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white hover:border-indigo-400/30 transition">
+                <button @click="historyOpen = !historyOpen" class="inline-flex w-full items-center justify-center gap-2 rounded-2xl sm:w-auto sm:justify-start border border-white/10 bg-slate-800/80 px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white hover:border-indigo-400/30 transition">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
