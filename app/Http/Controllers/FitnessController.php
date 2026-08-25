@@ -10,11 +10,6 @@ use Illuminate\View\View;
 
 class FitnessController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function index(): View
     {
         $plan = auth()->user()->fitnessPlans()

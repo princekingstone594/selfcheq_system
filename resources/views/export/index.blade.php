@@ -29,16 +29,14 @@
 
         <!-- Export option -->
         <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-            <div class="flex items-start justify-between gap-4">
-                <div>
-                    <p class="text-lg font-semibold text-white">📕 PDF Export</p>
-                    <p class="mt-1 text-sm text-slate-400">Download your complete discipline journey as a beautifully formatted PDF — profile, tasks, routines, focus sessions, habits, journals, financials, badges, and daily stats.</p>
-                </div>
-                <a href="{{ route('export.pdf') }}"
-                   class="shrink-0 rounded-2xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400 transition">
-                    Download PDF
-                </a>
+            <div>
+                <p class="text-lg font-semibold text-white">📕 PDF Export</p>
+                <p class="mt-1 text-sm leading-relaxed text-slate-400">Download your complete discipline journey as a beautifully formatted PDF — profile, tasks, routines, focus sessions, habits, journals, financials, badges, and daily stats.</p>
             </div>
+            <a href="{{ route('export.pdf') }}"
+               class="mt-4 block w-full rounded-2xl bg-indigo-500 px-5 py-3 text-center text-sm font-semibold text-white hover:bg-indigo-400 transition">
+                ⬇ Download PDF
+            </a>
         </section>
 
         <!-- Privacy note -->
