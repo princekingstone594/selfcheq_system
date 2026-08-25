@@ -198,6 +198,9 @@ Instructions:
                     [
                         'role' => 'system',
                         'content' => $this->getPersonality($mode)
+                            . ' This is a live 1-on-1 chat. Reply conversationally like a real person texting — '
+                            . 'plain text only, 1-3 short sentences. NEVER use headings, bold, labels, bullet points, '
+                            . 'or sections like "Greeting:" or "Inquiry:". Just talk naturally.'
                     ],
                     [
                         'role' => 'user',
@@ -206,7 +209,7 @@ Instructions:
                 ],
             ]);
 
-            return $response->choices[0]->message->content ?? '';
+            return trim($response->choices[0]->message->content ?? '') ?: 'Say more — I\'m listening.';
 
         } catch (\Exception $e) {
             report($e);
