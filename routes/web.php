@@ -127,8 +127,8 @@ Route::middleware('auth')->group(function () {
 
     // Data Export
     Route::get('/export', [ExportController::class, 'index'])->name('export.index');
-    Route::get('/export/json', [ExportController::class, 'exportJson'])->name('export.json');
-    Route::get('/export/text', [ExportController::class, 'exportText'])->name('export.text');
+    Route::get('/export/pdf', [ExportController::class, 'exportPdf'])->name('export.pdf');
+    
 
     // Goals
     Route::get('/goals', [GoalController::class, 'index'])->name('goals.index');

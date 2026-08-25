@@ -27,32 +27,17 @@
             </div>
         </section>
 
-        <!-- Export options -->
-        <section class="space-y-4">
-            <div class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-                <div class="flex items-start justify-between gap-4">
-                    <div>
-                        <p class="text-lg font-semibold text-white">📄 JSON Export</p>
-                        <p class="mt-1 text-sm text-slate-400">Complete machine-readable export of all your data. Perfect for backups or migration.</p>
-                    </div>
-                    <a href="{{ route('export.json') }}"
-                       class="shrink-0 rounded-2xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400 transition">
-                        Download
-                    </a>
+        <!-- Export option -->
+        <section class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <p class="text-lg font-semibold text-white">📕 PDF Export</p>
+                    <p class="mt-1 text-sm text-slate-400">Download your complete discipline journey as a beautifully formatted PDF — profile, tasks, routines, focus sessions, habits, journals, financials, badges, and daily stats.</p>
                 </div>
-            </div>
-
-            <div class="rounded-3xl border border-white/10 bg-slate-900/70 p-6 shadow-xl">
-                <div class="flex items-start justify-between gap-4">
-                    <div>
-                        <p class="text-lg font-semibold text-white">📝 Text Summary</p>
-                        <p class="mt-1 text-sm text-slate-400">Human-readable summary of your journey — profile, tasks, journals, focus, habits, badges, and daily stats.</p>
-                    </div>
-                    <a href="{{ route('export.text') }}"
-                       class="shrink-0 rounded-2xl bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-400 transition">
-                        Download
-                    </a>
-                </div>
+                <a href="{{ route('export.pdf') }}"
+                   class="shrink-0 rounded-2xl bg-indigo-500 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400 transition">
+                    Download PDF
+                </a>
             </div>
         </section>
 

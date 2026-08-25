@@ -175,19 +175,56 @@
         @endif
 
         <!-- AI Coach Weekly Insights -->
-        <section class="rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 via-indigo-950/10 to-slate-900 p-6 shadow-xl">
-            <div class="flex items-center gap-3 mb-4">
-                <span class="text-3xl">🧑‍🏫</span>
-                <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Coach Zoe says</p>
-                    <p class="text-sm text-slate-400">Weekly insights & recommendations</p>
+        @php
+            // Render AI markdown-lite output as organized HTML:
+            // "**Heading**" lines become section titles, inline **bold** becomes <strong>,
+            // "- " / "• " lines become bullets. All asterisks removed.
+            $insightsHtml = collect(preg_split('/\r\n|\r|\n/', (string) $weeklyInsights))
+                ->map(fn ($l) => trim($l))
+                ->filter(fn ($l) => $l !== '')
+                ->map(function ($line) {
+                    // Whole-line bold → section heading
+                    if (preg_match('/^\*\*(.+?)\*\*[:.]?$/', $line, $m)) {
+                        return '<h4 class="mt-4 mb-1.5 flex items-center gap-2 text-sm font-bold text-indigo-300 first:mt-0">'
+                            . '<span class="inline-block h-1.5 w-1.5 rounded-full bg-indigo-400"></span>'
+                            . e($m[1]) . '</h4>';
+                    }
+                    // Bullet line
+                    $isBullet = (bool) preg_match('/^[-•*]\s+(.*)$/', $line, $bm);
+                    $text = $isBullet ? $bm[1] : $line;
+                    // Inline **bold** → strong
+                    $text = preg_replace('/\*\*(.+?)\*\*/', '<strong class="font-semibold text-white">$1</strong>', e($text));
+                    return $isBullet
+                        ? '<li class="ml-1 list-disc text-sm leading-relaxed text-slate-300">' . $text . '</li>'
+                        : '<p class="mb-2 text-sm leading-relaxed text-slate-300">' . $text . '</p>';
+                })
+                ->implode('');
+        @endphp
+        <section x-data="{ zoeOpen: false }" class="rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 via-indigo-950/10 to-slate-900 shadow-xl">
+            <button @click="zoeOpen = !zoeOpen" class="flex w-full items-center justify-between gap-3 p-6 text-left">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">🧑‍🏫</span>
+                    <div>
+                        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-300">Coach Zoe says</p>
+                        <p class="text-sm text-slate-400">Weekly insights & recommendations</p>
+                    </div>
                 </div>
-            </div>
+                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-slate-800/70 text-slate-300 transition-transform duration-300"
+                      :class="zoeOpen && 'rotate-180'"
+                      aria-hidden="true">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </span>
+            </button>
 
-            <div class="mt-2 rounded-2xl border border-white/5 bg-slate-800/30 p-5">
-                <p class="text-sm leading-relaxed text-slate-300 whitespace-pre-line">
-                    {{ $weeklyInsights }}
-                </p>
+            <div x-show="zoeOpen" x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 -translate-y-2"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-cloak class="px-6 pb-6">
+                <div class="rounded-2xl border border-white/5 bg-slate-800/30 p-5">
+                    {!! $insightsHtml !!}
+                </div>
             </div>
         </section>
 
