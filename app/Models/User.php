@@ -14,6 +14,11 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    public function chatMessages()
+    {
+        return $this->hasMany(ChatMessage::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *

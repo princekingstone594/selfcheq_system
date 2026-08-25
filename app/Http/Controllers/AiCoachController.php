@@ -13,12 +13,45 @@ class AiCoachController extends Controller
      */
     public function index(): View
     {
-        return view('coach.index');
+        $history = auth()->user()->chatMessages()
+            ->latest()
+            ->take(30)
+            ->get()
+            ->reverse()
+            ->values()
+            ->map(fn ($m) => ['from' => $m->role === 'user' ? 'user' : 'zoe', 'text' => $m->content])
+            ->all();
+
+        return view('coach.index', ['history' => $history]);
     }
 
     public function chat(Request $request, AiCoachService $ai)
     {
-        $reply = $ai->chat($request->message);
+        $request->validate(['message' => 'required|string|max:4000']);
+
+        $user = auth()->user();
+
+        // Recent history (before this message) for context
+        $history = $user->chatMessages()
+            ->latest()
+            ->take(20)
+            ->get()
+            ->reverse()
+            ->values()
+            ->map(fn ($m) => ['role' => $m->role, 'content' => $m->content])
+            ->all();
+
+        $user->chatMessages()->create([
+            'role' => 'user',
+            'content' => $request->message,
+        ]);
+
+        $reply = $ai->chat($request->message, $history);
+
+        $user->chatMessages()->create([
+            'role' => 'assistant',
+            'content' => $reply,
+        ]);
 
         return response()->json([
             'reply' => $reply

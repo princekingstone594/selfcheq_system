@@ -181,9 +181,12 @@ Instructions:
     }
 
     /**
-     * Chat (future feature)
+     * Chat with conversation history.
+     *
+     * @param string $message
+     * @param array $history Array of ['role' => 'user'|'assistant', 'content' => string]
      */
-    public function chat($message)
+    public function chat($message, array $history = [])
     {
         if (!$this->client) {
             return "AI not configured yet.";
@@ -192,21 +195,34 @@ Instructions:
         try {
             $mode = auth()->user()->coach_mode ?? 'strict';
 
+            $messages = [
+                [
+                    'role' => 'system',
+                    'content' => $this->getPersonality($mode)
+                        . ' This is a live 1-on-1 chat. Reply conversationally like a real person texting — '
+                        . 'plain text only, 1-3 short sentences. NEVER use headings, bold, labels, bullet points, '
+                        . 'or sections like "Greeting:" or "Inquiry:". Just talk naturally. '
+                        . 'You have access to the recent chat history — remember what the user told you.'
+                ],
+            ];
+
+            foreach ($history as $entry) {
+                if (in_array($entry['role'] ?? '', ['user', 'assistant']) && isset($entry['content']) && trim($entry['content']) !== '') {
+                    $messages[] = [
+                        'role' => $entry['role'],
+                        'content' => $entry['content'],
+                    ];
+                }
+            }
+
+            $messages[] = [
+                'role' => 'user',
+                'content' => $message
+            ];
+
             $response = $this->client->chat()->create([
                 'model' => $this->model,
-                'messages' => [
-                    [
-                        'role' => 'system',
-                        'content' => $this->getPersonality($mode)
-                            . ' This is a live 1-on-1 chat. Reply conversationally like a real person texting — '
-                            . 'plain text only, 1-3 short sentences. NEVER use headings, bold, labels, bullet points, '
-                            . 'or sections like "Greeting:" or "Inquiry:". Just talk naturally.'
-                    ],
-                    [
-                        'role' => 'user',
-                        'content' => $message
-                    ]
-                ],
+                'messages' => $messages,
             ]);
 
             return trim($response->choices[0]->message->content ?? '') ?: 'Say more — I\'m listening.';

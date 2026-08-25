@@ -73,13 +73,15 @@
                 </div>
 
                 <!-- Messages -->
-                <div class="max-h-96 space-y-3 overflow-y-auto rounded-2xl border border-white/10 bg-slate-800/50 p-4">
+                <div x-ref="chatBox" class="max-h-96 space-y-3 overflow-y-auto rounded-2xl border border-white/10 bg-slate-800/50 p-4">
+                    <p x-show="messages.length === 0" class="text-center text-sm text-slate-500 py-6">No messages yet. Say hello to Zoe 👋</p>
                     <template x-for="(msg, i) in messages" :key="i">
                         <div :class="msg.from === 'user' ? 'text-right' : 'text-left'">
                             <span :class="msg.from === 'user' ? 'bg-indigo-500 text-white' : 'bg-slate-700 text-slate-100'"
                                   class="inline-block rounded-2xl px-4 py-2.5 text-sm shadow-sm" x-text="msg.text"></span>
                         </div>
                     </template>
+                    <p x-show="sending" class="text-left"><span class="inline-block rounded-2xl bg-slate-700 px-4 py-2.5 text-sm text-slate-400">Zoe is typing…</span></p>
                 </div>
 
                 <!-- Input -->
@@ -114,14 +116,26 @@
     <script>
     function coachPage() {
         return {
-            messages: [],
+            messages: @json($history),
             input: '',
             sending: false,
-            started: false,
+            started: @json(count($history) > 0),
             speechMode: false,
             recognition: null,
+            init() {
+                this.$watch('messages', () => this.scrollToBottom());
+                if (this.started) {
+                    this.$nextTick(() => this.scrollToBottom());
+                }
+            },
+            scrollToBottom() {
+                this.$nextTick(() => {
+                    const box = this.$refs.chatBox;
+                    if (box) box.scrollTop = box.scrollHeight;
+                });
+            },
             send() {
-                if (!this.input.trim()) return;
+                if (!this.input.trim() || this.sending) return;
                 const text = this.input;
                 this.messages.push({ from: 'user', text });
                 this.input = '';
