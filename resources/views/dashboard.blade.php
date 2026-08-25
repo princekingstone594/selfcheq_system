@@ -43,34 +43,6 @@
                     <p class="max-w-2xl text-sm italic text-slate-300">"Discipline is the bridge between goals and accomplishment." — Jim Rohn</p>
                 </div>
 
-                <!-- ⚡ Level & XP progress -->
-                @php
-                    $user = auth()->user();
-                    $xpInLevel = $user->xp % 100;
-                    $xpPercent = min(100, $xpInLevel); // 100 XP per level
-                    $xpToNext = 100 - $xpInLevel;
-                @endphp
-                <div class="mt-5 max-w-md rounded-2xl border border-indigo-400/20 bg-slate-900/60 p-4 backdrop-blur-sm">
-                    <div class="flex items-center justify-between text-xs font-semibold">
-                        <span class="flex items-center gap-1.5 text-amber-300">
-                            ⚡ Level {{ $user->level }}
-                        </span>
-                        <span class="text-slate-400">
-                            {{ $xpInLevel }}/100 XP · {{ $xpToNext }} to Level {{ $user->level + 1 }}
-                        </span>
-                    </div>
-                    <div class="mt-2 h-3 w-full overflow-hidden rounded-full bg-slate-800">
-                        <div class="relative h-full rounded-full bg-gradient-to-r from-amber-400 via-orange-400 to-pink-500 shadow-[0_0_12px_rgba(251,191,36,0.5)] transition-all duration-700 ease-out"
-                             style="width: {{ $xpPercent }}%">
-                            <span class="absolute inset-0 animate-pulse bg-white/10"></span>
-                        </div>
-                    </div>
-                    <div class="mt-2 flex items-center gap-3 text-xs text-slate-400">
-                        <span>🔥 {{ $user->streak }}-day streak</span>
-                        <span>💎 {{ $user->xp }} total XP</span>
-                    </div>
-                </div>
-
                 <!-- Today's focus button (redirects to daily summary page) -->
                 <div class="mt-6">
                     <a href="{{ route('focus.today') }}"
@@ -329,6 +301,37 @@
                             </a>
                         @endif
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ⚡ Level & XP progress -->
+        @php
+            $user = auth()->user();
+            $xpInLevel = $user->xp % 100;
+            $xpPercent = min(100, $xpInLevel); // 100 XP per level
+            $xpToNext = 100 - $xpInLevel;
+        @endphp
+        <section class="rounded-3xl border border-indigo-400/20 bg-gradient-to-br from-slate-900 via-amber-950/10 to-slate-900 p-6 shadow-xl">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-500/15 text-2xl">⚡</span>
+                    <div>
+                        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-amber-300">Your progress</p>
+                        <p class="mt-0.5 text-sm text-slate-400">
+                            Level {{ $user->level }} · {{ $xpInLevel }}/100 XP · {{ $xpToNext }} to Level {{ $user->level + 1 }}
+                        </p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 text-xs font-semibold text-slate-300">
+                    <span>🔥 {{ $user->streak }}-day streak</span>
+                    <span>💎 {{ $user->xp }} total XP</span>
+                </div>
+            </div>
+            <div class="mt-4 h-3 w-full overflow-hidden rounded-full bg-slate-800">
+                <div class="relative h-full rounded-full bg-gradient-to-r from-amber-400 via-orange-400 to-pink-500 shadow-[0_0_12px_rgba(251,191,36,0.5)] transition-all duration-700 ease-out"
+                     style="width: {{ $xpPercent }}%">
+                    <span class="absolute inset-0 animate-pulse bg-white/10"></span>
                 </div>
             </div>
         </section>
