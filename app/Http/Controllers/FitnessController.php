@@ -12,14 +12,25 @@ class FitnessController extends Controller
 {
     public function index(): View
     {
-        $plan = auth()->user()->fitnessPlans()
+        $user = auth()->user();
+
+        $plan = $user->fitnessPlans()
             ->where('is_active', true)
             ->latest()
             ->first();
 
+        $entries = $user->fitnessEntries()
+            ->with(['linkedTask', 'linkedRoutine'])
+            ->orderBy('type')
+            ->orderByRaw('day_of_week IS NULL, day_of_week')
+            ->get();
+
         return view('fitness.index', [
             'plan' => $plan,
             'todayIndex' => (int) (Carbon::today()->dayOfWeekIso - 1), // 0 = Monday
+            'entries' => $entries,
+            'tasks' => $user->tasks()->orderByDesc('created_at')->limit(50)->get(['id', 'title']),
+            'routines' => $user->routines()->orderByDesc('created_at')->limit(50)->get(['id', 'title']),
         ]);
     }
 
@@ -79,5 +90,55 @@ class FitnessController extends Controller
         $plan->update(['completed_days' => $completed->all()]);
 
         return back();
+    }
+
+    /**
+     * Create a manual fitness entry (nutrition / workout / gym).
+     */
+    public function storeEntry(Request $request)
+    {
+        $validated = $request->validate([
+            'type' => 'required|in:nutrition,workout,gym',
+            'title' => 'required|string|max:255',
+            'details' => 'nullable|string|max:5000',
+            'day_of_week' => 'nullable|integer|min:1|max:7',
+            'linked_task_id' => 'nullable|exists:tasks,id',
+            'linked_routine_id' => 'nullable|exists:routines,id',
+        ]);
+
+        auth()->user()->fitnessEntries()->create([
+            'type' => $validated['type'],
+            'title' => $validated['title'],
+            'details' => $validated['details'] ?? null,
+            'day_of_week' => $validated['day_of_week'] ?? null,
+            'linked_task_id' => $validated['linked_task_id'] ?? null,
+            'linked_routine_id' => $validated['linked_routine_id'] ?? null,
+        ]);
+
+        return back()->with('success', 'Entry added to your fitness plan! ✅');
+    }
+
+    /**
+     * Toggle an entry's done state (manual entries only).
+     */
+    public function toggleEntry(FitnessEntry $entry)
+    {
+        abort_unless($entry->user_id === auth()->id(), 403);
+
+        $entry->update(['is_done' => !$entry->is_done]);
+
+        return back();
+    }
+
+    /**
+     * Delete a fitness entry.
+     */
+    public function destroyEntry(FitnessEntry $entry)
+    {
+        abort_unless($entry->user_id === auth()->id(), 403);
+
+        $entry->delete();
+
+        return back()->with('success', 'Entry removed.');
     }
 }

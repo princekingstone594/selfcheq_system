@@ -130,6 +130,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/fitness', [FitnessController::class, 'index'])->name('fitness.index');
     Route::post('/fitness/generate', [FitnessController::class, 'generate'])->name('fitness.generate');
     Route::post('/fitness/toggle-day', [FitnessController::class, 'toggleDay'])->name('fitness.toggle-day');
+    Route::post('/fitness/entries', [FitnessController::class, 'storeEntry'])->name('fitness.entries.store');
+    Route::post('/fitness/entries/{entry}/toggle', [FitnessController::class, 'toggleEntry'])->name('fitness.entries.toggle');
+    Route::delete('/fitness/entries/{entry}', [FitnessController::class, 'destroyEntry'])->name('fitness.entries.destroy');
 
     // Data Export
     Route::get('/export', [ExportController::class, 'index'])->name('export.index');
