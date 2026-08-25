@@ -129,26 +129,26 @@ class WeeklyReviewController extends Controller
             }
         );
 
-        return view('weekly-review.index', compact(
-            'stats',
-            'chartLabels',
-            'scoreChart',
-            'focusChart',
-            'taskCompletedChart',
-            'taskTotalChart',
-            'moodLabels',
-            'moodData',
-            'journalEntries',
-            'habitSummaries',
-            'avgScore',
-            'bestDay',
-            'totalTasks',
-            'totalTasksPossible',
-            'totalFocus',
-            'totalJournal',
-            'taskCompletionRate',
-            'weeklyInsights'
-        ));
+        return view('weekly-review.index', [
+            'stats' => $stats,
+            'chartLabels' => $chartLabels,
+            'scoreChart' => $scoreChart,
+            'focusChart' => $focusChart,
+            'taskCompletedChart' => $taskCompletedChart,
+            'taskTotalChart' => $taskTotalChart,
+            'moodLabels' => $moodLabels,
+            'moodData' => $moodData,
+            'journalEntries' => $journalEntries,
+            'habitSummaries' => collect($habitSummaries),
+            'avgScore' => $avgScore,
+            'bestDay' => $bestDay,
+            'totalTasks' => $totalTasks,
+            'totalTasksPossible' => $totalTasksPossible,
+            'totalFocus' => $totalFocus,
+            'totalJournal' => $totalJournal,
+            'taskCompletionRate' => $taskCompletionRate,
+            'weeklyInsights' => $weeklyInsights,
+        ]);
     }
 
     /**
