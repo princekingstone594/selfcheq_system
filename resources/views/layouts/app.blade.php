@@ -60,23 +60,7 @@
                 confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1, y: 0.7 }, zIndex: 9999 });
                 if (Date.now() > end) return;
             })();
-            if (message) {
-                window.dispatchEvent(new CustomEvent('selfcheq:celebrate', { detail: { message } }));
-            }
         };
-        window.addEventListener('selfcheq:celebrate', (e) => {
-            const msg = e.detail.message;
-            if (!msg) return;
-            let existing = document.querySelector('#selfcheq-toast');
-            if (existing) existing.remove();
-            const toast = document.createElement('div');
-            toast.id = 'selfcheq-toast';
-            toast.className = 'fixed bottom-24 left-1/2 -translate-x-1/2 rounded-xl border border-indigo-400/30 bg-indigo-500/90 px-5 py-2.5 text-xs font-semibold text-white shadow-xl shadow-indigo-900/40 backdrop-blur';
-            toast.textContent = msg;
-            toast.style.zIndex = '9998';
-            document.body.appendChild(toast);
-            setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 2000);
-        });
         document.addEventListener('click', function(e) {
             const btn = e.target.closest('button[type="submit"], button[data-press]');
             if (btn && !btn.classList.contains('no-press')) {
@@ -131,124 +115,8 @@
     </style>
 
     @stack('scripts')
-    
-    {{-- Smooth Page Transitions --}}
-    <style>
-        * {
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        #page-content {
-            opacity: 1;
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-        }
-        
-        .page-transitioning #page-content {
-            opacity: 0;
-            transform: translateY(-5px);
-            transition: opacity 0.08s ease-in-out, transform 0.08s ease-in-out;
-        }
-        
-        .smooth-redirect #page-content {
-            animation: smoothFadeIn 0.3s ease-in-out;
-        }
-        
-        @keyframes smoothFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(5px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* Prevent flash during page loads */
-        html.splash-skip #splash-screen {
-            display: none !important;
-        }
-    </style>
-    
-    
-    <script>
-        // Smooth page transitions for all internal links and form submissions
-        document.addEventListener('DOMContentLoaded', function() {
-            const content = document.getElementById('page-content') || document.querySelector('main');
-            if (!content) return;
-            
-            // Wrap main content for transitions
-            if (!content.id) {
-                content.id = 'page-content';
-            }
-            
-            // Check for smooth redirect from server
-            const hasSmoothRedirect = sessionStorage.getItem('selfcheq_smooth_transition');
-            if (hasSmoothRedirect) {
-                sessionStorage.removeItem('selfcheq_smooth_transition');
-                document.documentElement.classList.add('splash-skip');
-                content.classList.add('smooth-redirect');
-            }
-            
-            // Check for redirect flag from splash screen
-            const isRedirecting = sessionStorage.getItem('selfcheq_redirecting');
-            if (isRedirecting) {
-                sessionStorage.removeItem('selfcheq_redirecting');
-                document.documentElement.classList.add('splash-skip');
-            }
-            
-            // Intercept all internal link clicks
-            document.querySelectorAll('a[href]').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    const href = this.getAttribute('href');
-                    
-                    // Only handle internal links (not external, anchors, or special URLs)
-                    if (!href || 
-                        href.startsWith('http') || 
-                        href.startsWith('//') || 
-                        href.startsWith('#') || 
-                        href.startsWith('mailto:') || 
-                        href.startsWith('tel:') ||
-                        href.includes('javascript:')) {
-                        return;
-                    }
-                    
-                    // Mark as redirecting
-                    sessionStorage.setItem('selfcheq_redirecting', 'true');
-                    
-                    // Add transition class for smooth fade out
-                    document.documentElement.classList.add('page-transitioning');
-                    
-                    // Navigate immediately for faster loading
-                    window.location.href = href;
-                    
-                    e.preventDefault();
-                });
-            });
-            
-            // Intercept all form submissions for smooth transitions
-            document.querySelectorAll('form').forEach(form => {
-                form.addEventListener('submit', function(e) {
-                    // Mark as redirecting to skip splash screen
-                    sessionStorage.setItem('selfcheq_redirecting', 'true');
-                    
-                    // Add transition class for smooth fade out
-                    document.documentElement.classList.add('page-transitioning');
-                    
-                    // Remove transitioning class quickly for faster loading
-                    setTimeout(() => {
-                        document.documentElement.classList.remove('page-transitioning');
-                    }, 80);
-                    
-                    // Don't prevent submission - let it proceed naturally
-                    // The server will redirect and the next page will handle smooth fade in
-                });
-            });
-        });
-    </script>
 </head>
 <body class="font-sans antialiased {{ auth()->check() && auth()->user()->theme === 'light' ? 'bg-slate-50 text-slate-900' : 'bg-slate-950 text-slate-100' }}">
-    <x-splash-screen />
 
     <div class="min-h-screen {{ auth()->check() && auth()->user()->theme === 'light'
         ? 'bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-100'
