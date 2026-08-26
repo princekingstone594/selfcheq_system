@@ -21,32 +21,6 @@
         * {
             -webkit-tap-highlight-color: transparent;
         }
-        
-        #page-content {
-            opacity: 1;
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-        }
-        
-        .page-transitioning #page-content {
-            opacity: 0;
-            transform: translateY(-5px);
-            transition: opacity 0.08s ease-in-out, transform 0.08s ease-in-out;
-        }
-        
-        .smooth-redirect #page-content {
-            animation: smoothFadeIn 0.3s ease-in-out;
-        }
-        
-        @keyframes smoothFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(5px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
 
         /* PWA Mode: Hide duplicate logo in navigation */
         @media (display-mode: standalone) {
