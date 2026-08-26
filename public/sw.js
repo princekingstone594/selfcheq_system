@@ -1,4 +1,4 @@
-const CACHE_NAME = 'selfcheq-v1';
+const CACHE_NAME = 'selfcheq-v2';
 
 const APP_SHELL = [
     '/',
@@ -40,8 +40,23 @@ self.addEventListener('activate', event => {
     self.clients.claim();
 });
 
-// Fetch — serve from cache first, then network
+// Fetch — network-first for page navigations (always fresh HTML),
+// cache-first for static assets.
 self.addEventListener('fetch', event => {
+    if (event.request.mode === 'navigate') {
+        event.respondWith(
+            fetch(event.request)
+                .then(response => {
+                    // Refresh the cached copy in the background
+                    const copy = response.clone();
+                    caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
+                    return response;
+                })
+                .catch(() => caches.match(event.request))
+        );
+        return;
+    }
+
     event.respondWith(
         caches.match(event.request)
             .then(cachedResponse => {
