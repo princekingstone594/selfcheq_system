@@ -88,4 +88,18 @@ class DashboardTest extends TestCase
         $this->assertNotNull($first, 'AI coach message should be cached for the day.');
         $this->assertSame($first, cache()->get('ai_coach_' . $this->user->id . '_' . now()->toDateString()));
     }
+
+    /** @test */
+    public function coach_refresh_clears_the_daily_cache_entry(): void
+    {
+        $key = 'ai_coach_' . $this->user->id . '_' . now()->toDateString();
+
+        $this->get(route('dashboard'))->assertOk();
+        $this->assertNotNull(cache()->get($key));
+
+        $this->post(route('dashboard.coachRefresh'))
+            ->assertRedirect(route('dashboard'));
+
+        $this->assertNull(cache()->get($key), 'Coach message cache should be cleared after refresh.');
+    }
 }

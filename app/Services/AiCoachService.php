@@ -49,7 +49,7 @@ class AiCoachService
         try {
             $prompt = $this->buildPrompt($data);
 
-            $response = $this->client->chat()->create([
+            $response = $this->callWithRetry([
                 'model' => $this->model,
                 'messages' => [
                     [
@@ -68,6 +68,26 @@ class AiCoachService
 
         } catch (\Exception $e) {
             return "Stay disciplined. You're building momentum 💪";
+        }
+    }
+
+    /**
+     * Chat completion with a single retry after 1s — absorbs transient
+     * Groq rate limits (429) and blips instead of degrading to the
+     * generic fallback message.
+     */
+    protected function callWithRetry(array $payload, int $attempts = 2)
+    {
+        for ($i = 1; $i <= $attempts; $i++) {
+            try {
+                return $this->client->chat()->create($payload);
+            } catch (\Exception $e) {
+                $retryable = $i < $attempts && preg_match('/(429|503|timed? ?out|too many requests)/i', $e->getMessage());
+                if (! $retryable) {
+                    throw $e;
+                }
+                usleep(1000000); // 1s backoff before retrying
+            }
         }
     }
 

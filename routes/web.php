@@ -46,6 +46,9 @@ Route::middleware('auth')->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
+    Route::post('/dashboard/coach-refresh', [DashboardController::class, 'refreshCoach'])
+        ->name('dashboard.coachRefresh');
+
 
     Route::get('/onboarding', [OnboardingController::class, 'show'])->name('onboarding');
     Route::post('/onboarding/complete', [OnboardingController::class, 'complete'])->name('onboarding.complete');

@@ -326,6 +326,14 @@
                 <div class="flex items-center gap-3 text-xs font-semibold text-slate-300">
                     <span>🔥 {{ $user->streak }}-day streak</span>
                     <span>💎 {{ $user->xp }} total XP</span>
+                    <form method="POST" action="{{ route('dashboard.coachRefresh') }}">
+                        @csrf
+                        <button type="submit"
+                                class="rounded-full border border-white/10 bg-slate-800/80 px-3 py-1 text-[11px] font-semibold text-slate-300 transition hover:border-indigo-400/40 hover:text-white active:scale-95"
+                                title="Get a fresh coach message">
+                            🔄 New message
+                        </button>
+                    </form>
                 </div>
             </div>
             <div class="mt-4 h-3 w-full overflow-hidden rounded-full bg-slate-800">

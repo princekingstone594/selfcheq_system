@@ -367,5 +367,24 @@
             });
         }
     </script>
+
+    {{-- 🔔 Global toast (Alpine) — call window.toast('message', 'success'|'error') anywhere --}}
+    <div x-data="{ show: false, message: '', type: 'success' }"
+         x-init="window.toast = (msg, type = 'success') => { message = msg; type = type; show = true; clearTimeout(window.__toastTimer); window.__toastTimer = setTimeout(() => show = false, 3000); }"
+         x-show="show"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:translate-x-4"
+         x-transition:enter-end="opacity-100 translate-y-0 sm:translate-x-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed bottom-20 left-1/2 z-[100] w-[90%] max-w-sm -translate-x-1/2 rounded-2xl border px-4 py-3 text-sm font-semibold shadow-2xl backdrop-blur-md sm:left-auto sm:right-6 sm:translate-x-0"
+         :class="type === 'error'
+             ? 'border-red-400/30 bg-red-950/90 text-red-100'
+             : 'border-emerald-400/30 bg-slate-950/90 text-emerald-100'"
+         x-cloak>
+        <span class="mr-1.5" x-text="type === 'error' ? '⚠️' : '✅'"></span><span x-text="message"></span>
+    </div>
+    <style>[x-cloak]{display:none!important}</style>
 </body>
 </html>
